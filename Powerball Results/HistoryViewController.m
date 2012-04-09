@@ -33,7 +33,7 @@
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    self.selections = [defaults objectForKey:@"selections"];
+    self.selections = [NSKeyedUnarchiver unarchiveObjectWithData:[defaults objectForKey:@"selections"]];
 
     NSLog(@"History has %d locations", [self.selections count]);
 }
@@ -66,7 +66,8 @@
         selectionCell.powerballLabel.text = @"(?)";
     }
     selectionCell.dateLabel.text = selection.drawingDate; 
-    NSString *selectionList = [selection.selectionOne stringByAppendingString:selection.selectionTwo];
+    NSString *selectionList = [selection.selectionOne stringByAppendingString:@","];
+    selectionList = [selectionList stringByAppendingString:selection.selectionTwo];
     selectionList = [selectionList stringByAppendingString:@","];
     selectionList = [selectionList stringByAppendingString:selection.selectionThree];
     selectionList = [selectionList stringByAppendingString:@","];
@@ -105,7 +106,13 @@
         [self configureCell:cell atIndexPath:indexPath];
         return cell;
     }
+    [self configureCell:cell atIndexPath:indexPath];
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

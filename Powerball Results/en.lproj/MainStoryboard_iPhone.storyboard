@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="Cxw-7o-yLL">
     <dependencies>
+        <deployment defaultVersion="1296" identifier="iOS"/>
         <development defaultVersion="4200" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1179"/>
     </dependencies>
@@ -357,7 +358,7 @@
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="597" y="641"/>
+            <point key="canvasLocation" x="521" y="641"/>
         </scene>
         <!--History View Controller - History-->
         <scene sceneID="qcL-F4-uL6">
@@ -384,9 +385,9 @@
                                             <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </label>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Numbers" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="ckG-H8-x8q">
-                                            <rect key="frame" x="144" y="15" width="144" height="21"/>
+                                            <rect key="frame" x="141" y="15" width="144" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </label>
@@ -398,10 +399,10 @@
                                             <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </label>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="PB" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="bH8-3j-cco">
-                                            <rect key="frame" x="286" y="15" width="30" height="21"/>
+                                            <rect key="frame" x="288" y="15" width="30" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                            <color key="textColor" red="0.85558280109999996" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </label>
                                     </subviews>
@@ -422,7 +423,7 @@
                     <navigationItem key="navigationItem" title="History" id="mgo-Ak-PNm"/>
                 </tableViewController>
             </objects>
-            <point key="canvasLocation" x="501" y="1223"/>
+            <point key="canvasLocation" x="521" y="1223"/>
         </scene>
         <!--Feedback View Controller - Feedback-->
         <scene sceneID="Yyz-0T-OiE">

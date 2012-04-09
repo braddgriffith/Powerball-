@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Selection : NSObject //<NSCoding>
+@interface Selection : NSObject <NSCoding>
 
 @property (nonatomic, strong) NSString * type;
 @property (nonatomic, strong) NSString * drawingDate;

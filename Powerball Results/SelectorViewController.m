@@ -73,19 +73,29 @@
     [defaults setObject:selections forKey:@"selections"];
     [defaults synchronize];*/
     
-//    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
-//    NSData *selectedAlready = [currentDefaults objectForKey:@"selections"];
-//    
-//    NSMutableArray *selections = [[NSMutableArray alloc] init];
-//    
-//    if (selectedAlready != nil) {
-//        NSArray *oldSavedArray = [NSKeyedUnarchiver unarchiveObjectWithData:selectedAlready];
-//        if (oldSavedArray != nil) {
-//            NSMutableArray *selections = [[NSMutableArray alloc] initWithArray:selectedAlready];
-//        } 
-//    }
-//    [selections insertObject:currentSelection atIndex:0];
-//    [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:selections] forKey:@"selections"];
+    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
+    
+    NSData *selectionsData = [currentDefaults objectForKey:@"selections"];
+    
+    NSLog(@"Selections Data = %@", selectionsData);
+    
+    NSMutableArray *selections = [[NSMutableArray alloc] init];
+    
+    if (selectionsData) 
+    {
+        selections = [NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:selectionsData]];
+    }
+    
+    [selections insertObject:currentSelection atIndex:0];
+    
+    NSLog(@"%@",selections);
+    
+    //NSMutableArray *selections = [currentDefaults objectForKey:@"selections"];
+    //[NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:selectedAlready]];
+    //NSArray *oldSavedArray = [NSKeyedUnarchiver unarchiveObjectWithData:selectedAlready];
+
+
+    [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:selections] forKey:@"selections"];
     
     [HudView hudInView:self.navigationController.view text:@"Saved!" lineTwo:@"Check History" animated:YES];
 
