@@ -11,11 +11,16 @@
 @implementation AppDelegate
 
 @synthesize window = _window;
+@synthesize selections = _selections;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
     [application setStatusBarStyle:UIStatusBarStyleBlackOpaque];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults]; //UserDefaults
+    NSDictionary *defaultsDictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"value1", @"key1", nil];
+    [defaults registerDefaults:defaultsDictionary];
     
     return YES;
 }
