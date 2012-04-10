@@ -34,7 +34,7 @@
 		E6EFAC0B152F53660031CCD3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E6EFAC0A152F53660031CCD3 /* AppDelegate.m */; };
 		E6EFAC0E152F53660031CCD3 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E6EFAC0C152F53660031CCD3 /* MainStoryboard_iPhone.storyboard */; };
 		E6EFAC14152F53660031CCD3 /* PBViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6EFAC13152F53660031CCD3 /* PBViewController.m */; };
-		E6EFAC1C152F5A620031CCD3 /* NumberGeneratorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6EFAC1B152F5A620031CCD3 /* NumberGeneratorViewController.m */; };
+		E6EFAC1C152F5A620031CCD3 /* GeneratorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6EFAC1B152F5A620031CCD3 /* GeneratorViewController.m */; };
 		E6EFAC1E152F7B6F0031CCD3 /* 169-8ball.png in Resources */ = {isa = PBXBuildFile; fileRef = E6EFAC1D152F7B6F0031CCD3 /* 169-8ball.png */; };
 		E6EFAC20152F7B8C0031CCD3 /* 13-target.png in Resources */ = {isa = PBXBuildFile; fileRef = E6EFAC1F152F7B8C0031CCD3 /* 13-target.png */; };
 /* End PBXBuildFile section */
@@ -78,8 +78,8 @@
 		E6EFAC0D152F53660031CCD3 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
 		E6EFAC12152F53660031CCD3 /* PBViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PBViewController.h; sourceTree = "<group>"; };
 		E6EFAC13152F53660031CCD3 /* PBViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PBViewController.m; sourceTree = "<group>"; };
-		E6EFAC1A152F5A620031CCD3 /* NumberGeneratorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NumberGeneratorViewController.h; sourceTree = "<group>"; };
-		E6EFAC1B152F5A620031CCD3 /* NumberGeneratorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NumberGeneratorViewController.m; sourceTree = "<group>"; };
+		E6EFAC1A152F5A620031CCD3 /* GeneratorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = GeneratorViewController.h; sourceTree = "<group>"; };
+		E6EFAC1B152F5A620031CCD3 /* GeneratorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratorViewController.m; sourceTree = "<group>"; };
 		E6EFAC1D152F7B6F0031CCD3 /* 169-8ball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "169-8ball.png"; sourceTree = "<group>"; };
 		E6EFAC1F152F7B8C0031CCD3 /* 13-target.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "13-target.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -111,6 +111,20 @@
 				E686B6D215311BCA0068A08D /* iTunesArtwork.png */,
 			);
 			path = "PowerballPlus Icons";
+			sourceTree = "<group>";
+		};
+		E686B74E153492850068A08D /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				E686B72915326E7B0068A08D /* 96-book.png */,
+				E6EFAC1D152F7B6F0031CCD3 /* 169-8ball.png */,
+				E686B72B15326EC20068A08D /* 115-bow-and-arrow.png */,
+				E686B7321532A2F00068A08D /* 29-heart.png */,
+				E686B73D15335E7C0068A08D /* Checkmark@2x.png */,
+				E686B73E15335E7C0068A08D /* Checkmark.png */,
+				E6EFAC1F152F7B8C0031CCD3 /* 13-target.png */,
+			);
+			name = Images;
 			sourceTree = "<group>";
 		};
 		E6EFABEB152F53650031CCD3 = {
@@ -147,29 +161,23 @@
 				E6EFAC0C152F53660031CCD3 /* MainStoryboard_iPhone.storyboard */,
 				E6EFAC09152F53660031CCD3 /* AppDelegate.h */,
 				E6EFAC0A152F53660031CCD3 /* AppDelegate.m */,
+				E6EFAC12152F53660031CCD3 /* PBViewController.h */,
+				E6EFAC13152F53660031CCD3 /* PBViewController.m */,
+				E6EFAC1A152F5A620031CCD3 /* GeneratorViewController.h */,
+				E6EFAC1B152F5A620031CCD3 /* GeneratorViewController.m */,
 				E686B71D153251020068A08D /* SelectorViewController.h */,
 				E686B71E153251020068A08D /* SelectorViewController.m */,
 				E686B72015326A8D0068A08D /* HistoryViewController.h */,
 				E686B72115326A8D0068A08D /* HistoryViewController.m */,
-				E6EFAC12152F53660031CCD3 /* PBViewController.h */,
-				E6EFAC13152F53660031CCD3 /* PBViewController.m */,
-				E6EFAC1A152F5A620031CCD3 /* NumberGeneratorViewController.h */,
-				E6EFAC1B152F5A620031CCD3 /* NumberGeneratorViewController.m */,
 				E686B72D15329D360068A08D /* FeedbackViewController.h */,
 				E686B72E15329D360068A08D /* FeedbackViewController.m */,
-				E6EFAC1F152F7B8C0031CCD3 /* 13-target.png */,
-				E686B72915326E7B0068A08D /* 96-book.png */,
-				E6EFAC1D152F7B6F0031CCD3 /* 169-8ball.png */,
-				E686B72B15326EC20068A08D /* 115-bow-and-arrow.png */,
-				E686B7321532A2F00068A08D /* 29-heart.png */,
-				E686B73D15335E7C0068A08D /* Checkmark@2x.png */,
-				E686B73E15335E7C0068A08D /* Checkmark.png */,
 				E686B737153340860068A08D /* SelectionCell.h */,
 				E686B738153340860068A08D /* SelectionCell.m */,
 				E686B73415333D8B0068A08D /* Selection.h */,
 				E686B73515333D8C0068A08D /* Selection.m */,
 				E686B73A153345AE0068A08D /* HudView.h */,
 				E686B73B153345AE0068A08D /* HudView.m */,
+				E686B74E153492850068A08D /* Images */,
 				E686B6CB15311BCA0068A08D /* PowerballPlus Icons */,
 				E6EFAC01152F53650031CCD3 /* Supporting Files */,
 			);
@@ -266,7 +274,7 @@
 				E6EFAC07152F53660031CCD3 /* main.m in Sources */,
 				E6EFAC0B152F53660031CCD3 /* AppDelegate.m in Sources */,
 				E6EFAC14152F53660031CCD3 /* PBViewController.m in Sources */,
-				E6EFAC1C152F5A620031CCD3 /* NumberGeneratorViewController.m in Sources */,
+				E6EFAC1C152F5A620031CCD3 /* GeneratorViewController.m in Sources */,
 				E686B71F153251020068A08D /* SelectorViewController.m in Sources */,
 				E686B72215326A8D0068A08D /* HistoryViewController.m in Sources */,
 				E686B72F15329D360068A08D /* FeedbackViewController.m in Sources */,

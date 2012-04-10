@@ -20,7 +20,7 @@
 {
     [super viewDidLoad];
     self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    self.spinner.center = CGPointMake(320/2, 200);
+    self.spinner.center = CGPointMake(CGRectGetMidX(self.webView.bounds), CGRectGetMidY(self.webView.bounds));
     [self.spinner setColor:[UIColor blackColor]];
     [self.spinner startAnimating];
     [self.view addSubview:self.spinner];

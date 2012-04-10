@@ -24,18 +24,34 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.spinner.center = CGPointMake(320/2, 200);
+    self.spinner.center = CGPointMake(CGRectGetMidX(self.tableView.bounds) + 0.5f, CGRectGetMidY(self.tableView.bounds) + 0.5f);
     [self.spinner setColor:[UIColor blackColor]];
     [self.spinner startAnimating];
     [self.view addSubview:self.spinner];
     
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    self.selections = [NSKeyedUnarchiver unarchiveObjectWithData:[defaults objectForKey:@"selections"]];
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
 
-    NSLog(@"History has %d locations", [self.selections count]);
+    NSLog(@"History has %d selections", [self.selections count]);
+    
+    if(self.selections.count > [self.tableView numberOfRowsInSection:0]) {
+        [self insertRow]; 
+    }
+}
+
+-(void)insertRow
+{
+    int rows = self.selections.count - [self.tableView numberOfRowsInSection:0];
+    int newRowIndex = 0;
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+    for (newRowIndex=0; newRowIndex<rows; newRowIndex++) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:newRowIndex inSection:0];
+        [indexPaths insertObject:indexPath atIndex:newRowIndex];
+    }
+    [self.tableView beginUpdates];
+    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tableView endUpdates];
+    indexPaths = nil;
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -113,6 +129,14 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [selections removeObjectAtIndex:indexPath.row];
+    
+    NSArray *indexPaths = [NSArray arrayWithObject:indexPath];
+    [tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 @end

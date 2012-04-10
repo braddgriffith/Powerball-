@@ -11,7 +11,7 @@
 
 @interface HistoryViewController : UITableViewController
 
-@property (nonatomic,strong)  NSArray *selections;
+@property (nonatomic,strong)  NSMutableArray *selections;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) Selection *addSelection;
 

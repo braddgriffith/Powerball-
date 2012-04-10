@@ -7,49 +7,87 @@
 //
 
 #import "AppDelegate.h"
+#import "SelectorViewController.h"
+#import "HistoryViewController.h"
+#import "SelectorViewController.h"
+#import "HistoryViewController.h"
 
 @implementation AppDelegate
 
 @synthesize window = _window;
 @synthesize selections = _selections;
+@synthesize drawDates;
+@synthesize tabBarController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
     [application setStatusBarStyle:UIStatusBarStyleBlackOpaque];
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults]; //UserDefaults
-    NSDictionary *defaultsDictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"value1", @"key1", nil];
-    [defaults registerDefaults:defaultsDictionary];
+    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
+    NSData *selectionsData = [currentDefaults objectForKey:@"selections"];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(randomSelectionMadeNotification:) 
+                                                 name:@"RandomSelectionMadeNotification"
+                                               object:nil];
+    
+    if (selectionsData) 
+    {
+        self.selections = [NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:selectionsData]];
+    }
+    
+    [self setupViewControllers];
     
     return YES;
+}
+
+-(void) setupViewControllers
+{
+    self.tabBarController = (UITabBarController *)self.window.rootViewController;
+    
+    UINavigationController *navigationController = (UINavigationController *)[[tabBarController viewControllers] objectAtIndex:2];
+    SelectorViewController *selectorViewController = (SelectorViewController *)[[navigationController viewControllers] objectAtIndex:0];  
+    
+    navigationController = (UINavigationController *)[[tabBarController viewControllers] objectAtIndex:3];
+    HistoryViewController *historyViewController = (HistoryViewController *)[[navigationController viewControllers] objectAtIndex:0];
+
+    selectorViewController.selections = self.selections;
+    historyViewController.selections = self.selections;
 }
 							
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:self.selections] forKey:@"selections"];
+    NSLog(@"App Resigned Active.");
 }
 
-- (void)applicationDidEnterBackground:(UIApplication *)application
+- (void) randomSelectionMadeNotification:(NSNotification *) notification
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    if ([[notification name] isEqualToString:@"RandomSelectionMadeNotification"])
+    {
+        NSLog (@"Successfully received the RandomSelectionMadeNotification notification!");
+        
+        // Get views. controllerIndex is passed in as the controller we want to go to. 
+        UIView * fromView = tabBarController.selectedViewController.view;
+        UIView * toView = [[tabBarController.viewControllers objectAtIndex:2] view];
+        
+        // Transition using a flip.
+        [UIView transitionFromView:fromView 
+                            toView:toView 
+                          duration:0.5
+                           options:UIViewAnimationOptionTransitionFlipFromLeft
+                        completion:^(BOOL finished) {
+                            if (finished) {
+                                tabBarController.selectedIndex = 2;
+                            }
+                        }
+         ];
+    }
 }
 
-- (void)applicationWillEnterForeground:(UIApplication *)application
+- (void) applicationWillTerminate:(UIApplication *)application
 {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application
-{
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"LocationMadeNotification" object:nil];
 }
 
 @end

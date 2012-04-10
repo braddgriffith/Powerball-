@@ -18,11 +18,57 @@
 @synthesize numberFour;
 @synthesize numberFive;
 @synthesize powerball;
+@synthesize todaysDate;
+@synthesize currentDrawDate;
+
+@synthesize selections;
 
 -(void)viewDidLoad
 {
     [super viewDidLoad];
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    
+    NSDate *today = [NSDate date];
+    NSCalendar *gregorian = [[NSCalendar alloc]
+                             initWithCalendarIdentifier:NSGregorianCalendar];
+
+    [dateFormatter setDateFormat:@"MM/dd/yyyy"];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0.0]];
+    NSString *timeString=[dateFormatter stringFromDate:today];
+    currentDrawDate.text = timeString;
+  
+    NSDateComponents *weekdayComponents = [gregorian components:(NSDayCalendarUnit | NSWeekdayCalendarUnit) fromDate:today];
+    NSInteger weekday = [weekdayComponents weekday];
+    NSString *weekdayStr = [NSString stringWithFormat:@"%d", weekday];
+    NSLog(@"Weekday: %@", weekdayStr);
+    
+    self.todaysDate.text = [dateFormatter stringFromDate:today]; 
+    
+    NSTimeInterval secondsPerDay = 24 * 60 * 60;
+    if (weekday == 0) {
+        NSDate *drawFollowingSunday = [[NSDate alloc] initWithTimeIntervalSinceNow:(3 * secondsPerDay)];
+        self.currentDrawDate.text = [dateFormatter stringFromDate:drawFollowingSunday];
+    } else if (weekday == 1) {
+        NSDate *drawFollowingMonday = [[NSDate alloc] initWithTimeIntervalSinceNow:(2 * secondsPerDay)];
+        self.currentDrawDate.text = [dateFormatter stringFromDate:drawFollowingMonday];
+    } else if (weekday == 2) {
+        NSDate *drawFollowingTuesday = [[NSDate alloc] initWithTimeIntervalSinceNow:(1 * secondsPerDay)];
+        self.currentDrawDate.text = [dateFormatter stringFromDate:drawFollowingTuesday];
+    } else if (weekday == 3) {
+        NSDate *drawFollowingWednesday = [[NSDate alloc] initWithTimeIntervalSinceNow:(0 * secondsPerDay)];
+        self.currentDrawDate.text = [dateFormatter stringFromDate:drawFollowingWednesday];
+    } else if (weekday == 4) {
+        NSDate *drawFollowingThursday = [[NSDate alloc] initWithTimeIntervalSinceNow:(2 * secondsPerDay)];
+        self.currentDrawDate.text = [dateFormatter stringFromDate:drawFollowingThursday];
+    } else if (weekday == 5) {
+        NSDate *drawFollowingFriday = [[NSDate alloc] initWithTimeIntervalSinceNow:(1 * secondsPerDay)];
+        self.currentDrawDate.text = [dateFormatter stringFromDate:drawFollowingFriday];
+    } else if (weekday == 6) {
+        NSDate *drawFollowingSaturday = [[NSDate alloc] initWithTimeIntervalSinceNow:(0 * secondsPerDay)];
+        self.currentDrawDate.text = [dateFormatter stringFromDate:drawFollowingSaturday];
+    }
 }
 
 - (IBAction)clear:(id)sender
@@ -59,52 +105,14 @@
     currentSelection.selectionFour = entryFour;
     currentSelection.selectionFive = entryFive;
     currentSelection.selectionPowerball = entryPowerball;
+    currentSelection.drawingDate = currentDrawDate.text;
     
-    /*  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableArray* selectedAlready = [[NSUserDefaults standardUserDefaults] objectForKey:@"selections"];
-    NSMutableArray* selections = [[NSMutableArray alloc] init];
-    
-    if(selectedAlready) {
-        selections = [(NSArray*)selectedAlready mutableCopy];
-    }
-    
-    [selections insertObject:currentSelection atIndex:0];
-    
-    [defaults setObject:selections forKey:@"selections"];
-    [defaults synchronize];*/
-    
-    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
-    
-    NSData *selectionsData = [currentDefaults objectForKey:@"selections"];
-    
-    NSLog(@"Selections Data = %@", selectionsData);
-    
-    NSMutableArray *selections = [[NSMutableArray alloc] init];
-    
-    if (selectionsData) 
-    {
-        selections = [NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:selectionsData]];
-    }
-    
-    [selections insertObject:currentSelection atIndex:0];
-    
-    NSLog(@"%@",selections);
-    
-    //NSMutableArray *selections = [currentDefaults objectForKey:@"selections"];
-    //[NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:selectedAlready]];
-    //NSArray *oldSavedArray = [NSKeyedUnarchiver unarchiveObjectWithData:selectedAlready];
-
-
-    [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:selections] forKey:@"selections"];
+    [self.selections insertObject:currentSelection atIndex:0];
     
     [HudView hudInView:self.navigationController.view text:@"Saved!" lineTwo:@"Check History" animated:YES];
 
     NSLog(@"Data saved");
-//    selectedAlready = nil;
-//    selections = nil;
 }
-
-
 
 - (void)hideKeyboard:(UIGestureRecognizer *)gestureRecognizer
 {
@@ -123,4 +131,8 @@
 }
 
 
+- (void)viewDidUnload {
+    [self setCurrentDrawDate:nil];
+    [super viewDidUnload];
+}
 @end

@@ -28,11 +28,11 @@
             </objects>
             <point key="canvasLocation" x="-473" y="406"/>
         </scene>
-        <!--Number Generator View Controller - Generator-->
+        <!--Generator View Controller - Generator-->
         <scene sceneID="DVL-AV-QcP">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vzx-yh-hmk" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tableViewController id="tkk-Ah-Z1H" customClass="NumberGeneratorViewController" sceneMemberID="viewController">
+                <tableViewController id="tkk-Ah-Z1H" customClass="GeneratorViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" userInteractionEnabled="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="QH1-Gd-9SK">
                         <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -168,6 +168,11 @@
                                 <action selector="refresh:" destination="tkk-Ah-Z1H" id="Nwy-uI-nAE"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Select" id="ZFC-wk-nq6">
+                            <connections>
+                                <action selector="save:" destination="tkk-Ah-Z1H" id="W46-HK-Wef"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="numberFive" destination="7nN-HI-9wl" id="Dxt-0M-e9N"/>
@@ -247,18 +252,18 @@
                                 <rect key="frame" x="34" y="52" width="55" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                <color key="textColor" red="1" green="1" blue="0.91372549020000005" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Valid Numbers 1-59" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="OQ7-VC-scd">
-                                <rect key="frame" x="99" y="23" width="152" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Valid Numbers 1-59" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="OQ7-VC-scd">
+                                <rect key="frame" x="84" y="23" width="152" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Valid Number 1-35" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="JE8-5H-IKd">
-                                <rect key="frame" x="102" y="91" width="152" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Valid Number 1-35" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="JE8-5H-IKd">
+                                <rect key="frame" x="84" y="91" width="152" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -308,7 +313,7 @@
                                 <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation" returnKeyType="done"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="RTn-q1-vJR">
-                                <rect key="frame" x="94" y="166" width="135" height="37"/>
+                                <rect key="frame" x="93" y="166" width="135" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Save">
@@ -323,7 +328,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Crx-kA-u03">
-                                <rect key="frame" x="187" y="118" width="100" height="35"/>
+                                <rect key="frame" x="206" y="118" width="81" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Clear">
@@ -338,10 +343,38 @@
                                 </connections>
                             </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Powerball+" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="oIL-vO-zLc">
-                                <rect key="frame" x="36" y="260" width="249" height="43"/>
+                                <rect key="frame" x="36" y="282" width="249" height="43"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="47"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Today:" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="DfQ-O0-ESI">
+                                <rect key="frame" x="34" y="214" width="108" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="todaysDate" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="rkJ-2R-OKg">
+                                <rect key="frame" x="145" y="214" width="116" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Next Drawing:" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="fOD-nH-0aW">
+                                <rect key="frame" x="56" y="237" width="108" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="nextDrawing" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="qA2-UN-X6l">
+                                <rect key="frame" x="166" y="237" width="116" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -349,12 +382,14 @@
                     </view>
                     <navigationItem key="navigationItem" title="Selection" id="O4P-Qe-oqp"/>
                     <connections>
+                        <outlet property="currentDrawDate" destination="qA2-UN-X6l" id="cJr-Dc-Gfg"/>
                         <outlet property="numberFive" destination="F5U-Qw-9JN" id="eqK-Ob-Kbh"/>
                         <outlet property="numberFour" destination="zdn-oQ-YUA" id="Qt8-Bs-d82"/>
                         <outlet property="numberOne" destination="Nt0-xF-dYc" id="tsV-4P-yqt"/>
                         <outlet property="numberThree" destination="u0K-9f-tgV" id="Izt-VI-KZh"/>
                         <outlet property="numberTwo" destination="Pea-0N-Ffj" id="1fC-k3-dBm"/>
                         <outlet property="powerball" destination="fHZ-sz-Aqw" id="xTI-pC-9Me"/>
+                        <outlet property="todaysDate" destination="rkJ-2R-OKg" id="Dpw-Uf-ROZ"/>
                     </connections>
                 </viewController>
             </objects>
@@ -548,57 +583,6 @@
         <image name="29-heart.png" width="24" height="21"/>
         <image name="96-book.png" width="18" height="26"/>
     </resources>
-    <classes>
-        <class className="FeedbackViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FeedbackViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="rateGame"/>
-                <relationship kind="action" name="sendEmail"/>
-            </relationships>
-        </class>
-        <class className="HistoryViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/HistoryViewController.h"/>
-        </class>
-        <class className="NumberGeneratorViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NumberGeneratorViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="refresh:"/>
-                <relationship kind="outlet" name="numberFive" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="numberFour" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="numberOne" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="numberThree" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="numberTwo" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="powerball" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="PBViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/PBViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="webView" candidateClass="UIWebView"/>
-            </relationships>
-        </class>
-        <class className="SelectionCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SelectionCell.h"/>
-            <relationships>
-                <relationship kind="outlet" name="dateLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="numbersLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="powerballLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="SelectorViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SelectorViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="clear:"/>
-                <relationship kind="action" name="save:"/>
-                <relationship kind="outlet" name="numberFive" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="numberFour" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="numberOne" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="numberThree" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="numberTwo" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="powerball" candidateClass="UITextField"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

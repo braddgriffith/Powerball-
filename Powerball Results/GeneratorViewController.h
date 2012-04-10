@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface NumberGeneratorViewController : UITableViewController
+@interface GeneratorViewController : UITableViewController
 
 @property (nonatomic, strong) IBOutlet UILabel *numberOne;
 @property (nonatomic, strong) IBOutlet UILabel *numberTwo;
@@ -18,5 +18,6 @@
 @property (nonatomic, strong) IBOutlet UILabel *powerball;
 
 -(IBAction)refresh:(id)sender;
+-(IBAction)save:(id)sender;
 
 @end

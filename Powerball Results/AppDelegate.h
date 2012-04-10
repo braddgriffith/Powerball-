@@ -13,5 +13,7 @@
 @property (strong, nonatomic) UIWindow *window;
 
 @property (nonatomic, strong) NSMutableArray *selections;
+@property (nonatomic, strong) NSMutableArray *drawDates;
+@property (nonatomic, strong) UITabBarController *tabBarController;
 
 @end
