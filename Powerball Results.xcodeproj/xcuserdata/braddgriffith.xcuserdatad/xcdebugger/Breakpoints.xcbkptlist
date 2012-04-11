@@ -4,16 +4,16 @@
    version = "1.0">
    <FileBreakpoints>
       <FileBreakpoint
-         shouldBeEnabled = "No"
+         shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Powerball Results/SelectorViewController.m"
-         timestampString = "355765492.455759"
+         timestampString = "355795429.352591"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "42"
-         endingLineNumber = "42"
-         landmarkName = "-viewDidLoad"
+         startingLineNumber = "55"
+         endingLineNumber = "55"
+         landmarkName = "-getNextDrawDate"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

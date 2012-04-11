@@ -20,6 +20,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *todaysDate;
 @property (strong, nonatomic) IBOutlet UILabel *currentDrawDate;
 
+@property (strong, nonatomic) Selection *selection;
 @property (nonatomic, strong) NSMutableArray *selections;
 
 - (IBAction)clear:(id)sender;

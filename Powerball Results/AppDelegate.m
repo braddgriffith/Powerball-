@@ -18,6 +18,7 @@
 @synthesize selections = _selections;
 @synthesize drawDates;
 @synthesize tabBarController;
+@synthesize selection;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {

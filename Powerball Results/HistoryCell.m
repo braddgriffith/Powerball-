@@ -1,14 +1,14 @@
 //
-//  SelectionCell.m
+//  HistoryCell.m
 //  Powerball Results
 //
 //  Created by Brad Grifffith on 4/9/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "SelectionCell.h"
+#import "HistoryCell.h"
 
-@implementation SelectionCell
+@implementation HistoryCell
 
 @synthesize dateLabel;
 @synthesize numbersLabel;
@@ -29,5 +29,8 @@
 
     // Configure the view for the selected state
 }
+
+// CHANGE W EDITING MODE
+// OVERRIDE UITABLEVIEW EDITING STYLE
 
 @end

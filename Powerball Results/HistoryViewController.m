@@ -7,7 +7,7 @@
 //
 
 #import "HistoryViewController.h"
-#import "SelectionCell.h"
+#import "HistoryCell.h"
 
 #define kCustomRowCount 7
 
@@ -73,7 +73,7 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    SelectionCell *selectionCell = (SelectionCell *)cell;
+    HistoryCell *selectionCell = (HistoryCell *)cell;
     Selection *selection = [selections objectAtIndex:indexPath.row];
     
     if ([selection.selectionPowerball length] > 0) {

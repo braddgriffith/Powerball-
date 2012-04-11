@@ -8,6 +8,8 @@
 
 #import "GeneratorViewController.h"
 #import "Selection.h"
+#import "SelectorViewController.h"
+#import "AppDelegate.h"
 
 @interface GeneratorViewController ()
 @end
@@ -46,17 +48,19 @@
     randomSelection.selectionFour = numberFour.text;
     randomSelection.selectionFive = numberFive.text;
     randomSelection.selectionPowerball  = powerball.text;
-//    [self performSelector:@selector(sendNotification) withObject:randomSelection]; 
-    [self performSelector:@selector(postNotification) withObject:randomSelection]; 
-
+    
+    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    appDelegate.selection = randomSelection;
+    [self sendNotification];
 }
 
-//- (void)sendNotification
-//{
-//    [[NSNotificationCenter defaultCenter] 
-//     postNotificationName:@"RandomSelectionMadeNotification" 
-//     object:self];
-//}
+
+- (void)sendNotification
+{
+    [[NSNotificationCenter defaultCenter] 
+     postNotificationName:@"RandomSelectionMadeNotification" 
+     object:self];
+}
 
 -(IBAction)refresh:(id)sender
 {

@@ -22,7 +22,7 @@
 		E686B7311532A0EF0068A08D /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E686B7301532A0EF0068A08D /* MessageUI.framework */; };
 		E686B7331532A2F00068A08D /* 29-heart.png in Resources */ = {isa = PBXBuildFile; fileRef = E686B7321532A2F00068A08D /* 29-heart.png */; };
 		E686B73615333D8C0068A08D /* Selection.m in Sources */ = {isa = PBXBuildFile; fileRef = E686B73515333D8C0068A08D /* Selection.m */; };
-		E686B739153340870068A08D /* SelectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E686B738153340860068A08D /* SelectionCell.m */; };
+		E686B739153340870068A08D /* HistoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E686B738153340860068A08D /* HistoryCell.m */; };
 		E686B73C153345AE0068A08D /* HudView.m in Sources */ = {isa = PBXBuildFile; fileRef = E686B73B153345AE0068A08D /* HudView.m */; };
 		E686B73F15335E7C0068A08D /* Checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E686B73D15335E7C0068A08D /* Checkmark@2x.png */; };
 		E686B74015335E7C0068A08D /* Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = E686B73E15335E7C0068A08D /* Checkmark.png */; };
@@ -59,8 +59,8 @@
 		E686B7321532A2F00068A08D /* 29-heart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "29-heart.png"; path = "../../../Downloads/glyphish-icons/icons/29-heart.png"; sourceTree = "<group>"; };
 		E686B73415333D8B0068A08D /* Selection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Selection.h; sourceTree = "<group>"; };
 		E686B73515333D8C0068A08D /* Selection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Selection.m; sourceTree = "<group>"; };
-		E686B737153340860068A08D /* SelectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectionCell.h; sourceTree = "<group>"; };
-		E686B738153340860068A08D /* SelectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectionCell.m; sourceTree = "<group>"; };
+		E686B737153340860068A08D /* HistoryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; path = HistoryCell.h; sourceTree = "<group>"; };
+		E686B738153340860068A08D /* HistoryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryCell.m; sourceTree = "<group>"; };
 		E686B73A153345AE0068A08D /* HudView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HudView.h; path = ../HudView.h; sourceTree = "<group>"; };
 		E686B73B153345AE0068A08D /* HudView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HudView.m; path = ../HudView.m; sourceTree = "<group>"; };
 		E686B73D15335E7C0068A08D /* Checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Checkmark@2x.png"; sourceTree = "<group>"; };
@@ -78,7 +78,7 @@
 		E6EFAC0D152F53660031CCD3 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
 		E6EFAC12152F53660031CCD3 /* PBViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PBViewController.h; sourceTree = "<group>"; };
 		E6EFAC13152F53660031CCD3 /* PBViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PBViewController.m; sourceTree = "<group>"; };
-		E6EFAC1A152F5A620031CCD3 /* GeneratorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = GeneratorViewController.h; sourceTree = "<group>"; };
+		E6EFAC1A152F5A620031CCD3 /* GeneratorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratorViewController.h; sourceTree = "<group>"; };
 		E6EFAC1B152F5A620031CCD3 /* GeneratorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratorViewController.m; sourceTree = "<group>"; };
 		E6EFAC1D152F7B6F0031CCD3 /* 169-8ball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "169-8ball.png"; sourceTree = "<group>"; };
 		E6EFAC1F152F7B8C0031CCD3 /* 13-target.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "13-target.png"; sourceTree = "<group>"; };
@@ -171,8 +171,8 @@
 				E686B72115326A8D0068A08D /* HistoryViewController.m */,
 				E686B72D15329D360068A08D /* FeedbackViewController.h */,
 				E686B72E15329D360068A08D /* FeedbackViewController.m */,
-				E686B737153340860068A08D /* SelectionCell.h */,
-				E686B738153340860068A08D /* SelectionCell.m */,
+				E686B737153340860068A08D /* HistoryCell.h */,
+				E686B738153340860068A08D /* HistoryCell.m */,
 				E686B73415333D8B0068A08D /* Selection.h */,
 				E686B73515333D8C0068A08D /* Selection.m */,
 				E686B73A153345AE0068A08D /* HudView.h */,
@@ -279,7 +279,7 @@
 				E686B72215326A8D0068A08D /* HistoryViewController.m in Sources */,
 				E686B72F15329D360068A08D /* FeedbackViewController.m in Sources */,
 				E686B73615333D8C0068A08D /* Selection.m in Sources */,
-				E686B739153340870068A08D /* SelectionCell.m in Sources */,
+				E686B739153340870068A08D /* HistoryCell.m in Sources */,
 				E686B73C153345AE0068A08D /* HudView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

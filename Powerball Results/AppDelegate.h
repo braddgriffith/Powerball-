@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Selection.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -15,5 +16,6 @@
 @property (nonatomic, strong) NSMutableArray *selections;
 @property (nonatomic, strong) NSMutableArray *drawDates;
 @property (nonatomic, strong) UITabBarController *tabBarController;
+@property (nonatomic, strong) Selection *selection;
 
 @end
