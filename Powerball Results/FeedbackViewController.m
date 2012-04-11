@@ -46,8 +46,8 @@
         //emailBody = [appVariables objectForKey:@"emailBody"];
         //emailSubject = [appVariables objectForKey:@"emailSubject"];
         //supportEmail = [appVariables objectForKey:@"supportEmail"];
-        emailBody = @"Hey, Here's a feature I need...";
-        emailSubject = @"Ideas";
+        emailBody = @"Hey,";
+        emailSubject = @"I've got some ideas...";
         supportEmail = @"pluspowerball@gmail.com";
     }
     if(emailBody != nil) {
@@ -70,6 +70,5 @@
 {
     [super viewDidUnload];
 }
-
 
 @end

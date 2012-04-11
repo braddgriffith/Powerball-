@@ -30,8 +30,10 @@
     [self.view addSubview:self.spinner];
     
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
-
+    if (selections > 0) {
+        self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    }
+    
     NSLog(@"History has %d selections", [self.selections count]);
     
     if(self.selections.count > [self.tableView numberOfRowsInSection:0]) {
@@ -81,14 +83,18 @@
     } else {
         selectionCell.powerballLabel.text = @"(?)";
     }
-    selectionCell.dateLabel.text = selection.drawingDate; 
-    NSString *selectionList = [selection.selectionOne stringByAppendingString:@","];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
+    [dateFormatter setDateFormat:@"MM/dd/yyyy"];
+    selectionCell.dateLabel.text = [dateFormatter stringFromDate:selection.drawingDate]; 
+    
+    NSString *selectionList = [selection.selectionOne stringByAppendingString:@"-"];
     selectionList = [selectionList stringByAppendingString:selection.selectionTwo];
-    selectionList = [selectionList stringByAppendingString:@","];
+    selectionList = [selectionList stringByAppendingString:@"-"];
     selectionList = [selectionList stringByAppendingString:selection.selectionThree];
-    selectionList = [selectionList stringByAppendingString:@","];
+    selectionList = [selectionList stringByAppendingString:@"-"];
     selectionList = [selectionList stringByAppendingString:selection.selectionFour];
-    selectionList = [selectionList stringByAppendingString:@","];
+    selectionList = [selectionList stringByAppendingString:@"-"];
     selectionList = [selectionList stringByAppendingString:selection.selectionFive];
     
     selectionCell.numbersLabel.text = selectionList;
@@ -111,9 +117,7 @@
             cell.detailTextLabel.textAlignment = UITextAlignmentCenter;
 			cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
-        
 		cell.detailTextLabel.text = @"Loading…";
-		
 		return cell;
     } 
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];

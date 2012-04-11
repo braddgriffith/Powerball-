@@ -11,7 +11,7 @@
 @interface Selection : NSObject <NSCoding>
 
 @property (nonatomic, strong) NSString * type;
-@property (nonatomic, strong) NSString * drawingDate;
+@property (nonatomic, strong) NSDate * drawingDate;
 @property (nonatomic, strong) NSString * selectionOne;
 @property (nonatomic, strong) NSString * selectionTwo;
 @property (nonatomic, strong) NSString * selectionThree;

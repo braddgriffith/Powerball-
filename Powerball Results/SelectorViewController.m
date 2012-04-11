@@ -24,6 +24,7 @@
 
 @synthesize selection;
 @synthesize selections;
+@synthesize upcomingDrawDate;
 
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -43,22 +44,38 @@
     
     NSDate *today = [NSDate date]; //get RIGHT NOW
     
+    NSTimeZone *localTimeZone = [NSTimeZone systemTimeZone];
+    NSTimeZone *estTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"EST"];
+    
+    NSInteger localOffset = [localTimeZone secondsFromGMTForDate:today];
+    NSInteger estOffset = [estTimeZone secondsFromGMTForDate:today];
+    NSTimeInterval interval = localOffset - estOffset;
+    
+    NSDate* todayEST = [[NSDate alloc] initWithTimeInterval:interval sinceDate:today];
+    NSTimeInterval diff = [todayEST timeIntervalSinceDate:today];
+    
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
     [dateFormatter setTimeZone:[NSTimeZone localTimeZone]]; //Current time of local timezone - drawings are at 10:59PM EST
-    [dateFormatter setDateFormat:@"MM/dd/yyyy HH:mm"];
+    [dateFormatter setDateFormat:@"MM/dd"];
+    
     todaysDate.text = [dateFormatter stringFromDate:today]; 
     
-    [self getNextDrawDate];
+    NSDate *nextDrawDateEST = [self getNextDrawDate]; //Returns the next draw date in EST
+    upcomingDrawDate = [nextDrawDateEST dateByAddingTimeInterval:diff];
+    [dateFormatter setDateFormat:@"MM/dd h:mm a"];
+    currentDrawDate.text = [dateFormatter stringFromDate:upcomingDrawDate]; 
+    
+    dateFormatter = nil;
 }
 
-- (void)getNextDrawDate
+- (NSDate *)getNextDrawDate
 {
-    NSDate *today = [NSDate date]; //get RIGHT NOW
+    NSDate *today = [NSDate date]; //get time/date right now
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
-    NSCalendar *gregorian = [[NSCalendar alloc]  //create a Gregorian calendar
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; 
+    NSCalendar *gregorian = [[NSCalendar alloc] 
                              initWithCalendarIdentifier:NSGregorianCalendar];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:(-4*60*60)]]; //Eastern Time of USA - drawings are at 10:59PM EST
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]]; //Eastern Time of USA - drawings are at 10:59PM EST
 
     NSDateComponents *weekdayComponents = [gregorian components:(NSDayCalendarUnit | NSWeekdayCalendarUnit) fromDate:today];
     NSInteger weekday = [weekdayComponents weekday];
@@ -66,32 +83,27 @@
     NSLog(@"Weekday: %@", weekdayStr);
     
     NSTimeInterval secondsPerDay = 24 * 60 * 60;
-    if (weekday == 0) {
-        NSDate *drawFollowingSunday = [[NSDate alloc] initWithTimeIntervalSinceNow:(0 * secondsPerDay)];
-        drawFollowingSunday = [self roundDateForwardTo11PM:drawFollowingSunday];
-        self.currentDrawDate.text = [dateFormatter stringFromDate:drawFollowingSunday];
-    } else if (weekday == 1) {
-        NSDate *drawFollowingMonday = [[NSDate alloc] initWithTimeIntervalSinceNow:(3 * secondsPerDay)];
-        drawFollowingMonday = [self roundDateForwardTo11PM:drawFollowingMonday];
-        self.currentDrawDate.text = [dateFormatter stringFromDate:drawFollowingMonday];
+    NSTimeInterval interval = 0;
+    
+    if (weekday == 1) { //This is Sunday
+        interval = (3 * secondsPerDay);
     } else if (weekday == 2) {
-        NSDate *drawFollowingTuesday = [[NSDate alloc] initWithTimeIntervalSinceNow:(2 * secondsPerDay)];
-        drawFollowingTuesday = [self roundDateForwardTo11PM:drawFollowingTuesday];
-        self.currentDrawDate.text = [dateFormatter stringFromDate:drawFollowingTuesday];
+       interval = (2 * secondsPerDay);
     } else if (weekday == 3) {
-        NSDate *drawFollowingWednesday = [[NSDate alloc] initWithTimeIntervalSinceNow:(1 * secondsPerDay)];
-        drawFollowingWednesday = [self roundDateForwardTo11PM:drawFollowingWednesday];
-        self.currentDrawDate.text = [dateFormatter stringFromDate:drawFollowingWednesday];
+        interval = (1 * secondsPerDay);
     } else if (weekday == 4) {
-        NSDate *drawFollowingThursday = [[NSDate alloc] initWithTimeIntervalSinceNow:(0 * secondsPerDay)];
-        self.currentDrawDate.text = [dateFormatter stringFromDate:drawFollowingThursday];
+        interval = (0 * secondsPerDay);    
     } else if (weekday == 5) {
-        NSDate *drawFollowingFriday = [[NSDate alloc] initWithTimeIntervalSinceNow:(2 * secondsPerDay)];
-        self.currentDrawDate.text = [dateFormatter stringFromDate:drawFollowingFriday];
+        interval = (2 * secondsPerDay);
     } else if (weekday == 6) {
-        NSDate *drawFollowingSaturday = [[NSDate alloc] initWithTimeIntervalSinceNow:(1 * secondsPerDay)];
-        self.currentDrawDate.text = [dateFormatter stringFromDate:drawFollowingSaturday];
+        interval = (1 * secondsPerDay);
+    } else if (weekday == 7) {
+        interval = (0 * secondsPerDay);
     }
+    
+    NSDate *drawFollowingDay = [[NSDate alloc] initWithTimeIntervalSinceNow:(interval)];
+    drawFollowingDay = [self roundDateForwardTo11PM:drawFollowingDay];
+    return drawFollowingDay;
 }
 
 - (NSDate *)roundDateForwardTo11PM:(NSDate *)startDate
@@ -106,7 +118,8 @@
     [components setDay:theDay]; 
     [components setMonth:theMonth]; 
     [components setYear:theYear];
-    [components setHour:23]; // If EST
+    [components setHour:22]; // If EST
+    [components setMinute:59]; 
     NSDate *roundedDate = [gregorian dateFromComponents:components];
 
     return roundedDate;
@@ -159,7 +172,7 @@
     currentSelection.selectionFour = entryFour;
     currentSelection.selectionFive = entryFive;
     currentSelection.selectionPowerball = entryPowerball;
-    currentSelection.drawingDate = currentDrawDate.text;
+    currentSelection.drawingDate = upcomingDrawDate;
     
     [self.selections insertObject:currentSelection atIndex:0];
     
@@ -183,7 +196,6 @@
     [textField resignFirstResponder];
     return YES;
 }
-
 
 - (void)viewDidUnload {
     [self setCurrentDrawDate:nil];

@@ -24,7 +24,7 @@
     [self.spinner setColor:[UIColor blackColor]];
     [self.spinner startAnimating];
     [self.view addSubview:self.spinner];
-	// Do any additional setup after loading the view, typically from a nib.
+
     [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.coloradolottery.com/mobile/winning-numbers/powerball-past/"]]];
     
     self.webView.delegate = self;
@@ -34,7 +34,7 @@
 {
     [self setWebView:nil];
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
+
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView

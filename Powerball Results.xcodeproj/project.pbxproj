@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E680C1021535FA3500C6CB5B /* GreyButton.png in Resources */ = {isa = PBXBuildFile; fileRef = E680C1011535FA3500C6CB5B /* GreyButton.png */; };
 		E686B6D315311BCA0068A08D /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = E686B6CC15311BCA0068A08D /* Icon-72.png */; };
 		E686B6D415311BCA0068A08D /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = E686B6CD15311BCA0068A08D /* Icon-Small-50.png */; };
 		E686B6D515311BCA0068A08D /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = E686B6CE15311BCA0068A08D /* Icon-Small.png */; };
@@ -40,6 +41,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E680C1011535FA3500C6CB5B /* GreyButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GreyButton.png; sourceTree = "<group>"; };
 		E686B6CC15311BCA0068A08D /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
 		E686B6CD15311BCA0068A08D /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
 		E686B6CE15311BCA0068A08D /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
@@ -59,7 +61,7 @@
 		E686B7321532A2F00068A08D /* 29-heart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "29-heart.png"; path = "../../../Downloads/glyphish-icons/icons/29-heart.png"; sourceTree = "<group>"; };
 		E686B73415333D8B0068A08D /* Selection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Selection.h; sourceTree = "<group>"; };
 		E686B73515333D8C0068A08D /* Selection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Selection.m; sourceTree = "<group>"; };
-		E686B737153340860068A08D /* HistoryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; path = HistoryCell.h; sourceTree = "<group>"; };
+		E686B737153340860068A08D /* HistoryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryCell.h; sourceTree = "<group>"; };
 		E686B738153340860068A08D /* HistoryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryCell.m; sourceTree = "<group>"; };
 		E686B73A153345AE0068A08D /* HudView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HudView.h; path = ../HudView.h; sourceTree = "<group>"; };
 		E686B73B153345AE0068A08D /* HudView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HudView.m; path = ../HudView.m; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 		E686B74E153492850068A08D /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				E680C1011535FA3500C6CB5B /* GreyButton.png */,
 				E686B72915326E7B0068A08D /* 96-book.png */,
 				E6EFAC1D152F7B6F0031CCD3 /* 169-8ball.png */,
 				E686B72B15326EC20068A08D /* 115-bow-and-arrow.png */,
@@ -261,6 +264,7 @@
 				E686B7331532A2F00068A08D /* 29-heart.png in Resources */,
 				E686B73F15335E7C0068A08D /* Checkmark@2x.png in Resources */,
 				E686B74015335E7C0068A08D /* Checkmark.png in Resources */,
+				E680C1021535FA3500C6CB5B /* GreyButton.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

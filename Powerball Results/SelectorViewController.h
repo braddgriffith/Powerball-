@@ -22,6 +22,7 @@
 
 @property (strong, nonatomic) Selection *selection;
 @property (nonatomic, strong) NSMutableArray *selections;
+@property (nonatomic, strong) NSDate *upcomingDrawDate;
 
 - (IBAction)clear:(id)sender;
 - (IBAction)save:(id)sender;
