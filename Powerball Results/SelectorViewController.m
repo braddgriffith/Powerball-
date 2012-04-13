@@ -10,6 +10,7 @@
 #import "HudView.h"
 #import "Selection.h"
 #import "AppDelegate.h"
+#import <Parse/Parse.h>
 
 @implementation SelectorViewController
 
@@ -19,22 +20,11 @@
 @synthesize numberFour;
 @synthesize numberFive;
 @synthesize powerball;
-@synthesize todaysDate;
 @synthesize currentDrawDate;
 
 @synthesize selection;
 @synthesize selections;
 @synthesize upcomingDrawDate;
-
--(void)viewWillAppear:(BOOL)animated
-{
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    selection = appDelegate.selection;
-    
-    if (selection) {
-        [self loadSelection];
-    }
-}
 
 -(void)viewDidLoad
 {
@@ -51,21 +41,24 @@
     NSInteger estOffset = [estTimeZone secondsFromGMTForDate:today];
     NSTimeInterval interval = localOffset - estOffset;
     
-    NSDate* todayEST = [[NSDate alloc] initWithTimeInterval:interval sinceDate:today];
-    NSTimeInterval diff = [todayEST timeIntervalSinceDate:today];
+    //Calculate the next draw date in EST
+    NSDate *nextDrawDateEST = [self getNextDrawDate]; 
+    upcomingDrawDate = [nextDrawDateEST dateByAddingTimeInterval:interval];
     
+    //Put next draw date on screen
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
-    [dateFormatter setTimeZone:[NSTimeZone localTimeZone]]; //Current time of local timezone - drawings are at 10:59PM EST
-    [dateFormatter setDateFormat:@"MM/dd"];
-    
-    todaysDate.text = [dateFormatter stringFromDate:today]; 
-    
-    NSDate *nextDrawDateEST = [self getNextDrawDate]; //Returns the next draw date in EST
-    upcomingDrawDate = [nextDrawDateEST dateByAddingTimeInterval:diff];
-    [dateFormatter setDateFormat:@"MM/dd h:mm a"];
-    currentDrawDate.text = [dateFormatter stringFromDate:upcomingDrawDate]; 
+    [dateFormatter setTimeZone:localTimeZone]; //Current time of local timezone - drawings are at 10:59PM EST
+    [dateFormatter setDateFormat:@"EEEE - h:mm a"];//Was @"MM/dd h:mm a"];
+    NSString *dateStr = [dateFormatter stringFromDate:upcomingDrawDate];
+    NSString *dateIntro = @"Next: ";
+    currentDrawDate.text = [dateIntro stringByAppendingString:dateStr];
     
     dateFormatter = nil;
+    
+    UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewTapped)];
+    tapRecognizer.numberOfTapsRequired = 1;
+    tapRecognizer.cancelsTouchesInView = NO;
+    [self.view addGestureRecognizer:tapRecognizer];
 }
 
 - (NSDate *)getNextDrawDate
@@ -108,7 +101,7 @@
 
 - (NSDate *)roundDateForwardTo11PM:(NSDate *)startDate
 {
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar]; //WHERE DO I PUT THE TIMEZONE?
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar]; 
     NSDateComponents *todayComponents = [gregorian components:(NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit) fromDate:startDate];
     NSInteger theDay = [todayComponents day];
     NSInteger theMonth = [todayComponents month];
@@ -118,7 +111,7 @@
     [components setDay:theDay]; 
     [components setMonth:theMonth]; 
     [components setYear:theYear];
-    [components setHour:22]; // If EST
+    [components setHour:22]; //If we're passed an EST date
     [components setMinute:59]; 
     NSDate *roundedDate = [gregorian dateFromComponents:components];
 
@@ -127,12 +120,12 @@
 
 - (void)loadSelection
 {
-    self.numberOne.text = selection.selectionOne;
-    self.numberTwo.text = selection.selectionTwo;
-    self.numberThree.text = selection.selectionThree;
-    self.numberFour.text = selection.selectionFour;
-    self.numberFive.text = selection.selectionFive;
-    self.powerball.text = selection.selectionPowerball;
+    self.numberOne.text = [selection.selectionOne stringValue];
+    self.numberTwo.text = [selection.selectionTwo stringValue];
+    self.numberThree.text = [selection.selectionThree stringValue];
+    self.numberFour.text = [selection.selectionFour stringValue];
+    self.numberFive.text = [selection.selectionFive stringValue];
+    self.powerball.text = [selection.selectionPowerball stringValue];
 }
 
 - (IBAction)clear:(id)sender
@@ -143,9 +136,6 @@
     self.numberFour.text = @"";
     self.numberFive.text = @"";
     self.powerball.text = @"";
-    
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    appDelegate.selection = nil;
 }
 
 - (IBAction)save:(id)sender
@@ -166,17 +156,33 @@
     
     Selection *currentSelection = [[Selection alloc] init];
     
-    currentSelection.selectionOne = entryOne;
-    currentSelection.selectionTwo = entryTwo;
-    currentSelection.selectionThree = entryThree;
-    currentSelection.selectionFour = entryFour;
-    currentSelection.selectionFive = entryFive;
-    currentSelection.selectionPowerball = entryPowerball;
+    NSNumberFormatter * numFormatter = [[NSNumberFormatter alloc] init];
+    [numFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    
+    currentSelection.selectionOne = [numFormatter numberFromString:entryOne];
+    currentSelection.selectionTwo = [numFormatter numberFromString:entryTwo];
+    currentSelection.selectionThree = [numFormatter numberFromString:entryThree];
+    currentSelection.selectionFour = [numFormatter numberFromString:entryFour];
+    currentSelection.selectionFive = [numFormatter numberFromString:entryFive];
+    currentSelection.selectionPowerball = [numFormatter numberFromString:entryPowerball];
     currentSelection.drawingDate = upcomingDrawDate;
+    
+    [currentSelection.selectionArray insertObject:currentSelection.selectionOne atIndex:0];
+    [currentSelection.selectionArray insertObject:currentSelection.selectionTwo atIndex:0];
+    [currentSelection.selectionArray insertObject:currentSelection.selectionThree atIndex:0];
+    [currentSelection.selectionArray insertObject:currentSelection.selectionFour atIndex:0];
+    [currentSelection.selectionArray insertObject:currentSelection.selectionFive atIndex:0];
+    
+    NSSortDescriptor *mySorter = [[NSSortDescriptor alloc] initWithKey:@"floatValue" ascending:YES];
+    [currentSelection.selectionArray sortUsingDescriptors:[NSArray arrayWithObject:mySorter]];
+//    
+//    NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:value ascending:YES];
+//    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+//    [currentSelection.selectionArray sortUsingDescriptors:sortDescriptors];
     
     [self.selections insertObject:currentSelection atIndex:0];
     
-    [HudView hudInView:self.navigationController.view text:@"Saved!" lineTwo:@"Check History" animated:YES];
+    [HudView hudInView:self.navigationController.view text:@"Saved!" lineTwo:@"Check MyPicks" animated:YES];
 
     NSLog(@"Data saved");
 }
@@ -191,14 +197,84 @@
     [powerball resignFirstResponder];
 }
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField {
+- (IBAction)viewTapped
+{ 
+    [numberOne resignFirstResponder];
+    [numberTwo resignFirstResponder];
+    [numberThree resignFirstResponder];
+    [numberFour resignFirstResponder];
+    [numberFive resignFirstResponder];
+    [powerball resignFirstResponder];
+}
+
+-(BOOL)textFieldShouldReturn:(UITextField*)textField;
+{
+    NSInteger nextTag = textField.tag + 1;     // Try to find next responder
+    UIResponder* nextResponder = [textField.superview viewWithTag:nextTag];
+
+    if (nextResponder) {
+        [nextResponder becomeFirstResponder];         // Found next responder, so set it.
+    } else {
+        [self save:(selection)];         // Not found, so go to save.
+    }
+    return NO; // We do not want UITextField to insert line-breaks.
+}
+
+- (NSInteger)generateRandom
+{
+    return arc4random()%59+1;
+}
+
+-(IBAction)quikPik:(id)sender
+{
+    NSMutableArray *currentNumbers = [[NSMutableArray alloc] init];
     
-    [textField resignFirstResponder];
-    return YES;
+    NSInteger a = [self generateRandom];
+    self.numberOne.text = [NSString stringWithFormat:@"%d", a];
+    NSNumber *anumber = [NSNumber numberWithInteger:a];
+    [currentNumbers addObject:anumber];
+    
+    NSInteger b = [self generateRandom];
+    while ([currentNumbers containsObject:[NSNumber numberWithInt:b]]) {
+        b = [self generateRandom];
+    }
+    self.numberTwo.text = [NSString stringWithFormat:@"%d", b];
+    anumber = [NSNumber numberWithInteger:b];
+    [currentNumbers addObject:anumber];
+    
+    NSInteger c = [self generateRandom];
+    while ([currentNumbers containsObject:[NSNumber numberWithInt:c]]) {
+        c = [self generateRandom];
+    }
+    self.numberThree.text = [NSString stringWithFormat:@"%d", c];
+    anumber = [NSNumber numberWithInteger:c];
+    [currentNumbers addObject:anumber];
+    
+    NSInteger d = [self generateRandom];
+    while ([currentNumbers containsObject:[NSNumber numberWithInt:d]]) {
+        d = [self generateRandom];
+    }
+    self.numberFour.text = [NSString stringWithFormat:@"%d", d];
+    anumber = [NSNumber numberWithInteger:d];
+    [currentNumbers addObject:anumber];
+    
+    NSInteger e = [self generateRandom];
+    while ([currentNumbers containsObject:[NSNumber numberWithInt:e]]) {
+        e =[self generateRandom];
+    }
+    self.numberFive.text = [NSString stringWithFormat:@"%d", e];
+    anumber = [NSNumber numberWithInteger:e];
+    [currentNumbers addObject:anumber];
+    
+    NSInteger f = arc4random()%35 +1;
+    self.powerball.text = [NSString stringWithFormat:@"%d", f];
+    
+    currentNumbers = nil;
 }
 
 - (void)viewDidUnload {
     [self setCurrentDrawDate:nil];
+    
     [super viewDidUnload];
 }
 @end

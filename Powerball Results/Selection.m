@@ -19,6 +19,7 @@
 @synthesize selectionFive;
 @synthesize selectionPowerball;
 @synthesize userID;
+@synthesize selectionArray;
 
 - (void)encodeWithCoder:(NSCoder *)coder;
 {
@@ -31,6 +32,7 @@
     [coder encodeObject:selectionFive forKey:@"selectionFive"];
     [coder encodeObject:selectionPowerball forKey:@"selectionPowerball"];
     [coder encodeObject:userID forKey:@"userID"];
+    [coder encodeObject:userID forKey:@"selectionArray"];
 }
 
 - (id)initWithCoder:(NSCoder *)coder;
@@ -47,6 +49,7 @@
         self.selectionFive = [coder decodeObjectForKey:@"selectionFive"];
         self.selectionPowerball = [coder decodeObjectForKey:@"selectionPowerball"];
         self.userID = [coder decodeObjectForKey:@"userID"];
+        self.userID = [coder decodeObjectForKey:@"selectionArray"];
     }   
     return self;
 }

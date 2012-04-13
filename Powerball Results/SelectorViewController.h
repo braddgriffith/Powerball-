@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Selection.h"
 
-@interface SelectorViewController : UIViewController
+@interface SelectorViewController : UIViewController <UITextFieldDelegate>
 
 @property (nonatomic, strong) IBOutlet UITextField *numberOne;
 @property (nonatomic, strong) IBOutlet UITextField *numberTwo;
@@ -17,7 +17,6 @@
 @property (nonatomic, strong) IBOutlet UITextField *numberFour;
 @property (nonatomic, strong) IBOutlet UITextField *numberFive;
 @property (nonatomic, strong) IBOutlet UITextField *powerball;
-@property (strong, nonatomic) IBOutlet UILabel *todaysDate;
 @property (strong, nonatomic) IBOutlet UILabel *currentDrawDate;
 
 @property (strong, nonatomic) Selection *selection;
@@ -26,5 +25,7 @@
 
 - (IBAction)clear:(id)sender;
 - (IBAction)save:(id)sender;
+- (IBAction)viewTapped;
+- (IBAction)quikPik:(id)sender;
 
 @end

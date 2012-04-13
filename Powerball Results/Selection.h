@@ -12,12 +12,13 @@
 
 @property (nonatomic, strong) NSString * type;
 @property (nonatomic, strong) NSDate * drawingDate;
-@property (nonatomic, strong) NSString * selectionOne;
-@property (nonatomic, strong) NSString * selectionTwo;
-@property (nonatomic, strong) NSString * selectionThree;
-@property (nonatomic, strong) NSString * selectionFour;
-@property (nonatomic, strong) NSString * selectionFive;
-@property (nonatomic, strong) NSString * selectionPowerball;
+@property (nonatomic, strong) NSNumber * selectionOne;
+@property (nonatomic, strong) NSNumber * selectionTwo;
+@property (nonatomic, strong) NSNumber * selectionThree;
+@property (nonatomic, strong) NSNumber * selectionFour;
+@property (nonatomic, strong) NSNumber * selectionFive;
+@property (nonatomic, strong) NSNumber * selectionPowerball;
 @property (nonatomic, strong) NSString * userID;
+@property (nonatomic, strong) NSMutableArray * selectionArray;
 
 @end

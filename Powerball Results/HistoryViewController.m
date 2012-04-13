@@ -38,7 +38,7 @@
     
     if(self.selections.count > [self.tableView numberOfRowsInSection:0]) {
         [self insertRow]; 
-    }
+    } 
 }
 
 -(void)insertRow
@@ -78,8 +78,10 @@
     HistoryCell *selectionCell = (HistoryCell *)cell;
     Selection *selection = [selections objectAtIndex:indexPath.row];
     
-    if ([selection.selectionPowerball length] > 0) {
-        selectionCell.powerballLabel.text = selection.selectionPowerball;
+    //NSString *powerballString = [selection.selectionPowerball stringValue];
+    
+    if (selection.selectionPowerball) {
+        selectionCell.powerballLabel.text = [selection.selectionPowerball stringValue];//stringValue];
     } else {
         selectionCell.powerballLabel.text = @"(?)";
     }
@@ -88,14 +90,14 @@
     [dateFormatter setDateFormat:@"MM/dd/yyyy"];
     selectionCell.dateLabel.text = [dateFormatter stringFromDate:selection.drawingDate]; 
     
-    NSString *selectionList = [selection.selectionOne stringByAppendingString:@"-"];
-    selectionList = [selectionList stringByAppendingString:selection.selectionTwo];
+    NSString *selectionList = [[selection.selectionOne stringValue] stringByAppendingString:@"-"];
+    selectionList = [selectionList stringByAppendingString:[selection.selectionTwo stringValue]];
     selectionList = [selectionList stringByAppendingString:@"-"];
-    selectionList = [selectionList stringByAppendingString:selection.selectionThree];
+    selectionList = [selectionList stringByAppendingString:[selection.selectionThree stringValue]];
     selectionList = [selectionList stringByAppendingString:@"-"];
-    selectionList = [selectionList stringByAppendingString:selection.selectionFour];
+    selectionList = [selectionList stringByAppendingString:[selection.selectionFour stringValue]];
     selectionList = [selectionList stringByAppendingString:@"-"];
-    selectionList = [selectionList stringByAppendingString:selection.selectionFive];
+    selectionList = [selectionList stringByAppendingString:[selection.selectionFive stringValue]];
     
     selectionCell.numbersLabel.text = selectionList;
 }
