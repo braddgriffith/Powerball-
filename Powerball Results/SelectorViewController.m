@@ -26,13 +26,20 @@
 @synthesize selections;
 @synthesize upcomingDrawDate;
 
+@synthesize today;
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    NSLog(@"Selector has %d selections", [self.selections count]);
+}
+
 -(void)viewDidLoad
 {
     [super viewDidLoad];
     
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
     
-    NSDate *today = [NSDate date]; //get RIGHT NOW
+    today = [NSDate date]; //get RIGHT NOW
     
     NSTimeZone *localTimeZone = [NSTimeZone systemTimeZone];
     NSTimeZone *estTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"EST"];
@@ -63,7 +70,7 @@
 
 - (NSDate *)getNextDrawDate
 {
-    NSDate *today = [NSDate date]; //get time/date right now
+    today = [NSDate date]; //get time/date right now
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; 
     NSCalendar *gregorian = [[NSCalendar alloc] 
@@ -166,6 +173,7 @@
     currentSelection.selectionFive = [numFormatter numberFromString:entryFive];
     currentSelection.selectionPowerball = [numFormatter numberFromString:entryPowerball];
     currentSelection.drawingDate = upcomingDrawDate;
+    currentSelection.userChosenDate = [NSDate date];
     
     [currentSelection.selectionArray insertObject:currentSelection.selectionOne atIndex:0];
     [currentSelection.selectionArray insertObject:currentSelection.selectionTwo atIndex:0];
@@ -173,15 +181,58 @@
     [currentSelection.selectionArray insertObject:currentSelection.selectionFour atIndex:0];
     [currentSelection.selectionArray insertObject:currentSelection.selectionFive atIndex:0];
     
-    NSSortDescriptor *mySorter = [[NSSortDescriptor alloc] initWithKey:@"floatValue" ascending:YES];
-    [currentSelection.selectionArray sortUsingDescriptors:[NSArray arrayWithObject:mySorter]];
+//    NSSortDescriptor *mySorter = [[NSSortDescriptor alloc] initWithKey:@"floatValue" ascending:YES];
+//    [currentSelection.selectionArray sortUsingDescriptors:[NSArray arrayWithObject:mySorter]];
 //    
 //    NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:value ascending:YES];
 //    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
 //    [currentSelection.selectionArray sortUsingDescriptors:sortDescriptors];
     
-    [self.selections insertObject:currentSelection atIndex:0];
     
+    if (self.selections) {
+        [self.selections insertObject:currentSelection atIndex:0];
+    } 
+    
+    PFObject *newSelection = [PFObject objectWithClassName:@"Selections"];
+    
+    NSLog(@"Selector has %d selections", [self.selections count]);
+    
+    if(currentSelection.selectionOne){
+        [newSelection setObject:currentSelection.selectionOne forKey:@"Ball1"];
+    }
+    if(currentSelection.selectionTwo){
+        [newSelection setObject:currentSelection.selectionTwo forKey:@"Ball2"];
+    }
+    if(currentSelection.selectionThree){
+        [newSelection setObject:currentSelection.selectionThree forKey:@"Ball3"];
+    }
+    if(currentSelection.selectionFour){
+        [newSelection setObject:currentSelection.selectionFour forKey:@"Ball4"];
+    }
+    if(currentSelection.selectionFive){
+        [newSelection setObject:currentSelection.selectionFive forKey:@"Ball5"];
+    }
+    if(currentSelection.selectionPowerball){
+        [newSelection setObject:currentSelection.selectionPowerball forKey:@"BallPowerball"];
+    }
+    if(currentSelection.drawingDate){
+        [newSelection setObject:currentSelection.drawingDate forKey:@"drawDate"];
+    }
+    if(currentSelection.selectionArray){
+        NSArray *parseArray = [NSArray arrayWithArray:currentSelection.selectionArray];
+        [newSelection setObject:parseArray forKey:@"selectionArray"];
+    }
+    currentSelection.userID = @"updateUserWithRealIDs";
+    if(currentSelection.userID){ // OVERWRITE WITH REAL USERID
+        [newSelection setObject:currentSelection.userID forKey:@"userID"];
+    }
+    currentSelection.type = @"Powerball";
+    if(currentSelection.type){ // OVERWRITE WITH REAL type
+        [newSelection setObject:currentSelection.type forKey:@"type"];
+    }
+    [newSelection setObject:currentSelection.userChosenDate forKey:@"addedDate"];
+    [newSelection saveEventually];
+
     [HudView hudInView:self.navigationController.view text:@"Saved!" lineTwo:@"Check MyPicks" animated:YES];
 
     NSLog(@"Data saved");

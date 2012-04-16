@@ -8,8 +8,7 @@
 
 #import "HistoryViewController.h"
 #import "HistoryCell.h"
-
-#define kCustomRowCount 7
+#import <Parse/Parse.h>
 
 @interface HistoryViewController ()
 
@@ -30,7 +29,7 @@
     [self.view addSubview:self.spinner];
     
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
-    if (selections > 0) {
+    if (self.selections > 0) {
         self.navigationItem.rightBarButtonItem = self.editButtonItem;
     }
     
@@ -66,10 +65,6 @@
 {
     int count = [self.selections count];
     
-    if (count == 0)
-	{
-        return kCustomRowCount;
-    }
     return count;
 }
 
@@ -77,8 +72,6 @@
 {
     HistoryCell *selectionCell = (HistoryCell *)cell;
     Selection *selection = [selections objectAtIndex:indexPath.row];
-    
-    //NSString *powerballString = [selection.selectionPowerball stringValue];
     
     if (selection.selectionPowerball) {
         selectionCell.powerballLabel.text = [selection.selectionPowerball stringValue];//stringValue];
@@ -139,6 +132,21 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    Selection *selection = [self.selections objectAtIndex:indexPath.row];
+    PFQuery *query = [PFQuery queryWithClassName:@"Selections"];
+    [query whereKey:@"userID" equalTo:selection.userID];
+    [query whereKey:@"addedDate" equalTo:selection.userChosenDate];
+    [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        if (!object) {
+            NSLog(@"The getObject request failed.");
+        } else {
+            NSLog(@"Successfully retrieved the object.");
+            PFObject *deletedObject = [PFObject objectWithClassName:@"DeletedSelections"];
+            [deletedObject setObject:object.objectId forKey:@"selectionsObjectID"];
+            [deletedObject saveEventually];
+        }
+    }];
+    
     [selections removeObjectAtIndex:indexPath.row];
     
     NSArray *indexPaths = [NSArray arrayWithObject:indexPath];

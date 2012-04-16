@@ -20,5 +20,6 @@
 @property (nonatomic, strong) NSNumber * selectionPowerball;
 @property (nonatomic, strong) NSString * userID;
 @property (nonatomic, strong) NSMutableArray * selectionArray;
+@property (nonatomic, strong) NSDate * userChosenDate;
 
 @end

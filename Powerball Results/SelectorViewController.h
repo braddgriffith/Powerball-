@@ -23,6 +23,8 @@
 @property (nonatomic, strong) NSMutableArray *selections;
 @property (nonatomic, strong) NSDate *upcomingDrawDate;
 
+@property (nonatomic, strong) NSDate *today;
+
 - (IBAction)clear:(id)sender;
 - (IBAction)save:(id)sender;
 - (IBAction)viewTapped;

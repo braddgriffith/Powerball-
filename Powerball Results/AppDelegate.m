@@ -33,6 +33,8 @@
     if (selectionsData) 
     {
         self.selections = [NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:selectionsData]];
+    } else {
+        self.selections = [[NSMutableArray alloc] init];
     }
     
     [self setupViewControllers];

@@ -69,7 +69,7 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    const CGFloat boxWidth = 118.0f; //was 96.0
+    const CGFloat boxWidth = 138.0f; //was 96.0
     const CGFloat boxHeight = 118.0f;
     
     CGRect boxRect = CGRectMake(
