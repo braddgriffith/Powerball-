@@ -19,13 +19,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    self.spinner.center = CGPointMake(CGRectGetMidX(self.webView.bounds), CGRectGetMidY(self.webView.bounds));
-    [self.spinner setColor:[UIColor blackColor]];
-    [self.spinner startAnimating];
-    [self.view addSubview:self.spinner];
-
-    [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.coloradolottery.com/mobile/winning-numbers/powerball-past/"]]];
+    
+    [self loadResults];
     
     self.webView.delegate = self;
 }
@@ -34,7 +29,6 @@
 {
     [self setWebView:nil];
     [super viewDidUnload];
-
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
@@ -51,7 +45,8 @@
                            delegate:self cancelButtonTitle:@"Hide" 
                            otherButtonTitles:nil];
     alert.alertViewStyle = UIAlertViewStyleDefault;
-    [alert show];     
+    [alert show];  
+    self.spinner = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -61,6 +56,22 @@
     } else {
         return YES;
     }
+}
+
+- (void)loadResults
+{
+    self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    self.spinner.center = CGPointMake(CGRectGetMidX(self.webView.bounds), CGRectGetMidY(self.webView.bounds));
+    [self.spinner setColor:[UIColor blackColor]];
+    [self.spinner startAnimating];
+    [self.view addSubview:self.spinner];
+    
+    [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.coloradolottery.com/mobile/winning-numbers/powerball-past/"]]];
+}
+
+-(IBAction)refresh:(id)sender
+{
+    [self loadResults];
 }
 
 @end

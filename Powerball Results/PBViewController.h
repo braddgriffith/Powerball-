@@ -13,4 +13,6 @@
 @property (strong, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 
+-(IBAction)refresh:(id)sender;
+
 @end

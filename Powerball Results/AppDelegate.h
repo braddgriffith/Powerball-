@@ -18,5 +18,4 @@
 @property (nonatomic, strong) NSMutableArray *drawDates;
 @property (nonatomic, strong) UITabBarController *tabBarController;
 
-
 @end

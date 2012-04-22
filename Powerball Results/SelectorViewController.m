@@ -103,7 +103,18 @@
     
     NSDate *drawFollowingDay = [[NSDate alloc] initWithTimeIntervalSinceNow:(interval)];
     drawFollowingDay = [self roundDateForwardTo11PM:drawFollowingDay];
+    [self scheduleNotification:drawFollowingDay];
     return drawFollowingDay;
+}
+
+- (void)scheduleNotification:(NSDate *)nextDate
+{
+    UILocalNotification *futureAlert;
+    futureAlert = [[UILocalNotification alloc] init];
+    futureAlert.fireDate = nextDate;
+    futureAlert.timeZone = [NSTimeZone defaultTimeZone];//ids this right - or do we want GMT?
+    futureAlert.alertBody = @"The Powerball drawing just went down!";
+    [[UIApplication sharedApplication] scheduleLocalNotification:futureAlert];
 }
 
 - (NSDate *)roundDateForwardTo11PM:(NSDate *)startDate
@@ -175,19 +186,16 @@
     currentSelection.drawingDate = upcomingDrawDate;
     currentSelection.userChosenDate = [NSDate date];
     
+    currentSelection.selectionArray = [NSMutableArray array];
     [currentSelection.selectionArray insertObject:currentSelection.selectionOne atIndex:0];
     [currentSelection.selectionArray insertObject:currentSelection.selectionTwo atIndex:0];
     [currentSelection.selectionArray insertObject:currentSelection.selectionThree atIndex:0];
     [currentSelection.selectionArray insertObject:currentSelection.selectionFour atIndex:0];
     [currentSelection.selectionArray insertObject:currentSelection.selectionFive atIndex:0];
     
-//    NSSortDescriptor *mySorter = [[NSSortDescriptor alloc] initWithKey:@"floatValue" ascending:YES];
-//    [currentSelection.selectionArray sortUsingDescriptors:[NSArray arrayWithObject:mySorter]];
-//    
-//    NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:value ascending:YES];
-//    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
-//    [currentSelection.selectionArray sortUsingDescriptors:sortDescriptors];
-    
+    NSSortDescriptor *highestToLowest = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
+    [currentSelection.selectionArray sortUsingDescriptors:[NSArray arrayWithObject:highestToLowest]];
+    NSLog(@"Array:%@", currentSelection.selectionArray);
     
     if (self.selections) {
         [self.selections insertObject:currentSelection atIndex:0];
@@ -231,7 +239,8 @@
         [newSelection setObject:currentSelection.type forKey:@"type"];
     }
     [newSelection setObject:currentSelection.userChosenDate forKey:@"addedDate"];
-    [newSelection saveEventually];
+    [newSelection saveInBackground];
+//    [newSelection saveEventually];
 
     [HudView hudInView:self.navigationController.view text:@"Saved!" lineTwo:@"Check MyPicks" animated:YES];
 

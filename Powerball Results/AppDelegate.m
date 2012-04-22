@@ -20,18 +20,23 @@
 @synthesize drawDates;
 @synthesize tabBarController;
 
+int badgeNumber = 1;
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [Parse setApplicationId:@"RitD22GrDUjVP3P04EdlvMu3IYJoRQmYoRYo2Sma" 
                   clientKey:@"DTFNe2YNrrp3gFayj4jBkIEeD4vDjnhK5AhMCs9X"];
+    
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badgeNumber]; //Use this to clear BADGE
+    
+    //[application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge| UIRemoteNotificationTypeAlert| UIRemoteNotificationTypeSound];
     
     [application setStatusBarStyle:UIStatusBarStyleBlackOpaque];
     
     NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
     NSData *selectionsData = [currentDefaults objectForKey:@"selections"];
     
-    if (selectionsData) 
-    {
+    if (selectionsData) {
         self.selections = [NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:selectionsData]];
     } else {
         self.selections = [[NSMutableArray alloc] init];
@@ -55,6 +60,12 @@
     selectorViewController.selections = self.selections;
     historyViewController.selections = self.selections;
 }
+ 
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+    //badgeNumber = 0;
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badgeNumber];
+}
 							
 - (void)applicationWillResignActive:(UIApplication *)application
 {
@@ -63,9 +74,16 @@
     NSLog(@"App Resigned Active.");
 }
 
-- (void) applicationWillTerminate:(UIApplication *)application
-{
+// PUSH REGISTRATION
 
-}
+//- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
+//{
+//    [PFPush storeDeviceToken:newDeviceToken];     // Tell Parse about the device token.
+//    [PFPush subscribeToChannelInBackground:@""];     // Subscribe to the global broadcast channel.
+//}
+//
+//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+//    [PFPush handlePush:userInfo];
+//}
 
 @end

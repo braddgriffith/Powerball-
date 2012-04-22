@@ -22,12 +22,6 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.spinner.center = CGPointMake(CGRectGetMidX(self.tableView.bounds) + 0.5f, CGRectGetMidY(self.tableView.bounds) + 0.5f);
-    [self.spinner setColor:[UIColor blackColor]];
-    [self.spinner startAnimating];
-    [self.view addSubview:self.spinner];
-    
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
     if (self.selections > 0) {
         self.navigationItem.rightBarButtonItem = self.editButtonItem;
