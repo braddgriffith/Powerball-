@@ -23,7 +23,7 @@
 
 - (IBAction)rateGame 
 {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=powerball+&id=508993109"]]; 
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.apple.com/us/app/powerball+/id517545261?ls=1&mt=8"]];//@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=powerball+&id=517545261"]]; //http://itunes.apple.com/us/app/powerball+/id517545261?ls=1&mt=8
     //REAL PREVIOUS [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=409954448"]];
 //    if(appLink == nil) {
 //        //PFQuery *query = [PFQuery queryWithClassName:@"LocationsVariables"];

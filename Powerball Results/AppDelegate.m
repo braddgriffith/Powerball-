@@ -29,7 +29,7 @@ int badgeNumber = 1;
     
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badgeNumber]; //Use this to clear BADGE
     
-    //[application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge| UIRemoteNotificationTypeAlert| UIRemoteNotificationTypeSound];
+    [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge| UIRemoteNotificationTypeAlert| UIRemoteNotificationTypeSound];
     
     [application setStatusBarStyle:UIStatusBarStyleBlackOpaque];
     
@@ -45,6 +45,16 @@ int badgeNumber = 1;
     [self setupViewControllers];
     
     return YES;
+}
+
+- (void)application:(UIApplication *)application 
+didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    if ([error code] == 3010) {
+        NSLog(@"Push notifications don't work in the simulator!");
+    } else {
+        NSLog(@"didFailToRegisterForRemoteNotificationsWithError: %@", error);
+    }
 }
 
 -(void) setupViewControllers
@@ -76,14 +86,22 @@ int badgeNumber = 1;
 
 // PUSH REGISTRATION
 
-//- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
-//{
-//    [PFPush storeDeviceToken:newDeviceToken];     // Tell Parse about the device token.
-//    [PFPush subscribeToChannelInBackground:@""];     // Subscribe to the global broadcast channel.
-//}
-//
-//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-//    [PFPush handlePush:userInfo];
-//}
+- (void)application:(UIApplication *)application 
+didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
+{
+    [PFPush storeDeviceToken:newDeviceToken]; // Send parse the device token
+    // Subscribe this user to the broadcast channel, "" 
+    [PFPush subscribeToChannelInBackground:@"" block:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            NSLog(@"Successfully subscribed to the broadcast channel.");
+        } else {
+            NSLog(@"Failed to subscribe to the broadcast channel.");
+        }
+    }];
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    [PFPush handlePush:userInfo];
+}
 
 @end
