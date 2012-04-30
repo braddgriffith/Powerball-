@@ -27,8 +27,6 @@ int badgeNumber = 1;
     [Parse setApplicationId:@"RitD22GrDUjVP3P04EdlvMu3IYJoRQmYoRYo2Sma" 
                   clientKey:@"DTFNe2YNrrp3gFayj4jBkIEeD4vDjnhK5AhMCs9X"];
     
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badgeNumber]; //Use this to clear BADGE
-    
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge| UIRemoteNotificationTypeAlert| UIRemoteNotificationTypeSound];
     
     [application setStatusBarStyle:UIStatusBarStyleBlackOpaque];
@@ -73,8 +71,8 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
  
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    //badgeNumber = 0;
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badgeNumber];
+//    badgeNumber = 0;
+//    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badgeNumber];
 }
 							
 - (void)applicationWillResignActive:(UIApplication *)application

@@ -7,8 +7,9 @@
 //
 
 #import "FeedbackViewController.h"
+#import <Parse/Parse.h>
 
-@implementation FeedbackViewController
+@implementation FeedbackViewController//: UIViewController <PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate> 
 
 @synthesize appLink;
 @synthesize emailBody;
@@ -20,11 +21,24 @@
     [super viewDidLoad];
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackTranslucent;
 }
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+//    PFLogInViewController *login = [[PFLogInViewController alloc] init];
+//    login.fields = PFLogInFieldsUsernameAndPassword | PFLogInFieldsLogInButton | PFLogInFieldsFacebook;
+//    
+//    login.delegate = self;
+//    login.signUpController.delegate = self;
+//    
+//    [self presentModalViewController:login animated:YES];
+}
 
 - (IBAction)rateGame 
 {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.apple.com/us/app/powerball+/id517545261?ls=1&mt=8"]];//@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=powerball+&id=517545261"]]; //http://itunes.apple.com/us/app/powerball+/id517545261?ls=1&mt=8
-    //REAL PREVIOUS [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=409954448"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://userpub.itunes.apple.com/WebObjects/MZUserPublishing.woa/wa/addUserReview?id=517545261&type=Purple+Software"]]; //http://itunes.apple.com/us/app/powerball+/id517545261?ls=1&mt=8
+    //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.apple.com/us/app/powerball+/id517545261?ls=1&mt=8"]];// - gets us to the App, not the reviews
+
+//REAL PREVIOUS [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=409954448"]];
 //    if(appLink == nil) {
 //        //PFQuery *query = [PFQuery queryWithClassName:@"LocationsVariables"];
 //        //PFObject *appVariables = [query getObjectWithId:@"2hpLMmZYpI"]; 
@@ -71,4 +85,23 @@
     [super viewDidUnload];
 }
 
+//- (void)loginViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user 
+//{
+//    [self dismissModalViewControllerAnimated:YES];
+//}
+//
+//- (void)loginViewControllerDidCancelLogIn:(PFLogInViewController *)logInController
+//{
+//    [self dismissModalViewControllerAnimated:YES];
+//}
+//
+//- (void)signUpViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user 
+//{
+//    [self dismissModalViewControllerAnimated:YES];
+//}
+//
+//- (void)signUpViewControllerDidCancelLogin:(PFLogInViewController *)logInController
+//{
+//    [self dismissModalViewControllerAnimated:YES];
+//}
 @end

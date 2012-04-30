@@ -41,11 +41,12 @@
 {
     UIAlertView * alert = [[UIAlertView alloc] 
                            initWithTitle:@"Alert" 
-                           message:@"Couldn't connect to the network. Please try again in one minute." 
+                           message:@"Couldn't connect to the network. Please press refresh to try again in one minute." 
                            delegate:self cancelButtonTitle:@"Hide" 
                            otherButtonTitles:nil];
     alert.alertViewStyle = UIAlertViewStyleDefault;
-    [alert show];  
+    [alert show]; 
+    [self.spinner removeFromSuperview];
     self.spinner = nil;
 }
 
