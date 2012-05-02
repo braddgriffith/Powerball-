@@ -230,7 +230,7 @@
         NSArray *parseArray = [NSArray arrayWithArray:currentSelection.selectionArray];
         [newSelection setObject:parseArray forKey:@"selectionArray"];
     }
-    currentSelection.userID = @"updateUserWithRealIDs";
+    currentSelection.userID = @"devVersion";
     if(currentSelection.userID){ // OVERWRITE WITH REAL USERID
         [newSelection setObject:currentSelection.userID forKey:@"userID"];
     }

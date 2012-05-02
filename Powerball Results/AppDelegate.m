@@ -20,12 +20,13 @@
 @synthesize drawDates;
 @synthesize tabBarController;
 
-int badgeNumber = 1;
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [Parse setApplicationId:@"RitD22GrDUjVP3P04EdlvMu3IYJoRQmYoRYo2Sma" 
-                  clientKey:@"DTFNe2YNrrp3gFayj4jBkIEeD4vDjnhK5AhMCs9X"];
+                  clientKey:@"DTFNe2YNrrp3gFayj4jBkIEeD4vDjnhK5AhMCs9X"]; //Dev
+    
+//    [Parse setApplicationId:@"uS5c2WJ8Osp94YRmWOHPEKL9NsNazKuS4eUIZ1Wl" 
+//                  clientKey:@"qMMetsxWm44XomrL7a153GlCFVBKbNiipe5Z9iUj"]; //Prod
     
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge| UIRemoteNotificationTypeAlert| UIRemoteNotificationTypeSound];
     
@@ -71,8 +72,7 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
  
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-//    badgeNumber = 0;
-//    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badgeNumber];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
 }
 							
 - (void)applicationWillResignActive:(UIApplication *)application

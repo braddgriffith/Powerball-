@@ -115,6 +115,13 @@
         [self configureCell:cell atIndexPath:indexPath];
         return cell;
     }
+    //cell.contentView.backgroundColor = [UIColor clearColor];
+    int row = indexPath.row;
+    float shade = (nodeCount-row)/nodeCount;
+    UIView *backgroundView = [[UIView alloc] initWithFrame:cell.frame];
+    backgroundView.backgroundColor = [UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:shade];
+    [cell.backgroundView addSubview:backgroundView];
+    
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }

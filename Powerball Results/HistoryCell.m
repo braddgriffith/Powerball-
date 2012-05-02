@@ -13,6 +13,7 @@
 @synthesize dateLabel;
 @synthesize numbersLabel;
 @synthesize powerballLabel;
+@synthesize backgroundColorVariable;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

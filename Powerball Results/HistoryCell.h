@@ -13,5 +13,6 @@
 @property (nonatomic, strong) IBOutlet UILabel *dateLabel;
 @property (nonatomic, strong) IBOutlet UILabel *numbersLabel;
 @property (nonatomic, strong) IBOutlet UILabel *powerballLabel;
+@property (nonatomic, strong) UIColor *backgroundColorVariable;
 
 @end
