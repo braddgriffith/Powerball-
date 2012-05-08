@@ -156,14 +156,39 @@
     self.powerball.text = @"";
 }
 
+- (void)presentWarning
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Change Needed!"
+                                                    message:@"All entries need to be a number! Try QuikPik to select numbers fast."
+                                                   delegate:NULL 
+                                          cancelButtonTitle:@"OK" 
+                                          otherButtonTitles:NULL];
+    [alert show];
+}
+
 - (IBAction)save:(id)sender
 {
-    [numberOne resignFirstResponder];
-    [numberTwo resignFirstResponder];
-    [numberThree resignFirstResponder];
-    [numberFour resignFirstResponder];
-    [numberFive resignFirstResponder];
-    [powerball resignFirstResponder];
+    [self resignAll];
+    
+    if (![[numberOne text] intValue]) {
+        [self presentWarning];
+        return;
+    } else if (![[numberTwo text] intValue]) {
+        [self presentWarning];
+        return;
+    } else if (![[numberThree text] intValue]) {
+        [self presentWarning];
+        return;
+    } else if (![[numberFour text] intValue]) {
+        [self presentWarning];
+        return;
+    } else if (![[numberFive text] intValue]) {
+        [self presentWarning];
+        return;
+    } else if (![[powerball text] intValue]) {
+        [self presentWarning];
+        return;
+    }
     
     NSString *entryOne = [numberOne text];
     NSString *entryTwo = [numberTwo text];
@@ -249,16 +274,16 @@
 
 - (void)hideKeyboard:(UIGestureRecognizer *)gestureRecognizer
 {
-    [numberOne resignFirstResponder];
-    [numberTwo resignFirstResponder];
-    [numberThree resignFirstResponder];
-    [numberFour resignFirstResponder];
-    [numberFive resignFirstResponder];
-    [powerball resignFirstResponder];
+    [self resignAll];
 }
 
 - (IBAction)viewTapped
 { 
+    [self resignAll];
+}
+
+- (void)resignAll
+{
     [numberOne resignFirstResponder];
     [numberTwo resignFirstResponder];
     [numberThree resignFirstResponder];
@@ -334,7 +359,6 @@
 
 - (void)viewDidUnload {
     [self setCurrentDrawDate:nil];
-    
     [super viewDidUnload];
 }
 @end

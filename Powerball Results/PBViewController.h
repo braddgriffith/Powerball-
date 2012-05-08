@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  PBViewController.h
 //  Powerball Results
 //
 //  Created by Brad Grifffith on 4/6/12.
@@ -12,6 +12,8 @@
 
 @property (strong, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
+
+@property (nonatomic, strong) UIBarButtonItem *refreshButton;
 
 -(IBAction)refresh:(id)sender;
 

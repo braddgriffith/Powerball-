@@ -16,10 +16,33 @@
 @synthesize webView;
 @synthesize spinner;
 
+@synthesize refreshButton;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
+    self.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1]; //black
+    self.webView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1]; //black
+    [self.webView setOpaque:NO];
+    [self.view addSubview:self.webView];
+    
+    UINavigationBar *navigationBar = [[UINavigationBar alloc] init];
+    [navigationBar sizeToFit]; 
+    navigationBar.barStyle = UIBarStyleBlackOpaque;
+    UINavigationItem *titleItem = [[UINavigationItem alloc] initWithTitle:@"Results"];
+    
+    refreshButton = [[UIBarButtonItem alloc] 
+                    //How do I make this init with
+                    initWithTitle:@"Refresh" 
+                    style:UIBarButtonItemStyleBordered 
+                    target:self 
+                    action:@selector(refresh:)];
+    
+    titleItem.rightBarButtonItem = refreshButton;
+    [navigationBar setItems:[NSArray arrayWithObject:titleItem]];
+    
+    [self.view addSubview:navigationBar];
     [self loadResults];
     
     self.webView.delegate = self;
@@ -50,20 +73,11 @@
     self.spinner = nil;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-    } else {
-        return YES;
-    }
-}
-
 - (void)loadResults
 {
     self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     self.spinner.center = CGPointMake(CGRectGetMidX(self.webView.bounds), CGRectGetMidY(self.webView.bounds));
-    [self.spinner setColor:[UIColor blackColor]];
+    //[self.spinner setColor:[UIColor blackColor]];
     [self.spinner startAnimating];
     [self.view addSubview:self.spinner];
     
@@ -73,6 +87,7 @@
 -(IBAction)refresh:(id)sender
 {
     [self loadResults];
+    NSLog(@"Refreshed");
 }
 
 @end

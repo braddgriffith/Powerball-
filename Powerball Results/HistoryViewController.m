@@ -20,33 +20,24 @@
 @synthesize selections;
 @synthesize addSelection;
 
+bool inserting;
+
 - (void)viewWillAppear:(BOOL)animated
 {
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
-    if (self.selections > 0) {
-        self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    }
+//    if (self.selections > 0) {
+//        self.navigationItem.rightBarButtonItem = self.editButtonItem;
+//    }
     
     NSLog(@"History has %d selections", [self.selections count]);
+    inserting = NO;
     
     if(self.selections.count > [self.tableView numberOfRowsInSection:0]) {
+        inserting = YES;
         [self insertRow]; 
+        inserting = NO;
+        [self performSelector:@selector(rowsFade:) withObject:nil afterDelay:1.0];
     } 
-}
-
--(void)insertRow
-{
-    int rows = self.selections.count - [self.tableView numberOfRowsInSection:0];
-    int newRowIndex = 0;
-    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
-    for (newRowIndex=0; newRowIndex<rows; newRowIndex++) {
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:newRowIndex inSection:0];
-        [indexPaths insertObject:indexPath atIndex:newRowIndex];
-    }
-    [self.tableView beginUpdates];
-    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
-    [self.tableView endUpdates];
-    indexPaths = nil;
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -58,24 +49,22 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     int count = [self.selections count];
-    
     return count;
 }
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)configureCell:(HistoryCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    HistoryCell *selectionCell = (HistoryCell *)cell;
     Selection *selection = [selections objectAtIndex:indexPath.row];
     
     if (selection.selectionPowerball) {
-        selectionCell.powerballLabel.text = [selection.selectionPowerball stringValue];//stringValue];
+        cell.powerballLabel.text = [selection.selectionPowerball stringValue];//stringValue];
     } else {
-        selectionCell.powerballLabel.text = @"(?)";
+        cell.powerballLabel.text = @"(?)";
     }
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
     [dateFormatter setDateFormat:@"MM/dd/yyyy"];
-    selectionCell.dateLabel.text = [dateFormatter stringFromDate:selection.drawingDate]; 
+    cell.dateLabel.text = [dateFormatter stringFromDate:selection.drawingDate]; 
     
     NSString *selectionList = [[selection.selectionOne stringValue] stringByAppendingString:@"-"];
     selectionList = [selectionList stringByAppendingString:[selection.selectionTwo stringValue]];
@@ -86,43 +75,49 @@
     selectionList = [selectionList stringByAppendingString:@"-"];
     selectionList = [selectionList stringByAppendingString:[selection.selectionFive stringValue]];
     
-    selectionCell.numbersLabel.text = selectionList;
+    cell.numbersLabel.text = selectionList;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *CellIdentifier = @"SelectionCell";
-    static NSString *PlaceholderCellIdentifier = @"PlaceholderCell";
+{        
+    HistoryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"HistoryCell"];
     
     int nodeCount = [self.selections count];
-	
-	if (nodeCount == 0) // If there's no data, add loading placeholder in the cell -- removed (&& indexPath.row == 0)
-	{
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:PlaceholderCellIdentifier];
-        if (cell == nil)
-		{
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                          reuseIdentifier:PlaceholderCellIdentifier];   
-            cell.detailTextLabel.textAlignment = UITextAlignmentCenter;
-			cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        }
-		cell.detailTextLabel.text = @"Loading…";
-		return cell;
-    } 
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Selection"];
-        [self configureCell:cell atIndexPath:indexPath];
-        return cell;
-    }
-    //cell.contentView.backgroundColor = [UIColor clearColor];
     int row = indexPath.row;
-    float shade = (nodeCount-row)/nodeCount;
-    UIView *backgroundView = [[UIView alloc] initWithFrame:cell.frame];
-    backgroundView.backgroundColor = [UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:shade];
-    [cell.backgroundView addSubview:backgroundView];
+    float shade = (float)(nodeCount-row)/(float)nodeCount;
+
+    if (inserting) {
+        cell.backgroundViewForColor.backgroundColor = [UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:1];
+    } else {
+        cell.backgroundViewForColor.backgroundColor = [UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:(shade == 0 ? 1.0 :shade)];
+    }
     
-    [self configureCell:cell atIndexPath:indexPath];
+//    UIView backgroundCircle = [UIView alloc] initWithFrame:(CGRect)
+//    [backgroundCircle 
+//    [cell addSubview:backgroundCircle];
+    
+    Selection *selection = [selections objectAtIndex:indexPath.row];
+    if (selection.selectionPowerball) {
+        cell.powerballLabel.text = [selection.selectionPowerball stringValue];//stringValue];
+    } else {
+        cell.powerballLabel.text = @"(?)";
+    }
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
+    [dateFormatter setDateFormat:@"MM/dd/yyyy"];
+    cell.dateLabel.text = [dateFormatter stringFromDate:selection.drawingDate]; 
+    
+    NSString *selectionList = [[selection.selectionOne stringValue] stringByAppendingString:@"-"];
+    selectionList = [selectionList stringByAppendingString:[selection.selectionTwo stringValue]];
+    selectionList = [selectionList stringByAppendingString:@"-"];
+    selectionList = [selectionList stringByAppendingString:[selection.selectionThree stringValue]];
+    selectionList = [selectionList stringByAppendingString:@"-"];
+    selectionList = [selectionList stringByAppendingString:[selection.selectionFour stringValue]];
+    selectionList = [selectionList stringByAppendingString:@"-"];
+    selectionList = [selectionList stringByAppendingString:[selection.selectionFive stringValue]];
+    
+    cell.numbersLabel.text = selectionList;
+
     return cell;
 }
 
@@ -149,9 +144,40 @@
     }];
     
     [selections removeObjectAtIndex:indexPath.row];
-    
     NSArray *indexPaths = [NSArray arrayWithObject:indexPath];
-    [tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+-(void)rowsFade:(id)obj
+{
+    int allRows = [self.tableView numberOfRowsInSection:0];
+    int allRowIndex = 0;
+    NSMutableArray *allIndexPaths = [[NSMutableArray alloc] init];
+    for (allRowIndex=0; allRowIndex<allRows; allRowIndex++) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:allRowIndex inSection:0];
+        [allIndexPaths insertObject:indexPath atIndex:allRowIndex];
+    }
+    [self.tableView beginUpdates];
+    [self.tableView reloadRowsAtIndexPaths:allIndexPaths withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView endUpdates];
+    
+    allIndexPaths = nil;
+}
+
+-(void)insertRow
+{
+    int rows = [self.selections count] - [self.tableView numberOfRowsInSection:0];
+    int newRowIndex = 0;
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+    for (newRowIndex=0; newRowIndex<rows; newRowIndex++) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:newRowIndex inSection:0];
+        [indexPaths insertObject:indexPath atIndex:newRowIndex];
+    }
+    [self.tableView beginUpdates];
+    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tableView endUpdates];
+    
+    indexPaths = nil;
 }
 
 @end

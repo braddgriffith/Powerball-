@@ -19,6 +19,7 @@
 @synthesize selections = _selections;
 @synthesize drawDates;
 @synthesize tabBarController;
+@synthesize user;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -32,13 +33,35 @@
     
     [application setStatusBarStyle:UIStatusBarStyleBlackOpaque];
     
+    [[UITabBar appearance] setSelectedImageTintColor:[UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:0.8]];
+    
     NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
     NSData *selectionsData = [currentDefaults objectForKey:@"selections"];
+    NSData *userData = [currentDefaults objectForKey:@"user"];
     
     if (selectionsData) {
         self.selections = [NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:selectionsData]];
     } else {
         self.selections = [[NSMutableArray alloc] init];
+    }
+    
+    if (userData) {
+        self.user = [NSKeyedUnarchiver unarchiveObjectWithData:userData];
+        NSLog(@"Loaded stored user.");
+    } else {
+        NSLog(@"No user. Creating anonymous user...");
+                    //self.user = [[PFUser alloc] init];
+        [PFUser enableAutomaticUser];
+                    //[[PFUser currentUser] incrementKey:@"RunCount"];
+                    //[[PFUser currentUser] saveInBackground];
+        [PFAnonymousUtils logInWithBlock:^(PFUser *currentUser, NSError *error) {
+            if (error) {
+                NSLog(@"Anonymous login failed.");
+            } else {
+                NSLog(@"Anonymous user logged in.");
+                NSLog(@"Anonymous username = %@",currentUser.username);
+            }
+        }];
     }
     
     [self setupViewControllers];
@@ -77,6 +100,7 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 							
 - (void)applicationWillResignActive:(UIApplication *)application
 {
+    //NSLog(@"Archiving :%@ selections", [self.selections count]);
     [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:self.selections] forKey:@"selections"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     NSLog(@"App Resigned Active.");

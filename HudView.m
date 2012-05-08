@@ -32,7 +32,7 @@
         
         [UIView commitAnimations];
         
-        [self performSelector:@selector(removeHUD) withObject:nil afterDelay:1.6];
+        [self performSelector:@selector(removeHUD) withObject:nil afterDelay:0.6];
     }
 }
 

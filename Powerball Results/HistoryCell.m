@@ -8,21 +8,13 @@
 
 #import "HistoryCell.h"
 
+
 @implementation HistoryCell
 
 @synthesize dateLabel;
 @synthesize numbersLabel;
 @synthesize powerballLabel;
-@synthesize backgroundColorVariable;
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        // Initialization code
-    }
-    return self;
-}
+@synthesize backgroundViewForColor;
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
