@@ -30,4 +30,7 @@
 - (IBAction)viewTapped;
 - (IBAction)quikPik:(id)sender;
 
+- (double)getTimeZoneOffset;
+- (NSDate *)getNextDrawDate;
+
 @end

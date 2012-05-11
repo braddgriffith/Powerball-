@@ -39,24 +39,17 @@
     
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
     
-    today = [NSDate date]; //get RIGHT NOW
-    
-    NSTimeZone *localTimeZone = [NSTimeZone systemTimeZone];
-    NSTimeZone *estTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"EST"];
-    
-    NSInteger localOffset = [localTimeZone secondsFromGMTForDate:today];
-    NSInteger estOffset = [estTimeZone secondsFromGMTForDate:today];
-    NSTimeInterval interval = localOffset - estOffset;
-    
     //Calculate the next draw date in EST
     NSDate *nextDrawDateEST = [self getNextDrawDate]; 
+    double interval = [self getTimeZoneOffset];
     upcomingDrawDate = [nextDrawDateEST dateByAddingTimeInterval:interval];
     
     //Put next draw date on screen
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
-    [dateFormatter setTimeZone:localTimeZone]; //Current time of local timezone - drawings are at 10:59PM EST
+    [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]]; //Current time of local timezone - drawings are 10:59PM EST
     [dateFormatter setDateFormat:@"EEEE - h:mm a"];//Was @"MM/dd h:mm a"];
     NSString *dateStr = [dateFormatter stringFromDate:upcomingDrawDate];
+    
     NSString *dateIntro = @"Next: ";
     currentDrawDate.text = [dateIntro stringByAppendingString:dateStr];
     
@@ -66,6 +59,20 @@
     tapRecognizer.numberOfTapsRequired = 1;
     tapRecognizer.cancelsTouchesInView = NO;
     [self.view addGestureRecognizer:tapRecognizer];
+}
+
+- (double)getTimeZoneOffset
+{
+    today = [NSDate date]; //get RIGHT NOW
+    
+    NSTimeZone *localTimeZone = [NSTimeZone systemTimeZone];
+    NSTimeZone *estTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"EST"];
+    
+    NSInteger localOffset = [localTimeZone secondsFromGMTForDate:today];
+    NSInteger estOffset = [estTimeZone secondsFromGMTForDate:today];
+    NSTimeInterval interval = localOffset - estOffset;
+
+    return interval;
 }
 
 - (NSDate *)getNextDrawDate
@@ -159,7 +166,7 @@
 - (void)presentWarning
 {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Change Needed!"
-                                                    message:@"All entries need to be a number! Try QuikPik to select numbers fast."
+                                                    message:@"All entries need to be a number! Try QuickPick to select numbers fast."
                                                    delegate:NULL 
                                           cancelButtonTitle:@"OK" 
                                           otherButtonTitles:NULL];

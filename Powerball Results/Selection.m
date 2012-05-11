@@ -21,6 +21,7 @@
 @synthesize userID;
 @synthesize selectionArray;
 @synthesize userChosenDate;
+@synthesize jackpot;
 
 - (void)encodeWithCoder:(NSCoder *)coder;
 {
@@ -35,6 +36,7 @@
     [coder encodeObject:userID forKey:@"userID"];
     [coder encodeObject:selectionArray forKey:@"selectionArray"];
     [coder encodeObject:userChosenDate forKey:@"userChosenDate"];
+    [coder encodeObject:jackpot forKey:@"jackpot"];
 }
 
 - (id)initWithCoder:(NSCoder *)coder;
@@ -53,6 +55,7 @@
         self.userID = [coder decodeObjectForKey:@"userID"];
         self.selectionArray = [coder decodeObjectForKey:@"selectionArray"];
         self.userChosenDate = [coder decodeObjectForKey:@"userChosenDate"];
+        self.jackpot = [coder decodeObjectForKey:@"jackpot"];
     }   
     return self;
 }

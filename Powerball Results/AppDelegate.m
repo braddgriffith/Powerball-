@@ -50,10 +50,7 @@
         NSLog(@"Loaded stored user.");
     } else {
         NSLog(@"No user. Creating anonymous user...");
-                    //self.user = [[PFUser alloc] init];
         [PFUser enableAutomaticUser];
-                    //[[PFUser currentUser] incrementKey:@"RunCount"];
-                    //[[PFUser currentUser] saveInBackground];
         [PFAnonymousUtils logInWithBlock:^(PFUser *currentUser, NSError *error) {
             if (error) {
                 NSLog(@"Anonymous login failed.");
