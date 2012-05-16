@@ -32,7 +32,6 @@
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge| UIRemoteNotificationTypeAlert| UIRemoteNotificationTypeSound];
     
     [application setStatusBarStyle:UIStatusBarStyleBlackOpaque];
-    
     [[UITabBar appearance] setSelectedImageTintColor:[UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:0.8]];
     
     NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];

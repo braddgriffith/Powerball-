@@ -19,7 +19,14 @@
 @property (strong, nonatomic) IBOutlet UILabel *date3;
 @property (strong, nonatomic) IBOutlet UILabel *date4;
 @property (strong, nonatomic) IBOutlet UILabel *date5;
+@property (strong, nonatomic) IBOutlet UILabel *results1;
+@property (strong, nonatomic) IBOutlet UILabel *results2;
+@property (strong, nonatomic) IBOutlet UILabel *results3;
+@property (strong, nonatomic) IBOutlet UILabel *results4;
+@property (strong, nonatomic) IBOutlet UILabel *results5;
 @property (strong, nonatomic) IBOutlet UITableView *winningsAndOddsTableView;
 @property (strong, nonatomic) NSMutableArray *allSelections;
+
+@property (nonatomic, strong) NSDate *upcomingDrawDate;
 
 @end

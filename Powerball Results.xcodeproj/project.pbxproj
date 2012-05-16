@@ -15,6 +15,7 @@
 		E60D515215599200006C752F /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = E60D514B15599200006C752F /* iTunesArtwork.png */; };
 		E60D515315599200006C752F /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = E60D514C15599200006C752F /* Icon-72.png */; };
 		E626B52A155C3AF100DDDAC4 /* ResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E626B529155C3AF100DDDAC4 /* ResultsViewController.m */; };
+		E644BE641561A59E00C62D83 /* Time.m in Sources */ = {isa = PBXBuildFile; fileRef = E644BE631561A59E00C62D83 /* Time.m */; };
 		E66B25A915377A0D0011F4F3 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E66B25A815377A0D0011F4F3 /* AudioToolbox.framework */; };
 		E66B25AB15377A150011F4F3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E66B25AA15377A150011F4F3 /* CFNetwork.framework */; };
 		E66B25AD15377A200011F4F3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E66B25AC15377A200011F4F3 /* SystemConfiguration.framework */; };
@@ -65,6 +66,8 @@
 		E60D514C15599200006C752F /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
 		E626B528155C3AF100DDDAC4 /* ResultsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResultsViewController.h; path = ../ResultsViewController.h; sourceTree = "<group>"; };
 		E626B529155C3AF100DDDAC4 /* ResultsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ResultsViewController.m; path = ../ResultsViewController.m; sourceTree = "<group>"; };
+		E644BE621561A59E00C62D83 /* Time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Time.h; sourceTree = "<group>"; };
+		E644BE631561A59E00C62D83 /* Time.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Time.m; sourceTree = "<group>"; };
 		E66B25A815377A0D0011F4F3 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E66B25AA15377A150011F4F3 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		E66B25AC15377A200011F4F3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -219,16 +222,18 @@
 				E6EFAC0A152F53660031CCD3 /* AppDelegate.m */,
 				E626B528155C3AF100DDDAC4 /* ResultsViewController.h */,
 				E626B529155C3AF100DDDAC4 /* ResultsViewController.m */,
-				E6EFAC12152F53660031CCD3 /* PBViewController.h */,
-				E6EFAC13152F53660031CCD3 /* PBViewController.m */,
 				E686B71D153251020068A08D /* SelectorViewController.h */,
 				E686B71E153251020068A08D /* SelectorViewController.m */,
+				E6EFAC12152F53660031CCD3 /* PBViewController.h */,
+				E6EFAC13152F53660031CCD3 /* PBViewController.m */,
 				E686B72015326A8D0068A08D /* HistoryViewController.h */,
 				E686B72115326A8D0068A08D /* HistoryViewController.m */,
 				E67D6B3C15468864002FC024 /* AccountViewController.h */,
 				E67D6B3D15468864002FC024 /* AccountViewController.m */,
 				E686B72D15329D360068A08D /* FeedbackViewController.h */,
 				E686B72E15329D360068A08D /* FeedbackViewController.m */,
+				E644BE621561A59E00C62D83 /* Time.h */,
+				E644BE631561A59E00C62D83 /* Time.m */,
 				E67D6B431547116F002FC024 /* Login.h */,
 				E67D6B441547116F002FC024 /* Login.m */,
 				E686B737153340860068A08D /* HistoryCell.h */,
@@ -349,6 +354,7 @@
 				E67D6B3E15468864002FC024 /* AccountViewController.m in Sources */,
 				E67D6B451547116F002FC024 /* Login.m in Sources */,
 				E626B52A155C3AF100DDDAC4 /* ResultsViewController.m in Sources */,
+				E644BE641561A59E00C62D83 /* Time.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

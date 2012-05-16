@@ -10,6 +10,7 @@
 #import "HudView.h"
 #import "Selection.h"
 #import "AppDelegate.h"
+#import "Time.h"
 #import <Parse/Parse.h>
 
 @implementation SelectorViewController
@@ -40,8 +41,9 @@
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
     
     //Calculate the next draw date in EST
-    NSDate *nextDrawDateEST = [self getNextDrawDate]; 
-    double interval = [self getTimeZoneOffset];
+    Time *theTime = [[Time alloc] init];
+    NSDate *nextDrawDateEST = [theTime getDrawDate:@"forward"]; 
+    double interval = [theTime getTimeZoneOffset];
     upcomingDrawDate = [nextDrawDateEST dateByAddingTimeInterval:interval];
     
     //Put next draw date on screen
@@ -60,88 +62,6 @@
     tapRecognizer.cancelsTouchesInView = NO;
     [self.view addGestureRecognizer:tapRecognizer];
 }
-
-- (double)getTimeZoneOffset
-{
-    today = [NSDate date]; //get RIGHT NOW
-    
-    NSTimeZone *localTimeZone = [NSTimeZone systemTimeZone];
-    NSTimeZone *estTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"EST"];
-    
-    NSInteger localOffset = [localTimeZone secondsFromGMTForDate:today];
-    NSInteger estOffset = [estTimeZone secondsFromGMTForDate:today];
-    NSTimeInterval interval = localOffset - estOffset;
-
-    return interval;
-}
-
-- (NSDate *)getNextDrawDate
-{
-    today = [NSDate date]; //get time/date right now
-    
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; 
-    NSCalendar *gregorian = [[NSCalendar alloc] 
-                             initWithCalendarIdentifier:NSGregorianCalendar];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]]; //Eastern Time of USA - drawings are at 10:59PM EST
-
-    NSDateComponents *weekdayComponents = [gregorian components:(NSDayCalendarUnit | NSWeekdayCalendarUnit) fromDate:today];
-    NSInteger weekday = [weekdayComponents weekday];
-    NSString *weekdayStr = [NSString stringWithFormat:@"%d", weekday];
-    NSLog(@"Weekday: %@", weekdayStr);
-    
-    NSTimeInterval secondsPerDay = 24 * 60 * 60;
-    NSTimeInterval interval = 0;
-    
-    if (weekday == 1) { //This is Sunday
-        interval = (3 * secondsPerDay);
-    } else if (weekday == 2) {
-       interval = (2 * secondsPerDay);
-    } else if (weekday == 3) {
-        interval = (1 * secondsPerDay);
-    } else if (weekday == 4) {
-        interval = (0 * secondsPerDay);    
-    } else if (weekday == 5) {
-        interval = (2 * secondsPerDay);
-    } else if (weekday == 6) {
-        interval = (1 * secondsPerDay);
-    } else if (weekday == 7) {
-        interval = (0 * secondsPerDay);
-    }
-    
-    NSDate *drawFollowingDay = [[NSDate alloc] initWithTimeIntervalSinceNow:(interval)];
-    drawFollowingDay = [self roundDateForwardTo11PM:drawFollowingDay];
-    [self scheduleNotification:drawFollowingDay];
-    return drawFollowingDay;
-}
-
-- (void)scheduleNotification:(NSDate *)nextDate
-{
-    UILocalNotification *futureAlert;
-    futureAlert = [[UILocalNotification alloc] init];
-    futureAlert.fireDate = nextDate;
-    futureAlert.timeZone = [NSTimeZone defaultTimeZone];//ids this right - or do we want GMT?
-    futureAlert.alertBody = @"The Powerball drawing just went down!";
-    [[UIApplication sharedApplication] scheduleLocalNotification:futureAlert];
-}
-
-- (NSDate *)roundDateForwardTo11PM:(NSDate *)startDate
-{
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar]; 
-    NSDateComponents *todayComponents = [gregorian components:(NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit) fromDate:startDate];
-    NSInteger theDay = [todayComponents day];
-    NSInteger theMonth = [todayComponents month];
-    NSInteger theYear = [todayComponents year];
-    
-    NSDateComponents *components = [[NSDateComponents alloc] init];
-    [components setDay:theDay]; 
-    [components setMonth:theMonth]; 
-    [components setYear:theYear];
-    [components setHour:22]; //If we're passed an EST date
-    [components setMinute:59]; 
-    NSDate *roundedDate = [gregorian dateFromComponents:components];
-
-    return roundedDate;
-}    
 
 - (void)loadSelection
 {
