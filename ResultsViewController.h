@@ -27,6 +27,8 @@
 @property (strong, nonatomic) IBOutlet UITableView *winningsAndOddsTableView;
 @property (strong, nonatomic) NSMutableArray *allSelections;
 
+@property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
+
 @property (nonatomic, strong) NSDate *upcomingDrawDate;
 
 @end
