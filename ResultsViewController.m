@@ -8,8 +8,9 @@
 
 #import "ResultsViewController.h"
 #import <Parse/Parse.h>
-#import  "Selection.h"
+#import "Selection.h"
 #import "Time.h"
+#import "Payout.h"
 
 @interface ResultsViewController ()
 
@@ -26,53 +27,102 @@
 @synthesize date3;
 @synthesize date4;
 @synthesize date5;
-@synthesize results1;
-@synthesize results2;
-@synthesize results3;
-@synthesize results4;
-@synthesize results5;
-@synthesize winningsAndOddsTableView;
+@synthesize payoutsTableView;
+
 @synthesize allSelections;
+@synthesize allPayouts;
 @synthesize upcomingDrawDate;
 @synthesize scrollView;
+@synthesize spinner;
 
-UIActivityIndicatorView *spinner;
+
 BOOL firstTime;
 
-//Ball spacing
-int xindent = 15; //distance from left side for first item - aka X
-int xbuffer = 10; //distance between items
+//LabelHeights
+int nextLabelH = 10;
+int jackpotLabelY = 32;
+int nextLabelWidth = 45;
+int jackpotLabelWidth = 70;
+int lastLabelY = 70;
+int lastLabelWidth = 45;
+int lastJackpotVariableLabelY = 143;
+int lastJackpotVariableLabelWidth = 170; 
+
+//StarTrans
+int starTransitionHeight = 64;
+
+//Big ball spacing
+int xindent = 17; //distance from left side for first item - aka X
+int xbuffer = 7; //distance between items
 int ystart = 100; //distance from top for items - aka Y
 int numItems = 6; //number of items
 
+//Small ball spacing
+int xSmallBuffer = 7;
+
 //Label spacing
 int xLindent = 25; //distance from left side for first item - aka X
-int yLheight = 21; //distance from left side for first item - aka X
+int yLheight = 28; //distance from last row - aka Y
 
-int nextLabelWidth = 55;
+int yhistoryDateLabel = 185;
+int dateLabelWidth = 63;
 
-int yhistoryDateLabel = 180;
-int dateLabelWidth = 65;
+//Payouts tableView
+int payoutsViewCenterX = 160;
+int payoutsViewCenterY = 200;
+
+NSMutableArray *matchingArray;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    self.scrollView.contentSize = CGSizeMake(320, 500); //Should be algorithmic based on size of content
+    [self.date1 setHidden:YES];
+    [self.date2 setHidden:YES];
+    [self.date3 setHidden:YES];
+    [self.date4 setHidden:YES];
+    [self.date5 setHidden:YES];
     
-    spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    spinner.center = CGPointMake(self.view.frame.size.width - spinner.bounds.size.width/2.0f - 10, self.view.frame.size.height / 2.0f);
-    [spinner startAnimating];
-    [self.view addSubview:spinner];
+    [self.nextDateLabel setHidden:YES];
+    [self.nextJackpotLabel setHidden:YES];
+    [self.lastJackpotLabel setHidden:YES];
+    [self.lastDateLabel setHidden:YES];
+    [self.payoutsTableView.tableView setHidden:YES];
+    
+    self.scrollView.contentSize = CGSizeMake(320, 500); //Should be algorithmic based on size of content
+
+    [self.spinner startAnimating];
+    
+    matchingArray = [[NSMutableArray alloc] init];
+    [matchingArray addObject:@"selectionOne"];
+    [matchingArray addObject:@"selectionTwo"];
+    [matchingArray addObject:@"selectionThree"];
+    [matchingArray addObject:@"selectionFour"];
+    [matchingArray addObject:@"selectionFive"];
+    [matchingArray addObject:@"selectionPowerball"];
     
     firstTime = YES;
     
+    //self.payoutsTableView.tableView.center = CGPointMake(payoutsViewCenterX,payoutsViewCenterY);
+    //self.payoutsTableView.tableView. = CGPointMake(payoutsViewCenterX,payoutsViewCenterY);
+    self.payoutsTableView.tableView.scrollEnabled = NO;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    NSLog(@"ViewWillAppear firstTime:%d",firstTime);
     [self getDrawData];
 }
 
-- (void)setUpViewData
-{
-    //Put LAST draw date on screen
+- (void)setUpViewData //Does all the view setup, then calls AddResults
+{    
+    [self.nextDateLabel setHidden:NO];
+    [self.nextJackpotLabel setHidden:NO];
+    [self.lastJackpotLabel setHidden:NO];
+    [self.lastDateLabel setHidden:NO];
+    [self.payoutsTableView.tableView setHidden:NO];
+    
     Time *theTime = [[Time alloc] init];
     NSDate *nextDrawDateEST = [theTime getDrawDate:@"forward"]; 
     double interval = [theTime getTimeZoneOffset];
@@ -83,16 +133,49 @@ int dateLabelWidth = 65;
     [dateFormatter setDateFormat:@"EEEE - h:mm a"];
     NSString *dateStr = [dateFormatter stringFromDate:upcomingDrawDate];
      
-    UILabel *nextLabel = [[UILabel alloc] initWithFrame:CGRectMake(xLindent,10,nextLabelWidth,yLheight)];
+    UILabel *nextLabel = [[UILabel alloc] initWithFrame:CGRectMake(xLindent,nextLabelH,nextLabelWidth,yLheight)];
     nextLabel.font = [UIFont boldSystemFontOfSize:16];
     nextLabel.textColor = [UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:1.0];
     nextLabel.textAlignment = UITextAlignmentLeft;
     nextLabel.backgroundColor = [UIColor clearColor];
     nextLabel.text = @"Next:";
     [self.scrollView addSubview:nextLabel];
+    self.nextDateLabel.frame = CGRectMake(xLindent+nextLabelWidth,nextLabelH,255,yLheight);
     
-    nextDateLabel.frame = CGRectMake(xLindent+nextLabelWidth,10,255,yLheight);
-    nextDateLabel.text = dateStr;
+    UILabel *jackpotLabel = [[UILabel alloc] initWithFrame:CGRectMake(xLindent,jackpotLabelY,jackpotLabelWidth,yLheight)];
+    jackpotLabel.font = [UIFont boldSystemFontOfSize:16];
+    jackpotLabel.textColor = [UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:1.0];
+    jackpotLabel.textAlignment = UITextAlignmentLeft;
+    jackpotLabel.backgroundColor = [UIColor clearColor];
+    jackpotLabel.text = @"Jackpot:";
+    [self.scrollView addSubview:jackpotLabel];
+    self.nextJackpotLabel.frame = CGRectMake(xLindent+jackpotLabelWidth,jackpotLabelY,255,yLheight);
+    
+    UILabel *lastLabel = [[UILabel alloc] initWithFrame:CGRectMake(xLindent,lastLabelY,lastLabelWidth,yLheight)];
+    lastLabel.font = [UIFont boldSystemFontOfSize:16];
+    lastLabel.textColor = [UIColor whiteColor];
+    lastLabel.textAlignment = UITextAlignmentLeft;
+    lastLabel.backgroundColor = [UIColor clearColor];
+    lastLabel.text = @"Last:";
+    [self.scrollView addSubview:lastLabel];
+    self.lastDateLabel.frame = CGRectMake(xLindent+lastLabelWidth,lastLabelY,255,yLheight);
+    
+    UILabel *whiteJackpotLabel = [[UILabel alloc] initWithFrame:CGRectMake(xLindent,lastJackpotVariableLabelY,jackpotLabelWidth,yLheight)];
+    whiteJackpotLabel.font = [UIFont boldSystemFontOfSize:16];
+    whiteJackpotLabel.textColor = [UIColor whiteColor];
+    whiteJackpotLabel.textAlignment = UITextAlignmentLeft;
+    whiteJackpotLabel.backgroundColor = [UIColor clearColor];
+    whiteJackpotLabel.text = @"Jackpot:";
+    [self.scrollView addSubview:whiteJackpotLabel];
+    self.lastJackpotLabel.frame = CGRectMake(xLindent+jackpotLabelWidth,lastJackpotVariableLabelY,lastJackpotVariableLabelWidth,yLheight);
+    
+    self.nextDateLabel.text = dateStr;
+    
+//    CGRect frame = CGRectMake(self.view.frame.size.width/2.0f, starTransitionHeight, 70, 10);
+//    UIImageView *starTransition = [[UIImageView alloc] initWithFrame:frame];
+//    starTransition.center = CGPointMake(self.view.frame.size.width/2.0f,starTransitionHeight);
+//    starTransition.image = [UIImage imageNamed:@"stars.png"]; 
+//    [self.scrollView addSubview:starTransition];
     
     //Put LAST draw date on screen
     NSDate *lastDrawDateEST = [theTime getDrawDate:@"backward"]; 
@@ -105,7 +188,7 @@ int dateLabelWidth = 65;
     
     Selection *nextDraw = [self.allSelections objectAtIndex:0];
     NSLog(@"NextDraw %@", nextDraw.jackpot);
-    nextJackpotLabel.text = nextDraw.jackpot;
+    self.nextJackpotLabel.text = nextDraw.jackpot;
     
     Selection *lastDraw = [self.allSelections objectAtIndex:1];
     NSLog(@"LastJackpot: %@", lastDraw.jackpot);
@@ -113,18 +196,22 @@ int dateLabelWidth = 65;
     
     Selection *drawResult = [[Selection alloc] init];
     NSArray *dates = [[NSArray alloc] initWithObjects:date1, date2, date3, date4, date5, nil];
-    NSArray *results = [[NSArray alloc] initWithObjects:results1, results2, results3, results4, results5, nil];
     
-    [dateFormatter setDateFormat:@"M/dd/yy"];//@"MM/dd/yyyy"];
+    [dateFormatter setDateFormat:@"M/dd/yy"];
     
-    for (int x=1; x<=5; x++) {
+    [self.date1 setHidden:NO];
+    [self.date2 setHidden:NO];
+    [self.date3 setHidden:NO];
+    [self.date4 setHidden:NO];
+    [self.date5 setHidden:NO];
+    
+    for (int x=1; x<=5; x++) { //Adds the historical results
         drawResult = [self.allSelections objectAtIndex:(1+x)]; //Start at the third Draw
         UILabel *currentDate = [dates objectAtIndex:(-1+x)]; //Start at the first label
-        UILabel *currentResult = [results objectAtIndex:(-1+x)]; //Start at the first label
         
         NSDate *givenDate = drawResult.drawingDate;
         NSString *newDateStr = [[dateFormatter stringFromDate:givenDate]stringByAppendingString:@":"];
-        NSLog(@"Weekday: %@", newDateStr);        
+        //NSLog(@"Weekday: %@", newDateStr);        
         
         currentDate.frame = CGRectMake(xLindent,yhistoryDateLabel+((x-1)*yLheight),dateLabelWidth,yLheight);
         currentDate.font = [UIFont boldSystemFontOfSize:16];
@@ -133,39 +220,29 @@ int dateLabelWidth = 65;
         currentDate.backgroundColor = [UIColor clearColor];
         currentDate.text = newDateStr;
         [self.scrollView addSubview:currentDate];
+        
+        Selection *currentSelection = [self.allSelections objectAtIndex:x+1];
+        int screenWidth = self.view.frame.size.width-40; 
+        int xsize = (screenWidth - xLindent - dateLabelWidth - (numItems*xbuffer)) / numItems;
+        [self animateResults:currentSelection xsize:xsize endX:(xLindent + dateLabelWidth) endY:yhistoryDateLabel+((x-1)*yLheight)  width:xsize height:xsize count:x+1];
     
-        NSString *selectionList = [[drawResult.selectionOne stringValue] stringByAppendingString:@"-"];
-        selectionList = [selectionList stringByAppendingString:[drawResult.selectionTwo stringValue]];
-        selectionList = [selectionList stringByAppendingString:@"-"];
-        selectionList = [selectionList stringByAppendingString:[drawResult.selectionThree stringValue]];
-        selectionList = [selectionList stringByAppendingString:@"-"];
-        selectionList = [selectionList stringByAppendingString:[drawResult.selectionFour stringValue]];
-        selectionList = [selectionList stringByAppendingString:@"-"];
-        selectionList = [selectionList stringByAppendingString:[drawResult.selectionFive stringValue]];
-        selectionList = [selectionList stringByAppendingString:@"-"];
-        selectionList = [selectionList stringByAppendingString:[drawResult.selectionPowerball stringValue]];
-        
-        currentResult.frame = CGRectMake(xLindent+dateLabelWidth,yhistoryDateLabel+((x-1)*yLheight),250,yLheight);
-        currentResult.font = [UIFont boldSystemFontOfSize:16];
-        currentResult.textColor = [UIColor whiteColor];
-        currentResult.textAlignment = UITextAlignmentLeft;
-        currentResult.backgroundColor = [UIColor clearColor];
-        currentResult.text = newDateStr;
-        [self.scrollView addSubview:currentResult];
-        
-        currentResult.text = selectionList;
-        
-        NSLog(@"Selection# %@ on %@ for %@", [NSString stringWithFormat:@"%d", x], [dateFormatter stringFromDate:givenDate], drawResult.jackpot);
+        //NSLog(@"Selection# %@ on %@ for %@", [NSString stringWithFormat:@"%d", x], [dateFormatter stringFromDate:givenDate], drawResult.jackpot);
     }
     [self addResults];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)addResults //Adds the main results(last version)
 {
-    NSLog(@"ViewWillAppear firstTime:%d",firstTime);
+    int screenWidth = self.view.frame.size.width; 
+    int xsize = (screenWidth - (2*xindent) - (numItems*xbuffer)) / numItems;
+    
+    Selection *mainSelection = [self.allSelections objectAtIndex:1];
+    [self animateResults:mainSelection xsize:xsize endX:xindent endY:ystart width:xsize height:xsize count:1];
+    
+    firstTime = NO; //FOR TESTING ONLY - remove for prod
 }
 
-- (void)getDrawData
+- (void)getDrawData //Gets all the draw data from Parse
 {
     PFQuery *query = [PFQuery queryWithClassName:@"Drawings"];
     [query orderByDescending:@"Date"];
@@ -177,14 +254,13 @@ int dateLabelWidth = 65;
     }
     
     __block int counter = 0;
-    
     NSNumberFormatter * formatter = [[NSNumberFormatter alloc] init];
     [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         NSLog(@"Sent query.");
         if (!error) {
-            NSLog(@"Successfully retrieved %d locations.", objects.count); 
+            NSLog(@"Successfully retrieved %d past jackpots and drawing results.", objects.count); 
             for (PFObject *object in objects) {  
                 Selection *selection = [[Selection alloc] init];
                 
@@ -203,7 +279,7 @@ int dateLabelWidth = 65;
                 
                 [selectionsAndPendingSelections insertObject:selection atIndex:counter];                
                 counter ++;
-                NSLog(@"Spot %d - on %@ the powerball: %@ and jackpot: %@", counter, selection.drawingDate, selection.selectionPowerball, selection.jackpot);
+                //NSLog(@"Spot %d - on %@ the powerball: %@ and jackpot: %@", counter, selection.drawingDate, selection.selectionPowerball, selection.jackpot);
             }
             self.allSelections = selectionsAndPendingSelections;
             [self setUpViewData];
@@ -218,40 +294,43 @@ int dateLabelWidth = 65;
         }
     }];
     query = nil;
-    [spinner removeFromSuperview];
-    spinner = nil;
+    [self.spinner stopAnimating];
 }
 
-- (void)addResults
+- (void)animateResults:(Selection *)selection xsize:(int)xsize endX:(int)endX endY:(int)endY width:(int)width height:(int)height count:(int)count
 {
     int screenWidth = self.view.frame.size.width; 
-    int xsize = (screenWidth - (2*xindent) - (numItems*xbuffer)) / numItems;
-    
-    for (int x=1; x<=numItems; x++) {
-        CGRect frame = CGRectMake(xindent+((x-1)*(xsize+xbuffer)), ystart, xsize, xsize);
-        NSLog(@"Width: %i", xsize);
-        
+    NSLog(@"Width: %i", xsize);
+    for (int x=1; x<=numItems; x++) { //Iterate through the balls
+        CGRect frame = CGRectMake(endX+((x-1)*(xsize+xbuffer)), endY, width, height);
         UIImageView *endView = [[UIImageView alloc] initWithFrame:frame];
-        endView.image = [UIImage imageNamed:@"13-target.png"];
         
+        NSString *currentBall = [matchingArray objectAtIndex:(x-1)];
         UILabel *label = [[UILabel alloc] initWithFrame:endView.bounds];
         label.backgroundColor = [UIColor clearColor];
         label.textAlignment = UITextAlignmentCenter;
-        label.textColor = [UIColor blackColor];
-        label.font = [UIFont boldSystemFontOfSize:26];
-        label.text = @"7"; //Should be algorithmic based on ball NUMBERRRRRRRRRRRRRRRRR
+        label.font = [UIFont boldSystemFontOfSize:xsize*.70];
+        label.text = [[selection valueForKey:currentBall] stringValue];
+        
+        if (x!=numItems) {
+            endView.image = [UIImage imageNamed:@"whiteball.png"]; 
+            label.textColor = [UIColor blackColor];
+        } else {
+            endView.image = [UIImage imageNamed:@"redball.png"];
+            label.textColor = [UIColor whiteColor];
+        }
         
         [endView addSubview:label];
         [self.scrollView addSubview:endView];
         
         if (firstTime) {
-            float animationDuration = (x * 0.1f + 1.0f);
+            float animationDuration = ((0.1f)*sqrt(x) + (0.4f)*(count-1) + 0.8f); //X is ball number, Count is row number ...(x * (.1f) + 1.0f);
             
             CABasicAnimation *ballMover = [CABasicAnimation animationWithKeyPath:@"position"];
             ballMover.removedOnCompletion = NO;
             ballMover.fillMode = kCAFillModeForwards;
             ballMover.duration = animationDuration;
-            ballMover.fromValue = [NSValue valueWithCGPoint:CGPointMake(endView.center.x + (x*screenWidth), endView.center.y)];
+            ballMover.fromValue = [NSValue valueWithCGPoint:CGPointMake(endView.center.x + (x*screenWidth) + ((count-1)*numItems*screenWidth), endView.center.y)];
             ballMover.toValue = [NSValue valueWithCGPoint:endView.center];
             ballMover.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
             [endView.layer addAnimation:ballMover forKey:@"ballMover"];
@@ -266,7 +345,5 @@ int dateLabelWidth = 65;
             [endView.layer addAnimation:ballRotator forKey:@"ballRotator"];
         }
     }
-    firstTime = NO;
 }
-
 @end

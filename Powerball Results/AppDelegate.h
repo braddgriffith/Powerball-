@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Selection.h"
 #import <Parse/Parse.h>
+#import "User.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -17,6 +18,6 @@
 @property (nonatomic, strong) NSMutableArray *selections;
 @property (nonatomic, strong) NSMutableArray *drawDates;
 @property (nonatomic, strong) UITabBarController *tabBarController;
-@property (nonatomic, strong) PFUser *user;
+@property (nonatomic, strong) User *user;
 
 @end

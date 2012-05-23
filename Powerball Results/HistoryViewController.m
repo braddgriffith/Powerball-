@@ -24,6 +24,8 @@ bool inserting;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:NO];
+    
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
 //    if (self.selections > 0) {
 //        self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -42,6 +44,7 @@ bool inserting;
 
 - (void) viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:NO];
     [self.spinner removeFromSuperview];
     self.spinner = nil;
 }

@@ -17,11 +17,13 @@ NSDate *today;
     today = [NSDate date]; //get RIGHT NOW
     
     NSTimeZone *localTimeZone = [NSTimeZone systemTimeZone];
-    NSTimeZone *estTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"EST"];
+    NSTimeZone *easternTimeZone = [NSTimeZone timeZoneWithName:@"US/Eastern"]; 
     
     NSInteger localOffset = [localTimeZone secondsFromGMTForDate:today];
-    NSInteger estOffset = [estTimeZone secondsFromGMTForDate:today];
-    NSTimeInterval interval = localOffset - estOffset;
+    NSInteger easternOffset = [easternTimeZone secondsFromGMTForDate:today];
+    NSTimeInterval interval = localOffset - easternOffset;
+    
+    NSLog(@"Current timezone offset from easternTime: %@", interval);
     
     return interval;
 }
@@ -33,7 +35,7 @@ NSDate *today;
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; 
     NSCalendar *gregorian = [[NSCalendar alloc] 
                              initWithCalendarIdentifier:NSGregorianCalendar];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]]; //Eastern Time of USA - drawings are at 10:59PM EST
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"US/Eastern"]]; //Eastern Time of USA - drawings are at 10:59PM EST
     
     NSDate *todayRounded = [self roundDateToTime:today usingHour:22 usingMinute:59 usingDirection:direction];
     
@@ -97,7 +99,7 @@ NSDate *today;
     [[UIApplication sharedApplication] scheduleLocalNotification:futureAlert];
 }
 
-- (NSDate *)roundDateToTime:(NSDate *)startDate usingHour:(int)hour usingMinute:(int)minute usingDirection:(NSString *)direction //Takes a time, moves it forward to 11PM
+- (NSDate *)roundDateToTime:(NSDate *)startDate usingHour:(int)hour usingMinute:(int)minute usingDirection:(NSString *)direction //Takes a time, moves it backward or forward to 11PM, moves the time a full day if necessary
 {
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar]; 
     NSDateComponents *todayComponents = [gregorian components:(NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:startDate];

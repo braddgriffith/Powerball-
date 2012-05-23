@@ -29,6 +29,8 @@
 //    [Parse setApplicationId:@"uS5c2WJ8Osp94YRmWOHPEKL9NsNazKuS4eUIZ1Wl" 
 //                  clientKey:@"qMMetsxWm44XomrL7a153GlCFVBKbNiipe5Z9iUj"]; //Prod
     
+    [PFFacebookUtils initializeWithApplicationId:@"456093817750986"]; //Setup FB
+    
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge| UIRemoteNotificationTypeAlert| UIRemoteNotificationTypeSound];
     
     [application setStatusBarStyle:UIStatusBarStyleBlackOpaque];
@@ -61,7 +63,6 @@
     }
     
     [self setupViewControllers];
-    
     return YES;
 }
 
@@ -98,6 +99,11 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
     //NSLog(@"Archiving :%@ selections", [self.selections count]);
     [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:self.selections] forKey:@"selections"];
+    if (self.user) {
+        [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:self.user] forKey:@"user"];
+    } else {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user"];
+    }
     [[NSUserDefaults standardUserDefaults] synchronize];
     NSLog(@"App Resigned Active.");
 }
@@ -120,6 +126,17 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [PFPush handlePush:userInfo];
+}
+
+// Pre 4.2 support
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    return [PFFacebookUtils handleOpenURL:url];
+}
+
+// For 4.2+ support
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    return [PFFacebookUtils handleOpenURL:url];
 }
 
 @end
