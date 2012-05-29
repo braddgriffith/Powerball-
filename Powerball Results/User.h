@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Parse/Parse.h>
 
 @interface User : NSObject
 
@@ -20,5 +21,6 @@
 @property (nonatomic, strong) NSString *default_cause;
 @property (nonatomic, strong) NSString *location;
 @property (nonatomic, strong) NSString *username;
+@property (nonatomic, strong) PFUser *parseUser;
 
 @end

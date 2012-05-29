@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 //#import "PayoutCell.h"
 
-@interface PayoutTableView : NSObject <UITableViewDelegate, UITableViewDataSource, NSCoding>
+@interface PayoutTableView : NSObject <UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, weak)  NSMutableArray *payouts;
-@property (nonatomic, weak)  NSMutableArray *payout;
+@property (nonatomic, strong)  NSMutableArray *payouts;
+@property (nonatomic, strong)  NSMutableArray *payout;
 @property (nonatomic, weak)  IBOutlet UITableView *tableView;
+
+- (void)getPayoutData;
 
 @end

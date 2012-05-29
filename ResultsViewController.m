@@ -35,17 +35,16 @@
 @synthesize scrollView;
 @synthesize spinner;
 
-
 BOOL firstTime;
 
 //LabelHeights
-int nextLabelH = 10;
+int nextLabelH = 8;
 int jackpotLabelY = 32;
 int nextLabelWidth = 45;
 int jackpotLabelWidth = 70;
-int lastLabelY = 70;
+int lastLabelY = 68;
 int lastLabelWidth = 45;
-int lastJackpotVariableLabelY = 143;
+int lastJackpotVariableLabelY = 139;
 int lastJackpotVariableLabelWidth = 170; 
 
 //StarTrans
@@ -54,8 +53,9 @@ int starTransitionHeight = 64;
 //Big ball spacing
 int xindent = 17; //distance from left side for first item - aka X
 int xbuffer = 7; //distance between items
-int ystart = 100; //distance from top for items - aka Y
+int ystart = 97; //distance from top for items - aka Y
 int numItems = 6; //number of items
+int numSpecial = 1; //number of special items
 
 //Small ball spacing
 int xSmallBuffer = 7;
@@ -64,12 +64,16 @@ int xSmallBuffer = 7;
 int xLindent = 25; //distance from left side for first item - aka X
 int yLheight = 28; //distance from last row - aka Y
 
-int yhistoryDateLabel = 185;
+int yhistoryDateLabel = 182;
+int yhistoryBallAdjust = 1;
 int dateLabelWidth = 63;
 
 //Payouts tableView
 int payoutsViewCenterX = 160;
-int payoutsViewCenterY = 200;
+int payoutsViewCenterY = 494;
+
+//Scrollview 
+int scrollviewHeight = 620;
 
 NSMutableArray *matchingArray;
 
@@ -82,16 +86,13 @@ NSMutableArray *matchingArray;
     [self.date3 setHidden:YES];
     [self.date4 setHidden:YES];
     [self.date5 setHidden:YES];
-    
     [self.nextDateLabel setHidden:YES];
     [self.nextJackpotLabel setHidden:YES];
     [self.lastJackpotLabel setHidden:YES];
     [self.lastDateLabel setHidden:YES];
     [self.payoutsTableView.tableView setHidden:YES];
     
-    self.scrollView.contentSize = CGSizeMake(320, 500); //Should be algorithmic based on size of content
-
-    [self.spinner startAnimating];
+    self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, scrollviewHeight); //Should be algorithmic based on size of content
     
     matchingArray = [[NSMutableArray alloc] init];
     [matchingArray addObject:@"selectionOne"];
@@ -103,8 +104,8 @@ NSMutableArray *matchingArray;
     
     firstTime = YES;
     
-    //self.payoutsTableView.tableView.center = CGPointMake(payoutsViewCenterX,payoutsViewCenterY);
-    //self.payoutsTableView.tableView. = CGPointMake(payoutsViewCenterX,payoutsViewCenterY);
+    self.payoutsTableView.tableView.center = CGPointMake(payoutsViewCenterX,payoutsViewCenterY);
+    self.payoutsTableView.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.payoutsTableView.tableView.scrollEnabled = NO;
 }
 
@@ -113,6 +114,11 @@ NSMutableArray *matchingArray;
     [super viewWillAppear:YES];
     NSLog(@"ViewWillAppear firstTime:%d",firstTime);
     [self getDrawData];
+    
+    self.spinner.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds));
+    self.spinner.hidesWhenStopped = YES;
+    [self.spinner startAnimating];
+    [self.view addSubview:self.spinner];
 }
 
 - (void)setUpViewData //Does all the view setup, then calls AddResults
@@ -135,7 +141,7 @@ NSMutableArray *matchingArray;
      
     UILabel *nextLabel = [[UILabel alloc] initWithFrame:CGRectMake(xLindent,nextLabelH,nextLabelWidth,yLheight)];
     nextLabel.font = [UIFont boldSystemFontOfSize:16];
-    nextLabel.textColor = [UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:1.0];
+    nextLabel.textColor = [UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:1.0];//[UIColor redColor];
     nextLabel.textAlignment = UITextAlignmentLeft;
     nextLabel.backgroundColor = [UIColor clearColor];
     nextLabel.text = @"Next:";
@@ -144,7 +150,7 @@ NSMutableArray *matchingArray;
     
     UILabel *jackpotLabel = [[UILabel alloc] initWithFrame:CGRectMake(xLindent,jackpotLabelY,jackpotLabelWidth,yLheight)];
     jackpotLabel.font = [UIFont boldSystemFontOfSize:16];
-    jackpotLabel.textColor = [UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:1.0];
+    jackpotLabel.textColor = [UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:1.0];//[UIColor redColor];
     jackpotLabel.textAlignment = UITextAlignmentLeft;
     jackpotLabel.backgroundColor = [UIColor clearColor];
     jackpotLabel.text = @"Jackpot:";
@@ -210,8 +216,7 @@ NSMutableArray *matchingArray;
         UILabel *currentDate = [dates objectAtIndex:(-1+x)]; //Start at the first label
         
         NSDate *givenDate = drawResult.drawingDate;
-        NSString *newDateStr = [[dateFormatter stringFromDate:givenDate]stringByAppendingString:@":"];
-        //NSLog(@"Weekday: %@", newDateStr);        
+        NSString *newDateStr = [[dateFormatter stringFromDate:givenDate]stringByAppendingString:@":"];      
         
         currentDate.frame = CGRectMake(xLindent,yhistoryDateLabel+((x-1)*yLheight),dateLabelWidth,yLheight);
         currentDate.font = [UIFont boldSystemFontOfSize:16];
@@ -224,22 +229,22 @@ NSMutableArray *matchingArray;
         Selection *currentSelection = [self.allSelections objectAtIndex:x+1];
         int screenWidth = self.view.frame.size.width-40; 
         int xsize = (screenWidth - xLindent - dateLabelWidth - (numItems*xbuffer)) / numItems;
-        [self animateResults:currentSelection xsize:xsize endX:(xLindent + dateLabelWidth) endY:yhistoryDateLabel+((x-1)*yLheight)  width:xsize height:xsize count:x+1];
-    
-        //NSLog(@"Selection# %@ on %@ for %@", [NSString stringWithFormat:@"%d", x], [dateFormatter stringFromDate:givenDate], drawResult.jackpot);
+        [self animateResults:currentSelection xsize:xsize endX:(xLindent + dateLabelWidth) endY:yhistoryBallAdjust+yhistoryDateLabel+((x-1)*yLheight)  width:xsize height:xsize count:x+1];
     }
     [self addResults];
 }
 
-- (void)addResults //Adds the main results(last version)
+- (void)addResults //Adds the Big Balls - main results(last version)
 {
     int screenWidth = self.view.frame.size.width; 
     int xsize = (screenWidth - (2*xindent) - (numItems*xbuffer)) / numItems;
     
     Selection *mainSelection = [self.allSelections objectAtIndex:1];
     [self animateResults:mainSelection xsize:xsize endX:xindent endY:ystart width:xsize height:xsize count:1];
+    firstTime = NO;
     
-    firstTime = NO; //FOR TESTING ONLY - remove for prod
+    [self.spinner removeFromSuperview];
+    self.spinner = nil;
 }
 
 - (void)getDrawData //Gets all the draw data from Parse
@@ -294,10 +299,9 @@ NSMutableArray *matchingArray;
         }
     }];
     query = nil;
-    [self.spinner stopAnimating];
 }
 
-- (void)animateResults:(Selection *)selection xsize:(int)xsize endX:(int)endX endY:(int)endY width:(int)width height:(int)height count:(int)count
+- (void)animateResults:(Selection *)selection xsize:(int)xsize endX:(int)endX endY:(int)endY width:(int)width height:(int)height count:(int)count //Animates the results onto the screen
 {
     int screenWidth = self.view.frame.size.width; 
     NSLog(@"Width: %i", xsize);

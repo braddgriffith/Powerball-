@@ -22,10 +22,13 @@
 @synthesize numberFive;
 @synthesize powerball;
 @synthesize currentDrawDate;
+@synthesize nextDrawDateEST;
 
 @synthesize selection;
 @synthesize selections;
 @synthesize upcomingDrawDate;
+
+@synthesize appDelegate;
 
 @synthesize today;
 
@@ -40,9 +43,13 @@
     
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
     
+    appDelegate = [[UIApplication sharedApplication] delegate]; 
+    
     //Calculate the next draw date in EST
+    NSLog(@"Local Time Zone %@",[[NSTimeZone localTimeZone] name]);
+    NSLog(@"System Time Zone %@",[[NSTimeZone systemTimeZone] name]);
     Time *theTime = [[Time alloc] init];
-    NSDate *nextDrawDateEST = [theTime getDrawDate:@"forward"]; 
+    nextDrawDateEST = [theTime getDrawDate:@"forward"]; 
     double interval = [theTime getTimeZoneOffset];
     upcomingDrawDate = [nextDrawDateEST dateByAddingTimeInterval:interval];
     
@@ -136,6 +143,8 @@
     currentSelection.selectionFive = [numFormatter numberFromString:entryFive];
     currentSelection.selectionPowerball = [numFormatter numberFromString:entryPowerball];
     currentSelection.drawingDate = upcomingDrawDate;
+    NSTimeInterval since70 = [nextDrawDateEST timeIntervalSince1970];
+    currentSelection.since70 = [NSNumber numberWithFloat:since70];
     currentSelection.userChosenDate = [NSDate date];
     
     currentSelection.selectionArray = [NSMutableArray array];
@@ -178,21 +187,26 @@
     if(currentSelection.drawingDate){
         [newSelection setObject:currentSelection.drawingDate forKey:@"drawDate"];
     }
+    if(currentSelection.since70){
+        [newSelection setObject:currentSelection.since70 forKey:@"since70"];
+    }
     if(currentSelection.selectionArray){
         NSArray *parseArray = [NSArray arrayWithArray:currentSelection.selectionArray];
         [newSelection setObject:parseArray forKey:@"selectionArray"];
     }
-    currentSelection.userID = @"devVersion";
-    if(currentSelection.userID){ // OVERWRITE WITH REAL USERID
-        [newSelection setObject:currentSelection.userID forKey:@"userID"];
+    
+    if(appDelegate.user.username == @""){ 
+        [newSelection setObject:@"Unknown User" forKey:@"userID"];
+    } else {
+        [newSelection setObject:appDelegate.user.username forKey:@"userID"];
     }
+    
     currentSelection.type = @"Powerball";
     if(currentSelection.type){ // OVERWRITE WITH REAL type
         [newSelection setObject:currentSelection.type forKey:@"type"];
     }
     [newSelection setObject:currentSelection.userChosenDate forKey:@"addedDate"];
     [newSelection saveInBackground];
-//    [newSelection saveEventually];
 
     [HudView hudInView:self.navigationController.view text:@"Saved!" lineTwo:@"Check MyPicks" animated:YES];
 

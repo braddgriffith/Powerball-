@@ -19,7 +19,7 @@
 @synthesize selections = _selections;
 @synthesize drawDates;
 @synthesize tabBarController;
-@synthesize user;
+@synthesize user = _user;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -60,6 +60,7 @@
                 NSLog(@"Anonymous username = %@",currentUser.username);
             }
         }];
+        self.user = [[User alloc] init]; 
     }
     
     [self setupViewControllers];
@@ -117,9 +118,9 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
     // Subscribe this user to the broadcast channel, "" 
     [PFPush subscribeToChannelInBackground:@"" block:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
-            NSLog(@"Successfully subscribed to the broadcast channel.");
+            NSLog(@"Successfully subscribed to the GROUP broadcast channel.");
         } else {
-            NSLog(@"Failed to subscribe to the broadcast channel.");
+            NSLog(@"Failed to subscribe to the GROUP broadcast channel.");
         }
     }];
 }

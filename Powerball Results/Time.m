@@ -23,7 +23,7 @@ NSDate *today;
     NSInteger easternOffset = [easternTimeZone secondsFromGMTForDate:today];
     NSTimeInterval interval = localOffset - easternOffset;
     
-    NSLog(@"Current timezone offset from easternTime: %@", interval);
+    NSLog(@"Current timezone offset from easternTime: %.0f", interval);
     
     return interval;
 }
@@ -45,8 +45,8 @@ NSDate *today;
     NSString *weekdayStr = [NSString stringWithFormat:@"%d", weekdayNumber];
     NSLog(@"Weekday: %@", weekdayStr);
     
-    NSNumber *dayOne = [NSNumber numberWithInt:(4)];
-    NSNumber *dayTwo = [NSNumber numberWithInt:(7)];
+    NSNumber *dayOne = [NSNumber numberWithInt:(4)]; //Weds
+    NSNumber *dayTwo = [NSNumber numberWithInt:(7)]; //Sunday
     NSArray *dayNumbers = [[NSArray alloc] initWithObjects:dayOne, dayTwo, nil];
     
     NSTimeInterval interval = [self roundToDayNumber:dayNumbers usingDay:weekdayNumber usingDirection:direction];
@@ -62,12 +62,14 @@ NSDate *today;
 {
     NSTimeInterval interval = 0;
     NSTimeInterval secondsPerDay = 24 * 60 * 60;
+    NSLog(@"secondsPerDay: %.0f",secondsPerDay);
     NSLog(@"DayNumbers are: %@",dayNumbers);
+    NSLog(@"DayOfWeek is: %@",dayOfWeek);
     
     if ([direction isEqualToString:@"forward"]) {
         NSNumber *upperBound = [NSNumber numberWithInt:8];
         while (![dayNumbers containsObject:dayOfWeek]) {
-            interval += secondsPerDay;
+            interval = interval + secondsPerDay;
             dayOfWeek = [NSNumber numberWithFloat:([dayOfWeek floatValue] + 1)];
             if ([dayOfWeek doubleValue] == [upperBound doubleValue]) {
                 dayOfWeek = [NSNumber numberWithInt:1];
@@ -77,7 +79,7 @@ NSDate *today;
     } else if ([direction isEqualToString:@"backward"]) {
         NSNumber *lowerBound = [NSNumber numberWithInt:0];
         while (![dayNumbers containsObject:dayOfWeek]) {
-            interval -= secondsPerDay;
+            interval = interval - secondsPerDay;
             dayOfWeek = [NSNumber numberWithFloat:([dayOfWeek floatValue] - 1)];
             if ([dayOfWeek doubleValue] == [lowerBound doubleValue]) {
                 dayOfWeek = [NSNumber numberWithInt:7];
@@ -85,7 +87,7 @@ NSDate *today;
             NSLog(@"roundToDayNumber backward dayOfWeek:%@",dayOfWeek);
         }
     }
-    NSLog(@"Interval: %@",interval);
+    NSLog(@"Interval: %.0f",interval);
     return interval;
 }
 

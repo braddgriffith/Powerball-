@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Selection.h"
+#import "AppDelegate.h"
 
 @interface SelectorViewController : UIViewController <UITextFieldDelegate>
 
@@ -22,6 +23,9 @@
 @property (strong, nonatomic) Selection *selection;
 @property (nonatomic, strong) NSMutableArray *selections;
 @property (nonatomic, strong) NSDate *upcomingDrawDate;
+@property (nonatomic, strong) NSDate *nextDrawDateEST;
+
+@property (nonatomic, weak) AppDelegate *appDelegate;
 
 @property (nonatomic, strong) NSDate *today;
 

@@ -11,20 +11,20 @@
 
 @interface ResultsViewController : UIViewController
 
-@property (strong, nonatomic) IBOutlet UILabel *nextDateLabel;
-@property (strong, nonatomic) IBOutlet UILabel *nextJackpotLabel;
-@property (strong, nonatomic) IBOutlet UILabel *lastDateLabel;
-@property (strong, nonatomic) IBOutlet UILabel *lastJackpotLabel;
-@property (strong, nonatomic) IBOutlet UILabel *date1;
-@property (strong, nonatomic) IBOutlet UILabel *date2;
-@property (strong, nonatomic) IBOutlet UILabel *date3;
-@property (strong, nonatomic) IBOutlet UILabel *date4;
-@property (strong, nonatomic) IBOutlet UILabel *date5;
+@property (weak, nonatomic) IBOutlet UILabel *nextDateLabel;
+@property (weak, nonatomic) IBOutlet UILabel *nextJackpotLabel;
+@property (weak, nonatomic) IBOutlet UILabel *lastDateLabel;
+@property (weak, nonatomic) IBOutlet UILabel *lastJackpotLabel;
+@property (weak, nonatomic) IBOutlet UILabel *date1;
+@property (weak, nonatomic) IBOutlet UILabel *date2;
+@property (weak, nonatomic) IBOutlet UILabel *date3;
+@property (weak, nonatomic) IBOutlet UILabel *date4;
+@property (weak, nonatomic) IBOutlet UILabel *date5;
 @property (strong, nonatomic) NSMutableArray *allSelections;
 @property (strong, nonatomic) NSMutableArray *allPayouts;
 
-@property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 @property (strong, nonatomic) IBOutlet PayoutTableView *payoutsTableView;
 
 @property (nonatomic, strong) NSDate *upcomingDrawDate;

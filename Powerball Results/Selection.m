@@ -24,6 +24,7 @@
 @synthesize jackpot;
 @synthesize matches;
 @synthesize specialMatches;
+@synthesize since70;
 
 - (void)encodeWithCoder:(NSCoder *)coder;
 {
@@ -39,8 +40,9 @@
     [coder encodeObject:selectionArray forKey:@"selectionArray"];
     [coder encodeObject:userChosenDate forKey:@"userChosenDate"];
     [coder encodeObject:jackpot forKey:@"jackpot"];
-    [coder encodeObject:jackpot forKey:@"matches"];
-    [coder encodeObject:jackpot forKey:@"specailMatches"];
+    [coder encodeObject:matches forKey:@"matches"];
+    [coder encodeObject:specialMatches forKey:@"specailMatches"];
+    [coder encodeObject:since70 forKey:@"since70"];
 }
 
 - (id)initWithCoder:(NSCoder *)coder;
@@ -60,8 +62,9 @@
         self.selectionArray = [coder decodeObjectForKey:@"selectionArray"];
         self.userChosenDate = [coder decodeObjectForKey:@"userChosenDate"];
         self.jackpot = [coder decodeObjectForKey:@"jackpot"];
-        self.jackpot = [coder decodeObjectForKey:@"matches"];
-        self.jackpot = [coder decodeObjectForKey:@"specialMatches"];
+        self.matches = [coder decodeObjectForKey:@"matches"];
+        self.specialMatches = [coder decodeObjectForKey:@"specialMatches"];
+        self.since70 = [coder decodeObjectForKey:@"since70"];
     }   
     return self;
 }

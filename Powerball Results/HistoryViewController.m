@@ -55,32 +55,6 @@ bool inserting;
     return count;
 }
 
-- (void)configureCell:(HistoryCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-    Selection *selection = [selections objectAtIndex:indexPath.row];
-    
-    if (selection.selectionPowerball) {
-        cell.powerballLabel.text = [selection.selectionPowerball stringValue];//stringValue];
-    } else {
-        cell.powerballLabel.text = @"(?)";
-    }
-    
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
-    [dateFormatter setDateFormat:@"MM/dd/yyyy"];
-    cell.dateLabel.text = [dateFormatter stringFromDate:selection.drawingDate]; 
-    
-    NSString *selectionList = [[selection.selectionOne stringValue] stringByAppendingString:@"-"];
-    selectionList = [selectionList stringByAppendingString:[selection.selectionTwo stringValue]];
-    selectionList = [selectionList stringByAppendingString:@"-"];
-    selectionList = [selectionList stringByAppendingString:[selection.selectionThree stringValue]];
-    selectionList = [selectionList stringByAppendingString:@"-"];
-    selectionList = [selectionList stringByAppendingString:[selection.selectionFour stringValue]];
-    selectionList = [selectionList stringByAppendingString:@"-"];
-    selectionList = [selectionList stringByAppendingString:[selection.selectionFive stringValue]];
-    
-    cell.numbersLabel.text = selectionList;
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {        
     HistoryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"HistoryCell"];
@@ -107,7 +81,7 @@ bool inserting;
     }
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
-    [dateFormatter setDateFormat:@"MM/dd/yyyy"];
+    [dateFormatter setDateFormat:@"M/d/yyyy"];
     cell.dateLabel.text = [dateFormatter stringFromDate:selection.drawingDate]; 
     
     NSString *selectionList = [[selection.selectionOne stringValue] stringByAppendingString:@"-"];
@@ -133,7 +107,7 @@ bool inserting;
 {
     Selection *selection = [self.selections objectAtIndex:indexPath.row];
     PFQuery *query = [PFQuery queryWithClassName:@"Selections"];
-    [query whereKey:@"userID" equalTo:selection.userID];
+    //[query whereKey:@"userID" equalTo:selection.userID];
     [query whereKey:@"addedDate" equalTo:selection.userChosenDate];
     [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         if (!object) {

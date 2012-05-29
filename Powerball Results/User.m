@@ -20,6 +20,7 @@
 @synthesize location;
 @synthesize current_cause;
 @synthesize username;
+@synthesize parseUser;
 
 - (void)encodeWithCoder:(NSCoder *)coder;
 {
@@ -33,6 +34,7 @@
     [coder encodeObject:default_cause forKey:@"default_cause"];
     [coder encodeObject:default_cause forKey:@"location"];
     [coder encodeObject:username forKey:@"username"];
+    [coder encodeObject:parseUser forKey:@"parseUser"];
 }
 
 - (id)initWithCoder:(NSCoder *)coder;
@@ -50,6 +52,7 @@
         self.default_cause = [coder decodeObjectForKey:@"default_cause"];
         self.location = [coder decodeObjectForKey:@"location"];
         self.username = [coder decodeObjectForKey:@"username"];
+        self.parseUser = [coder decodeObjectForKey:@"parseUser"];
     }   
     return self;
 }
@@ -62,7 +65,7 @@
         self.current_cause = @"";
         self.email = @"";
         self.first_name = @"";
-        self.id =@"";
+        self.id = @"";
         self.last_name = @"";
         self.credit_card_last_4 = @"";
         self.credit_card_type = @"";
@@ -70,6 +73,7 @@
         self.current_cause = @"";
         self.location = @"";
         self.username = @"";
+        self.parseUser = nil;
     }
     return self;
 }

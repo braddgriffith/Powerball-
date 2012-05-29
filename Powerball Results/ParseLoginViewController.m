@@ -10,11 +10,27 @@
 
 @implementation ParseLoginViewController
 
+int frameYstart = 15;
+int frameIndent = 18;
+int frameHeight = 64;
+
 - (void)viewDidLoad 
 {
     [super viewDidLoad];
     
     self.logInView.backgroundColor = [UIColor blackColor];
+    
+    //Override the logo display to display text
+    CGRect frame = CGRectMake(frameIndent,frameYstart,self.view.frame.size.width-2*frameIndent,frameHeight);
+    UILabel *label = [[UILabel alloc] initWithFrame:frame];
+    label.backgroundColor = [UIColor clearColor];
+    label.textAlignment = UITextAlignmentCenter;
+    label.font = [UIFont boldSystemFontOfSize:14];
+    label.textColor = [UIColor whiteColor];
+    label.lineBreakMode = UILineBreakModeWordWrap;
+    label.numberOfLines = 0;
+    label.text = @"Join via Facebook in two clicks!";// enter your username/password or click sign-up. ";
+    [self.logInView addSubview:label]; //add the tableView
     
     self.logInView.logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Icon-Small@2x.png"]];
     
@@ -32,11 +48,12 @@
     
     self.signUpController.signUpView.backgroundColor = [UIColor blackColor];
     
+    //Override the logo display to display text//Override the logo display to display text - as above
     self.signUpController.signUpView.logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Icon-Small@2x.png"]];
     
-    self.signUpController.signUpView.usernameField.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
-    self.signUpController.signUpView.passwordField.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
-    self.signUpController.signUpView.emailField.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
+    self.signUpController.signUpView.usernameField.backgroundColor = [UIColor colorWithWhite:1.0 alpha:1.0];
+    self.signUpController.signUpView.passwordField.backgroundColor = [UIColor colorWithWhite:1.0 alpha:1.0];
+    self.signUpController.signUpView.emailField.backgroundColor = [UIColor colorWithWhite:1.0 alpha:1.0];
     
     self.signUpController.signUpView.usernameField.textColor = [UIColor blackColor];
     self.signUpController.signUpView.passwordField.textColor = [UIColor blackColor];

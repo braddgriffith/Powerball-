@@ -24,5 +24,6 @@
 @property (nonatomic, strong) NSString * jackpot;
 @property (nonatomic, strong) NSNumber * matches;
 @property (nonatomic, strong) NSNumber * specialMatches;
+@property (nonatomic, strong) NSNumber * since70;
 
 @end
