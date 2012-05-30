@@ -20,7 +20,7 @@
 
 // UITableView header view properties
 @property (nonatomic, strong) UITableView *tableViewForAccount;
-@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, assign) CGRect tableViewForAccountFrame;
 
 // UITableView row data properties
 @property (nonatomic, strong) NSMutableArray *rowTitleArray;

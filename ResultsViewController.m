@@ -93,6 +93,7 @@ NSMutableArray *matchingArray;
     [self.payoutsTableView.tableView setHidden:YES];
     
     self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, scrollviewHeight); //Should be algorithmic based on size of content
+    self.scrollView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]];
     
     matchingArray = [[NSMutableArray alloc] init];
     [matchingArray addObject:@"selectionOne"];

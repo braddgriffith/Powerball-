@@ -32,7 +32,7 @@
     [coder encodeObject:credit_card_last_4 forKey:@"credit_card_last_4"];
     [coder encodeObject:credit_card_type forKey:@"credit_card_type"];
     [coder encodeObject:default_cause forKey:@"default_cause"];
-    [coder encodeObject:default_cause forKey:@"location"];
+    [coder encodeObject:location forKey:@"location"];
     [coder encodeObject:username forKey:@"username"];
     //[coder encodeObject:parseUser forKey:@"parseUser"];
 }

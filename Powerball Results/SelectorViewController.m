@@ -27,6 +27,7 @@
 @synthesize selection;
 @synthesize selections;
 @synthesize upcomingDrawDate;
+@synthesize pickButton;
 
 @synthesize appDelegate;
 
@@ -35,6 +36,18 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     NSLog(@"Selector has %d selections", [self.selections count]);
+    NSLog(@"viewWillAppear Email is %@", appDelegate.user.email);
+    
+    if ([appDelegate.user.email isEqualToString:@""]) {
+        [pickButton.titleLabel setText:@"QuickPick"];
+        [pickButton setTitle:@"QuickPick" forState:(UIControlStateNormal)];
+        [pickButton setTitle:@"QuickPick" forState:(UIControlStateSelected)];
+    } else {
+        [pickButton.titleLabel setText:@"SmartPick"];
+        [pickButton setTitle:@"SmartPick" forState:(UIControlStateNormal)];
+        [pickButton setTitle:@"SmartPick" forState:(UIControlStateSelected)];
+    }
+    [pickButton.titleLabel setTextAlignment:UITextAlignmentCenter];
 }
 
 -(void)viewDidLoad
@@ -42,6 +55,7 @@
     [super viewDidLoad];
     
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
+    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]];
     
     appDelegate = [[UIApplication sharedApplication] delegate]; 
     

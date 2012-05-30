@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11D50b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="Cxw-7o-yLL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11E53" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="Cxw-7o-yLL">
     <dependencies>
         <deployment defaultVersion="1296" identifier="iOS"/>
         <development defaultVersion="4200" identifier="xcode"/>
@@ -373,6 +373,7 @@
                         <outlet property="numberOne" destination="Nt0-xF-dYc" id="tsV-4P-yqt"/>
                         <outlet property="numberThree" destination="u0K-9f-tgV" id="Izt-VI-KZh"/>
                         <outlet property="numberTwo" destination="Pea-0N-Ffj" id="1fC-k3-dBm"/>
+                        <outlet property="pickButton" destination="zeQ-gR-VTt" id="5jc-I2-LYh"/>
                         <outlet property="powerball" destination="fHZ-sz-Aqw" id="xTI-pC-9Me"/>
                     </connections>
                 </viewController>

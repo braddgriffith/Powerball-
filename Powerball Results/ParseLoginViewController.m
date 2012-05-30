@@ -46,6 +46,8 @@ int frameHeight = 64;
     self.logInView.usernameField.borderStyle = UITextBorderStyleRoundedRect;
     self.logInView.passwordField.borderStyle = UITextBorderStyleRoundedRect;
     
+    self.logInView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]];
+    
     self.signUpController.signUpView.backgroundColor = [UIColor blackColor];
     
     //Override the logo display to display text//Override the logo display to display text - as above
@@ -66,6 +68,8 @@ int frameHeight = 64;
     self.signUpController.signUpView.usernameField.borderStyle = UITextBorderStyleRoundedRect;
     self.signUpController.signUpView.passwordField.borderStyle = UITextBorderStyleRoundedRect;
     self.signUpController.signUpView.emailField.borderStyle = UITextBorderStyleRoundedRect;
+    
+    self.signUpController.signUpView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]];
     
     self.signUpController.fields = PFLogInFieldsUsernameAndPassword
     | PFLogInFieldsFacebook

@@ -61,8 +61,9 @@
             }
         }];
         self.user = [[User alloc] init]; 
+        PFUser *anonUser = [PFUser currentUser];
+        self.user.username = anonUser.username;
     }
-    
     [self setupViewControllers];
     return YES;
 }
@@ -98,6 +99,7 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 							
 - (void)applicationWillResignActive:(UIApplication *)application
 {
+    //self.user = nil; //REMOVE FOR LAUNCH
     [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:self.selections] forKey:@"selections"];
     if (self.user) {
         [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:self.user] forKey:@"user"];

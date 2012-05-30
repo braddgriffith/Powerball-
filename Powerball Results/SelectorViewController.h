@@ -18,6 +18,7 @@
 @property (nonatomic, strong) IBOutlet UITextField *numberFour;
 @property (nonatomic, strong) IBOutlet UITextField *numberFive;
 @property (nonatomic, strong) IBOutlet UITextField *powerball;
+@property (nonatomic, strong) IBOutlet UIButton *pickButton;
 @property (strong, nonatomic) IBOutlet UILabel *currentDrawDate;
 
 @property (strong, nonatomic) Selection *selection;
