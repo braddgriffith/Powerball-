@@ -98,7 +98,6 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 							
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-    //NSLog(@"Archiving :%@ selections", [self.selections count]);
     [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:self.selections] forKey:@"selections"];
     if (self.user) {
         [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:self.user] forKey:@"user"];

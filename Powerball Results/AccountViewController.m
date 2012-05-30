@@ -20,22 +20,28 @@
 @synthesize rowTitleArray, rowDataArray;
 @synthesize appDelegate;
 @synthesize tableViewForAccount;
+@synthesize scrollView;
 @synthesize permissions;
 
 @synthesize logoutButton;
 @synthesize headerLabel;
+@synthesize activeField;
 
 int introHeight = 39;
+int scrollViewHeight = 500;
+int tableViewForAccountHeight = 800;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    appDelegate = [[UIApplication sharedApplication] delegate]; 
-    permissions = [NSArray arrayWithObjects:@"email", @"user_location", @"user_about_me", nil]; 
+    self.appDelegate = [[UIApplication sharedApplication] delegate]; 
+    self.permissions = [NSArray arrayWithObjects:@"email", @"user_location", @"user_about_me", nil]; 
+    
+    self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, scrollViewHeight);
     
     CGRect frame = CGRectMake(20, 44+5, self.view.frame.size.width-40, introHeight);
-    headerLabel = [[UILabel alloc] initWithFrame:frame];
+    self.headerLabel = [[UILabel alloc] initWithFrame:frame];
     
     headerLabel.backgroundColor = [UIColor clearColor];
     headerLabel.textColor = [UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:1];
@@ -48,8 +54,8 @@ int introHeight = 39;
     navigationBar.barStyle = UIBarStyleBlackTranslucent;
     UINavigationItem *titleItem = [[UINavigationItem alloc] initWithTitle:@"Account"];
     
-    frame = CGRectMake(0, navigationBar.frame.size.height+introHeight, self.view.frame.size.width, self.view.frame.size.height - navigationBar.frame.size.height - introHeight);
-    tableViewForAccount = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
+    frame = CGRectMake(0, navigationBar.frame.size.height+introHeight, self.view.frame.size.width, tableViewForAccountHeight);//self.view.frame.size.height - navigationBar.frame.size.height - introHeight);
+    self.tableViewForAccount = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
     
     [self.view setBackgroundColor:[UIColor blackColor]];
     [self.tableViewForAccount setBackgroundColor:[UIColor blackColor]];
@@ -64,16 +70,43 @@ int introHeight = 39;
     
     if (!([appDelegate.user.email isEqualToString:@""] || appDelegate.user.email == nil)) {
         logoutButton.title = @"Login";
-    } else {
-
     }
     
     titleItem.leftBarButtonItem = logoutButton;
     [navigationBar setItems:[NSArray arrayWithObject:titleItem]];
     
+    [self.view addSubview:scrollView]; //add the tableView
     [self.view addSubview:tableViewForAccount]; //add the tableView
     [self.view addSubview:navigationBar]; //add the bar
     [self.view addSubview:headerLabel]; //add the intro
+    
+    UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewTapped)];
+    tapRecognizer.numberOfTapsRequired = 1;
+    tapRecognizer.cancelsTouchesInView = NO;
+    [self.view addGestureRecognizer:tapRecognizer];
+    
+    if ([appDelegate.user.email isEqualToString:@""] || appDelegate.user.email == nil) {
+        [self displayParseLoginVC];
+        headerLabel.font = [UIFont boldSystemFontOfSize:14];
+        headerLabel.text = @"Hit Login to get updates on winning tickets and enable Smartpick.";
+    } else {
+        headerLabel.font = [UIFont boldSystemFontOfSize:18];
+        headerLabel.text = @"Welcome to Powerball+";// @"Maximize winnings by selecting unique numbers. With Smartpick and accounts, no two Powerball+ users will choose the same numbers.";/
+    }
+    
+    [self registerForKeyboardNotifications];
+}
+
+- (void)registerForKeyboardNotifications
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWasShown:)
+                                                 name:UIKeyboardDidShowNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillBeHidden:)
+                                                 name:UIKeyboardWillHideNotification object:nil];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated //Creates and instatiates ParseLoginViewController if appdelegate.user.email == ""
@@ -84,20 +117,12 @@ int introHeight = 39;
     [self rowDataArrayLoadData];
     
     NSLog(@"viewWillAppear appDelegate.user.email = %@", appDelegate.user.email);
-    if ([appDelegate.user.email isEqualToString:@""] || appDelegate.user.email == nil) {
-        [self displayParseLoginVC];
-        headerLabel.font = [UIFont boldSystemFontOfSize:14];
-        headerLabel.text = @"Hit Login to get updates on winning tickets and enable Smartpick.";
-    } else {
-        headerLabel.font = [UIFont boldSystemFontOfSize:18];
-        headerLabel.text = @"Welcome to Powerball+";// @"Maximize winnings by selecting unique numbers. With Smartpick and accounts, no two Powerball+ users will choose the same numbers.";/
-    }
 }
 
 - (void)displayParseLoginVC
 {
     NSLog(@"displayParseLoginVC appDelegate.user.email = %@", appDelegate.user.email);
-    [PFUser logOut]; 
+    [PFUser logOut]; //WATCH FOR THIS
     ParseLoginViewController *logInController = [[ParseLoginViewController alloc] init];
     
     logInController.fields = PFLogInFieldsUsernameAndPassword
@@ -129,15 +154,19 @@ int introHeight = 39;
     } else {  //else, go ask FB for data
         [[PFFacebookUtils facebook] requestWithGraphPath:@"me?fields=first_name,last_name,email,location,username" //REQUEST_WITH_GRAPH_PATH
                                              andDelegate:self];
+        //[PFFacebookUtils logInWithPermissions:permissions block:^(PFUser *user, NSError *error) {}];
         NSLog(@"Got to FB");
     }
-    appDelegate.user.parseUser = user; //5.28 ADDED USER TO APPDELEGATE AND ASSIGNED HERE
+    //[user signUp];
+    appDelegate.user.parseUser = user;
+    NSLog(@"didLogInUser currentUser = %@", [PFUser currentUser]);
+    NSLog(@"didLogInUser user = %@", user);
     [self rowDataArrayLoadData];
     [tableViewForAccount reloadData]; 
     [self dismissModalViewControllerAnimated:YES];
     
-    //LOGGED IN USER
-    NSString *channel = [NSString stringWithFormat:@"a%@", appDelegate.user.id]; //subscribe to GENERAL BROADCAST CHANNEL
+    //PUSH - subscribe to MY channel for scored tickets - appDelegate.user.id
+    NSString *channel = [NSString stringWithFormat:@"a%@", user.objectId];
     [PFPush subscribeToChannelInBackground:channel block:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
             NSLog(@"Successfully subscribed to the PERSONAL (%@) broadcast channel.",appDelegate.user.id);
@@ -152,7 +181,7 @@ int introHeight = 39;
     NSLog(@"didLoad - Facebook request %@ loaded", result);
     if ([[request url] rangeOfString:@"/me"].location != NSNotFound)
     {
-        NSLog(@"result = %@",result);
+        NSLog(@"didLoad result = %@",result);
         
         appDelegate.user.first_name = [result objectForKey:@"first_name"];
         appDelegate.user.last_name = [result objectForKey:@"last_name"];
@@ -160,19 +189,30 @@ int introHeight = 39;
         appDelegate.user.location = [[result objectForKey:@"location"]objectForKey:@"name"];
         appDelegate.user.username = [result objectForKey:@"username"];
         
-        NSLog(@"appDelegate id = %@, first = %@, last = %@, email = %@, location = %@",[result objectForKey:@"id"], appDelegate.user.first_name, appDelegate.user.last_name, appDelegate.user.email, appDelegate.user.location);
+        NSLog(@"didLoad appDelegate id = %@, first = %@, last = %@, email = %@, location = %@",[result objectForKey:@"id"], appDelegate.user.first_name, appDelegate.user.last_name, appDelegate.user.email, appDelegate.user.location);
         
         // https://parse.com/docs/ios_guide#users
         // other fields can be set just like with PFObject
         // [user setObject:@"415-392-0202" forKey:@"phone"];
-        NSLog(@"requestDidLoad currentUser = %@",[PFUser currentUser]);
-        NSLog(@"requestDidLoad appDelegate.user.parseUser = %@", appDelegate.user.parseUser);
+        
+        [[PFUser currentUser] refresh];
+        
+        NSLog(@"didLoad currentUser = %@",[PFUser currentUser]);
+        NSLog(@"didLoad appDelegate.user.parseUser = %@", appDelegate.user.parseUser);
         [appDelegate.user.parseUser setObject:appDelegate.user.first_name forKey:@"first_name"];
         [appDelegate.user.parseUser setObject:appDelegate.user.last_name forKey:@"last_name"];
         [appDelegate.user.parseUser setObject:appDelegate.user.email forKey:@"email"];
         [appDelegate.user.parseUser setObject:appDelegate.user.location forKey:@"location"];
         [appDelegate.user.parseUser setObject:appDelegate.user.username forKey:@"username"];
+        NSLog(@"Saving user %@, stuff like %@ for first_name.", appDelegate.user.parseUser, appDelegate.user.first_name);
         [appDelegate.user.parseUser saveInBackground];
+//        [[PFUser currentUser] setObject:appDelegate.user.first_name forKey:@"first_name"];
+//        [[PFUser currentUser] setObject:appDelegate.user.last_name forKey:@"last_name"];
+//        [[PFUser currentUser] setObject:appDelegate.user.email forKey:@"email"];
+//        [[PFUser currentUser] setObject:appDelegate.user.location forKey:@"location"];
+//        [[PFUser currentUser] setObject:appDelegate.user.username forKey:@"username"];
+//        [[PFUser currentUser] saveInBackground];
+//        NSLog(@"Saving user %@", [PFUser currentUser]);
         
         logoutButton.title = @"Logout";
     }
@@ -254,10 +294,13 @@ int introHeight = 39;
         [titleLabel setFont:[UIFont boldSystemFontOfSize:17]];
         [titleLabel setBackgroundColor:[UIColor clearColor]];
         
-        UILabel *dataLabel = [[UILabel alloc] initWithFrame:CGRectMake(130, 0, 155, 44)];
+        UITextField *dataLabel = [[UITextField alloc] initWithFrame:CGRectMake(130, 0, 155, 44)];
         [dataLabel setTag:2]; // We use the tag to set it later
         [dataLabel setFont:[UIFont systemFontOfSize:17]];
         [dataLabel setBackgroundColor:[UIColor clearColor]];
+        [dataLabel setTextAlignment:UITextAlignmentLeft];
+        dataLabel.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        dataLabel.delegate = self;
         
         [cell.contentView addSubview:titleLabel];
         [cell.contentView addSubview:dataLabel];
@@ -268,7 +311,7 @@ int introHeight = 39;
     
     // Access labels in the cell using the tag # 
     UILabel *titleLabel = (UILabel *)[cell viewWithTag:1];
-    UILabel *dataLabel = (UILabel *)[cell viewWithTag:2];
+    UITextField *dataLabel = (UITextField *)[cell viewWithTag:2];
     
     // Display the data in the table
     [titleLabel setText:[self.rowTitleArray objectAtIndex:indexPath.row]];
@@ -278,4 +321,53 @@ int introHeight = 39;
     }
     return cell;
 }
+
+- (IBAction)viewTapped
+{ 
+    [[self.tableViewForAccount superview] endEditing:YES];
+}
+
+// Called when the UIKeyboardDidShowNotification is sent.
+- (void)keyboardWasShown:(NSNotification*)aNotification
+{
+    NSDictionary* info = [aNotification userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
+    self.tableViewForAccount.contentInset = contentInsets;
+    self.tableViewForAccount.scrollIndicatorInsets = contentInsets;
+    
+    // If active text field is hidden by keyboard, scroll it so it's visible
+    CGRect aRect = self.view.frame;
+    aRect.size.height -= kbSize.height;
+    
+    //CGPoint tvOrigin = self.tableViewForAccount.frame.origin;
+    
+    NSLog(@"aRect: %@", NSStringFromCGRect(aRect));
+    NSLog(@"Origin: %@", NSStringFromCGPoint(activeField.frame.origin));
+    if (!CGRectContainsPoint(aRect, activeField.frame.origin) ) { //activeField.frame.origin is the key
+        CGPoint scrollPoint = CGPointMake(0.0, activeField.frame.origin.y-kbSize.height);
+        [self.tableViewForAccount setContentOffset:scrollPoint animated:YES];
+    }
+}
+
+// Called when the UIKeyboardWillHideNotification is sent
+- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+{
+    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
+    self.tableViewForAccount.contentInset = contentInsets;
+    self.tableViewForAccount.scrollIndicatorInsets = contentInsets;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    activeField = textField;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    //appDelegate.user.username = textField.text;
+    activeField = nil;
+}
+
 @end

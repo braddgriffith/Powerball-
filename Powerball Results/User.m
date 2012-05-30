@@ -34,7 +34,7 @@
     [coder encodeObject:default_cause forKey:@"default_cause"];
     [coder encodeObject:default_cause forKey:@"location"];
     [coder encodeObject:username forKey:@"username"];
-    [coder encodeObject:parseUser forKey:@"parseUser"];
+    //[coder encodeObject:parseUser forKey:@"parseUser"];
 }
 
 - (id)initWithCoder:(NSCoder *)coder;
@@ -52,7 +52,7 @@
         self.default_cause = [coder decodeObjectForKey:@"default_cause"];
         self.location = [coder decodeObjectForKey:@"location"];
         self.username = [coder decodeObjectForKey:@"username"];
-        self.parseUser = [coder decodeObjectForKey:@"parseUser"];
+        //self.parseUser = [coder decodeObjectForKey:@"parseUser"];
     }   
     return self;
 }
