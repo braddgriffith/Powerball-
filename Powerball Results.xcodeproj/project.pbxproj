@@ -28,6 +28,12 @@
 		E686B73F15335E7C0068A08D /* Checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E686B73D15335E7C0068A08D /* Checkmark@2x.png */; };
 		E686B74015335E7C0068A08D /* Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = E686B73E15335E7C0068A08D /* Checkmark.png */; };
 		E6990AD415767E2F006795F9 /* Stars02.png in Resources */ = {isa = PBXBuildFile; fileRef = E6990AD315767E2F006795F9 /* Stars02.png */; };
+		E6990AE21576E31C006795F9 /* 06-arrow-south@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E6990AE11576E31C006795F9 /* 06-arrow-south@2x.png */; };
+		E6990AE61577F220006795F9 /* 04-arrow-northeast@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E6990AE51577F220006795F9 /* 04-arrow-northeast@2x.png */; };
+		E6990AE81577F228006795F9 /* 05-arrow-northwest@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E6990AE71577F228006795F9 /* 05-arrow-northwest@2x.png */; };
+		E6990AEA1577F246006795F9 /* 09-arrow-west@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E6990AE91577F246006795F9 /* 09-arrow-west@2x.png */; };
+		E6990AEC1577F398006795F9 /* 03-arrow-north@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E6990AEB1577F398006795F9 /* 03-arrow-north@2x.png */; };
+		E6990AEF157800EC006795F9 /* IntroAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E6990AEE157800EC006795F9 /* IntroAnimation.m */; };
 		E6A9CED615656DF800C474EB /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = E6A9CECF15656DF800C474EB /* Icon-Small.png */; };
 		E6A9CED715656DF800C474EB /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = E6A9CED015656DF800C474EB /* Icon.png */; };
 		E6A9CED815656DF800C474EB /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = E6A9CED115656DF800C474EB /* Icon-72.png */; };
@@ -94,6 +100,13 @@
 		E686B73D15335E7C0068A08D /* Checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Checkmark@2x.png"; sourceTree = "<group>"; };
 		E686B73E15335E7C0068A08D /* Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Checkmark.png; sourceTree = "<group>"; };
 		E6990AD315767E2F006795F9 /* Stars02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Stars02.png; sourceTree = "<group>"; };
+		E6990AE11576E31C006795F9 /* 06-arrow-south@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "06-arrow-south@2x.png"; sourceTree = "<group>"; };
+		E6990AE51577F220006795F9 /* 04-arrow-northeast@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "04-arrow-northeast@2x.png"; sourceTree = "<group>"; };
+		E6990AE71577F228006795F9 /* 05-arrow-northwest@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "05-arrow-northwest@2x.png"; sourceTree = "<group>"; };
+		E6990AE91577F246006795F9 /* 09-arrow-west@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "09-arrow-west@2x.png"; sourceTree = "<group>"; };
+		E6990AEB1577F398006795F9 /* 03-arrow-north@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "03-arrow-north@2x.png"; sourceTree = "<group>"; };
+		E6990AED157800EC006795F9 /* IntroAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntroAnimation.h; sourceTree = "<group>"; };
+		E6990AEE157800EC006795F9 /* IntroAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntroAnimation.m; sourceTree = "<group>"; };
 		E6A9CECF15656DF800C474EB /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
 		E6A9CED015656DF800C474EB /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		E6A9CED115656DF800C474EB /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
@@ -179,6 +192,11 @@
 		E686B74E153492850068A08D /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				E6990AE91577F246006795F9 /* 09-arrow-west@2x.png */,
+				E6990AEB1577F398006795F9 /* 03-arrow-north@2x.png */,
+				E6990AE51577F220006795F9 /* 04-arrow-northeast@2x.png */,
+				E6990AE71577F228006795F9 /* 05-arrow-northwest@2x.png */,
+				E6990AE11576E31C006795F9 /* 06-arrow-south@2x.png */,
 				E6990AD315767E2F006795F9 /* Stars02.png */,
 				E6F5E271156C963300BFE33B /* whiteball.png */,
 				E6F5E273156C963A00BFE33B /* redball.png */,
@@ -243,20 +261,20 @@
 				E6EFAC0A152F53660031CCD3 /* AppDelegate.m */,
 				E626B528155C3AF100DDDAC4 /* ResultsViewController.h */,
 				E626B529155C3AF100DDDAC4 /* ResultsViewController.m */,
+				E686B71D153251020068A08D /* SelectorViewController.h */,
+				E686B71E153251020068A08D /* SelectorViewController.m */,
+				E67D6B3C15468864002FC024 /* AccountViewController.h */,
+				E67D6B3D15468864002FC024 /* AccountViewController.m */,
 				E6F5E258156B073800BFE33B /* PayoutTableView.h */,
 				E6F5E259156B073800BFE33B /* PayoutTableView.m */,
 				E6F5E254156B03E100BFE33B /* PayoutCell.h */,
 				E6F5E255156B03E100BFE33B /* PayoutCell.m */,
 				E6F5E25B156B0BCD00BFE33B /* Payout.h */,
 				E6F5E25C156B0BCD00BFE33B /* Payout.m */,
-				E67D6B3C15468864002FC024 /* AccountViewController.h */,
-				E67D6B3D15468864002FC024 /* AccountViewController.m */,
 				E6F5E262156C2A8100BFE33B /* ParseLoginViewController.h */,
 				E6F5E263156C2A8100BFE33B /* ParseLoginViewController.m */,
 				E6F5E267156C2BAF00BFE33B /* User.h */,
 				E6F5E268156C2BAF00BFE33B /* User.m */,
-				E686B71D153251020068A08D /* SelectorViewController.h */,
-				E686B71E153251020068A08D /* SelectorViewController.m */,
 				E644BE621561A59E00C62D83 /* Time.h */,
 				E644BE631561A59E00C62D83 /* Time.m */,
 				E6EFAC12152F53660031CCD3 /* PBViewController.h */,
@@ -269,6 +287,8 @@
 				E686B738153340860068A08D /* HistoryCell.m */,
 				E686B73415333D8B0068A08D /* Selection.h */,
 				E686B73515333D8C0068A08D /* Selection.m */,
+				E6990AED157800EC006795F9 /* IntroAnimation.h */,
+				E6990AEE157800EC006795F9 /* IntroAnimation.m */,
 				E686B73A153345AE0068A08D /* HudView.h */,
 				E686B73B153345AE0068A08D /* HudView.m */,
 				E686B74E153492850068A08D /* Images */,
@@ -364,6 +384,11 @@
 				E6F5E274156C963A00BFE33B /* redball.png in Resources */,
 				E6F5E276156C964000BFE33B /* stars.png in Resources */,
 				E6990AD415767E2F006795F9 /* Stars02.png in Resources */,
+				E6990AE21576E31C006795F9 /* 06-arrow-south@2x.png in Resources */,
+				E6990AE61577F220006795F9 /* 04-arrow-northeast@2x.png in Resources */,
+				E6990AE81577F228006795F9 /* 05-arrow-northwest@2x.png in Resources */,
+				E6990AEA1577F246006795F9 /* 09-arrow-west@2x.png in Resources */,
+				E6990AEC1577F398006795F9 /* 03-arrow-north@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -391,6 +416,7 @@
 				E6F5E25D156B0BCD00BFE33B /* Payout.m in Sources */,
 				E6F5E264156C2A8200BFE33B /* ParseLoginViewController.m in Sources */,
 				E6F5E269156C2BB000BFE33B /* User.m in Sources */,
+				E6990AEF157800EC006795F9 /* IntroAnimation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

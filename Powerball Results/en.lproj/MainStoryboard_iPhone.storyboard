@@ -322,17 +322,10 @@
                                 </connections>
                             </textField>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Powerball+" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="oIL-vO-zLc">
-                                <rect key="frame" x="45" y="260" width="230" height="43"/>
+                                <rect key="frame" x="45" y="280" width="230" height="43"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="40"/>
                                 <color key="textColor" red="0.3921568627" green="0.74509803919999995" blue="0.039215686270000001" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="currentDrawDate" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="qA2-UN-X6l">
-                                <rect key="frame" x="20" y="310" width="277" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="zeQ-gR-VTt">
@@ -367,7 +360,6 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="currentDrawDate" destination="qA2-UN-X6l" id="59M-pR-F1R"/>
                         <outlet property="numberFive" destination="F5U-Qw-9JN" id="eqK-Ob-Kbh"/>
                         <outlet property="numberFour" destination="zdn-oQ-YUA" id="Qt8-Bs-d82"/>
                         <outlet property="numberOne" destination="Nt0-xF-dYc" id="tsV-4P-yqt"/>

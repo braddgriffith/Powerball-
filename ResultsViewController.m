@@ -113,6 +113,7 @@ NSMutableArray *matchingArray;
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+    
     NSLog(@"ViewWillAppear firstTime:%d",firstTime);
     [self getDrawData];
     
@@ -285,7 +286,6 @@ NSMutableArray *matchingArray;
                 
                 [selectionsAndPendingSelections insertObject:selection atIndex:counter];                
                 counter ++;
-                //NSLog(@"Spot %d - on %@ the powerball: %@ and jackpot: %@", counter, selection.drawingDate, selection.selectionPowerball, selection.jackpot);
             }
             self.allSelections = selectionsAndPendingSelections;
             [self setUpViewData];

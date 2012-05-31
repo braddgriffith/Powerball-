@@ -19,12 +19,14 @@
 @property (nonatomic, strong) IBOutlet UITextField *numberFive;
 @property (nonatomic, strong) IBOutlet UITextField *powerball;
 @property (nonatomic, strong) IBOutlet UIButton *pickButton;
-@property (strong, nonatomic) IBOutlet UILabel *currentDrawDate;
+@property (strong, nonatomic) IBOutlet UIImageView *theArrowView;
+@property (strong, nonatomic) IBOutlet UILabel *encourageLabel;
 
 @property (strong, nonatomic) Selection *selection;
 @property (nonatomic, strong) NSMutableArray *selections;
 @property (nonatomic, strong) NSDate *upcomingDrawDate;
 @property (nonatomic, strong) NSDate *nextDrawDateEST;
+@property (nonatomic, assign) BOOL firstTime;
 
 @property (nonatomic, weak) AppDelegate *appDelegate;
 

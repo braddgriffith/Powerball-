@@ -12,6 +12,7 @@
 #import "AppDelegate.h"
 #import "Time.h"
 #import <Parse/Parse.h>
+#import "IntroAnimation.h"
 
 @implementation SelectorViewController
 
@@ -21,7 +22,6 @@
 @synthesize numberFour;
 @synthesize numberFive;
 @synthesize powerball;
-@synthesize currentDrawDate;
 @synthesize nextDrawDateEST;
 
 @synthesize selection;
@@ -29,30 +29,39 @@
 @synthesize upcomingDrawDate;
 @synthesize pickButton;
 
+@synthesize theArrowView;
+@synthesize encourageLabel;
+@synthesize firstTime; 
+
 @synthesize appDelegate;
 
 @synthesize today;
 
--(void)viewWillAppear:(BOOL)animated
-{
-    NSLog(@"Selector has %d selections", [self.selections count]);
-    NSLog(@"viewWillAppear Email is %@", appDelegate.user.email);
-    
-    if ([appDelegate.user.email isEqualToString:@""]) {
-        [pickButton.titleLabel setText:@"QuickPick"];
-        [pickButton setTitle:@"QuickPick" forState:(UIControlStateNormal)];
-        [pickButton setTitle:@"QuickPick" forState:(UIControlStateSelected)];
-    } else {
-        [pickButton.titleLabel setText:@"SmartPick"];
-        [pickButton setTitle:@"SmartPick" forState:(UIControlStateNormal)];
-        [pickButton setTitle:@"SmartPick" forState:(UIControlStateSelected)];
-    }
-    [pickButton.titleLabel setTextAlignment:UITextAlignmentCenter];
-}
+bool playAnimationForImage = YES;
+bool triedPick = NO;
+bool triedClear = NO;
+bool triedEdit = NO;
+bool triedSave = NO;
+
+
+//Encouragement Arrow
+int arrowWidth = 32;
+int arrowStartXoffset = 24;
+int arrowStartY = 324;
+int arrowHeight = 38;
+int arrowBounce = 5;
+int horizArrowHeight = 32;
+int horizArrowWidth = 38;
+
+int encourageLabelWidth = 200;
+int encourageLabelHeight = 22;
+float encourageAlpha = 0.8;
 
 -(void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    firstTime = YES; //NEED TO STORE IN NSUSERDEFAULTS
     
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]];
@@ -68,20 +77,99 @@
     upcomingDrawDate = [nextDrawDateEST dateByAddingTimeInterval:interval];
     
     //Put next draw date on screen
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
-    [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]]; //Current time of local timezone - drawings are 10:59PM EST
-    [dateFormatter setDateFormat:@"EEEE - h:mm a"];//Was @"MM/dd h:mm a"];
-    NSString *dateStr = [dateFormatter stringFromDate:upcomingDrawDate];
+    //NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
+    //[dateFormatter setTimeZone:[NSTimeZone systemTimeZone]]; //Current time of local timezone - drawings are 10:59PM EST
+    //[dateFormatter setDateFormat:@"EEEE - h:mm a"];//Was @"MM/dd h:mm a"];
+    //NSString *dateStr = [dateFormatter stringFromDate:upcomingDrawDate];
     
-    NSString *dateIntro = @"Next: ";
-    currentDrawDate.text = [dateIntro stringByAppendingString:dateStr];
+    //NSString *dateIntro = @"Next: ";
+    //currentDrawDate.text = [dateIntro stringByAppendingString:dateStr];
     
-    dateFormatter = nil;
+    //dateFormatter = nil;
     
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewTapped)];
     tapRecognizer.numberOfTapsRequired = 1;
     tapRecognizer.cancelsTouchesInView = NO;
     [self.view addGestureRecognizer:tapRecognizer];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:NO];
+    
+    NSLog(@"Selector has %d selections", [self.selections count]);
+    NSLog(@"viewWillAppear Email is %@", appDelegate.user.email);
+    if (firstTime) {
+        [self encourageEditing];
+        //[self encourageSave];
+        //[self encourageClear];
+        //[self encourageQuickPick];
+        if (triedPick) {
+            [self encourageClear];
+        }
+    } else if ([appDelegate.user.email isEqualToString:@""]) {
+        [pickButton.titleLabel setText:@"QuickPick"];
+        [pickButton setTitle:@"QuickPick" forState:(UIControlStateNormal)];
+        [pickButton setTitle:@"QuickPick" forState:(UIControlStateSelected)];
+        int arrowStartX = self.view.frame.size.width-arrowWidth-arrowStartXoffset;
+        int labelStartX = self.view.frame.size.width-(1.8*arrowWidth)-encourageLabelWidth;
+        [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowStartY withText:@"Sign In to enable SmartPick" withYOffset:8 atStartX:arrowStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+    } else {
+        [pickButton.titleLabel setText:@"SmartPick"];
+        [pickButton setTitle:@"SmartPick" forState:(UIControlStateNormal)];
+        [pickButton setTitle:@"SmartPick" forState:(UIControlStateSelected)];
+        if (theArrowView) {
+            [self removeEncouragement];
+        }
+    }
+    [pickButton.titleLabel setTextAlignment:UITextAlignmentCenter];
+}
+
+-(void)encourageQuickPick
+{
+    int arrowPickStartY = pickButton.frame.origin.y-pickButton.frame.size.height-arrowBounce;
+    int arrowPickStartX = pickButton.frame.origin.x + (pickButton.frame.size.width/4);
+    int labelStartX = arrowPickStartX;
+    [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowPickStartY withText:@"Click to QuickPick numbers..." withYOffset:18 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+}
+
+-(void)encourageClear
+{
+    int arrowPickStartY = self.view.frame.origin.y;
+    int arrowPickStartX = self.view.frame.origin.x+1.5*arrowWidth;
+    int labelStartX = arrowPickStartX-arrowWidth;
+    [IntroAnimation encourageSomething:self.view withImage:@"03-arrow-north@2x.png" atStartY:arrowPickStartY withText:@"Now, click to clear..." withYOffset:-6 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+}
+
+-(void)encourageSave
+{
+    int arrowPickStartY = self.view.frame.origin.y;
+    int arrowPickStartX = self.view.frame.size.width-1.35*arrowWidth;
+    int labelStartX = arrowPickStartX-4.8*arrowWidth;
+    [IntroAnimation encourageSomething:self.view withImage:@"03-arrow-north@2x.png" atStartY:arrowPickStartY withText:@"Now, click to save..." withYOffset:-6 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+}
+
+-(void)encourageEditing
+{
+    int arrowPickStartY = self.powerball.frame.origin.y + .5*self.powerball.frame.size.height -.5*horizArrowHeight;
+    int arrowPickStartX = self.powerball.frame.origin.x + self.powerball.frame.size.width + .8*arrowBounce;
+    int labelStartX = arrowPickStartX + horizArrowWidth +1*arrowBounce;
+    [IntroAnimation encourageSomething:self.view withImage:@"09-arrow-west@2x.png" atStartY:arrowPickStartY withText:@"Edit the Powerball..." withYOffset:-4 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"horizontal"];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:NO];
+    [IntroAnimation removeEncouragement:encourageLabel withImageView:theArrowView];
+}
+
+-(void)removeEncouragement
+{
+    [encourageLabel removeFromSuperview];
+    [theArrowView removeFromSuperview];
+    playAnimationForImage = NO;
+    encourageLabel = nil;
+    theArrowView = nil;
 }
 
 - (void)loadSelection
@@ -265,7 +353,22 @@
     return arc4random()%59+1;
 }
 
+- (NSInteger)generateSmart
+{
+    return arc4random()%28+32;
+}
+
 -(IBAction)quikPik:(id)sender
+{
+    triedPick = YES;
+    if ([pickButton.titleLabel.text isEqualToString:@"SmartPick"]) {
+        [self smartPick];
+    } else {
+        [self regularPick];
+    }
+}
+
+-(IBAction)regularPick
 {
     NSMutableArray *currentNumbers = [[NSMutableArray alloc] init];
     
@@ -312,8 +415,62 @@
     currentNumbers = nil;
 }
 
-- (void)viewDidUnload {
-    [self setCurrentDrawDate:nil];
+-(IBAction)smartPick
+{
+    NSMutableArray *currentNumbers = [[NSMutableArray alloc] init];
+    
+    NSInteger a = [self generateRandom];
+    self.numberOne.text = [NSString stringWithFormat:@"%d", a];
+    NSNumber *anumber = [NSNumber numberWithInteger:a];
+    [currentNumbers addObject:anumber];
+    
+    NSInteger b = [self generateRandom];
+    while ([currentNumbers containsObject:[NSNumber numberWithInt:b]]) {
+        b = [self generateRandom];
+    }
+    self.numberTwo.text = [NSString stringWithFormat:@"%d", b];
+    anumber = [NSNumber numberWithInteger:b];
+    [currentNumbers addObject:anumber];
+    
+    NSInteger c = [self generateRandom];
+    while ([currentNumbers containsObject:[NSNumber numberWithInt:c]]) {
+        c = [self generateRandom];
+    }
+    self.numberThree.text = [NSString stringWithFormat:@"%d", c];
+    anumber = [NSNumber numberWithInteger:c];
+    [currentNumbers addObject:anumber];
+    
+    NSInteger d = [self generateSmart];
+    while ([currentNumbers containsObject:[NSNumber numberWithInt:d]]) {
+        d =[self generateSmart];
+    }
+    self.numberFour.text = [NSString stringWithFormat:@"%d", d];
+    anumber = [NSNumber numberWithInteger:d];
+    [currentNumbers addObject:anumber];
+    
+    NSInteger e = [self generateSmart];
+    while ([currentNumbers containsObject:[NSNumber numberWithInt:e]]) {
+        e =[self generateSmart];
+    }
+    self.numberFive.text = [NSString stringWithFormat:@"%d", e];
+    anumber = [NSNumber numberWithInteger:e];
+    [currentNumbers addObject:anumber];
+    
+    NSInteger f = arc4random()%35 +1;
+    self.powerball.text = [NSString stringWithFormat:@"%d", f];
+    
+    currentNumbers = nil;
+}
+
+- (void)viewDidUnload 
+{
+    //[self setCurrentDrawDate:nil];
     [super viewDidUnload];
 }
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{   
+    [self removeEncouragement];
+}
+
 @end

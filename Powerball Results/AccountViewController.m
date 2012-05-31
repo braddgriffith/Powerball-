@@ -282,20 +282,17 @@ int naviHeight;
         [titleLabel setTextAlignment:UITextAlignmentRight];
         [titleLabel setFont:[UIFont boldSystemFontOfSize:17]];
         [titleLabel setBackgroundColor:[UIColor clearColor]];
-        //titleLabel.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-//        [titleLabel sizeToFit];
-//        titleLabel.numberOfLines=0;
         
-        UITextField *dataLabel = [[UITextField alloc] initWithFrame:CGRectMake(125, 1, 155, 44)];
-        [dataLabel setTag:(10 + indexPath.row)]; // We use the tag to set it later
-        [dataLabel setFont:[UIFont systemFontOfSize:17]];
-        [dataLabel setBackgroundColor:[UIColor clearColor]];
-        [dataLabel setTextAlignment:UITextAlignmentLeft];
-        dataLabel.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        dataLabel.delegate = self;
+        UITextField *dataTextField = [[UITextField alloc] initWithFrame:CGRectMake(125, 1, 160, 44)];
+        [dataTextField setTag:(10 + indexPath.row)]; // We use the tag to set it later
+        [dataTextField setFont:[UIFont systemFontOfSize:17]];
+        [dataTextField setBackgroundColor:[UIColor clearColor]];
+        [dataTextField setTextAlignment:UITextAlignmentLeft];
+        dataTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        dataTextField.delegate = self;
         
         [cell.contentView addSubview:titleLabel];
-        [cell.contentView addSubview:dataLabel];
+        [cell.contentView addSubview:dataTextField];
     }
     
     // Cannot select these cells
@@ -371,8 +368,22 @@ int naviHeight;
 {
     NSString *dataElement = [self.rowDataArray objectAtIndex:(textField.tag - 10)];
     NSLog(@"dataElement: %@", dataElement);
-    NSLog(@"textfield: %@", [textField text]);
     dataElement = [textField text];
+    NSLog(@"textfield: %@", [textField text]);
+    NSLog(@"textfield.tag: %i", textField.tag);
+    
+    //self.rowDataArray = [NSMutableArray arrayWithObjects:appDelegate.user.first_name, appDelegate.user.last_name, appDelegate.user.email, appDelegate.user.username, appDelegate.user.location, nil]; 
+    if (textField.tag - 10 == 0) {
+        appDelegate.user.first_name = dataElement;
+    } if (textField.tag - 10 == 1) {
+        appDelegate.user.last_name = dataElement;
+    } if (textField.tag - 10 == 2) {
+        appDelegate.user.email = dataElement;
+    } if (textField.tag - 10 == 3) {
+        appDelegate.user.username = dataElement;
+    } if (textField.tag - 10 == 4) {
+        appDelegate.user.location = dataElement;
+    }
     activeField = nil;
     if(appDelegate.user.parseUser) {
         [appDelegate.user.parseUser saveInBackground];
@@ -381,7 +392,7 @@ int naviHeight;
     if ([appDelegate.user.first_name isEqualToString:@""] || [appDelegate.user.last_name isEqualToString:@""] || [appDelegate.user.location isEqualToString:@""] || !appDelegate.user.first_name || !appDelegate.user.last_name || !appDelegate.user.location) {
         [headerLabel setText:@"Complete your profile..."];
     } else {
-        [headerLabel setText:@"Welcome to Powerball+"];// @"Maximize winnings by selecting unique numbers. With Smartpick and accounts, no two Powerball+ users will choose the same numbers.";/
+        [headerLabel setText:@"Welcome to Powerball+"];//@"Maximize winnings by selecting unique numbers. With Smartpick and accounts, no two Powerball+ users will choose the same numbers.";
     }
 }
 
