@@ -20,6 +20,10 @@ int IAencourageLabelWidth = 200;
 int IAencourageLabelHeight = 22;
 float IAencourageAlpha = 0.8;
 
+static UIImageView *theArrowView;
+static UILabel *encourageLabel;
+
+
 @implementation IntroAnimation
 
 -(void)animateImageBounce:(NSString *)direction inView:(UIImageView *)imageView
@@ -98,14 +102,14 @@ float IAencourageAlpha = 0.8;
     } else {
         frame = CGRectMake(startX, startY, IAarrowWidth, IAarrowHeight);
     }
-    UIImageView *theArrowView = [[UIImageView alloc] initWithFrame:frame];
+    theArrowView = [[UIImageView alloc] initWithFrame:frame];
     
     theArrowView.image = [UIImage imageNamed:imageName];
     theArrowView.alpha = IAencourageAlpha;
     [view addSubview:theArrowView];
     
     frame = CGRectMake(labelStartX, startY-yOffset, IAencourageLabelWidth, IAencourageLabelHeight);
-    UILabel *encourageLabel = [[UILabel alloc] initWithFrame:frame];
+    encourageLabel = [[UILabel alloc] initWithFrame:frame];
     encourageLabel.backgroundColor = [UIColor clearColor];
     encourageLabel.textAlignment = UITextAlignmentCenter;
     encourageLabel.font = [UIFont boldSystemFontOfSize:16];
@@ -120,13 +124,15 @@ float IAencourageAlpha = 0.8;
     IAplayAnimationForImage = YES;
     [introAnimation animateImageBounce:direction inView:theArrowView];
     [introAnimation animateTextBounce:(encourageLabel) withDirection:direction];
+    NSLog(@"animated:%@",labelText);
 }
 
-+(void)removeEncouragement:(UILabel *)encourageLabel withImageView:(UIImageView *)theArrowView
++(void)removeEncouragement
 {
     [encourageLabel removeFromSuperview];
     [theArrowView removeFromSuperview];
     IAplayAnimationForImage = NO;
+    NSLog(@"removed animation");
 }
 
 

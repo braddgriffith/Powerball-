@@ -87,7 +87,6 @@ int naviHeight;
     if ([appDelegate.user.email isEqualToString:@""] || appDelegate.user.email == nil) {
         [self displayParseLoginVC];
     }
-    
     [self registerForKeyboardNotifications];
 }
 
@@ -103,7 +102,7 @@ int naviHeight;
     if ([appDelegate.user.email isEqualToString:@""] || appDelegate.user.email == nil) {
         logoutButton.title = @"Login";
         headerLabel.font = [UIFont boldSystemFontOfSize:14];
-        headerLabel.text = @"Hit Login to get updates on winning tickets and enable Smartpick.";
+        headerLabel.text = @"Press Login to get updates on winning tickets and enable Smartpick.";
     } else { 
         if ([appDelegate.user.first_name isEqualToString:@""] || [appDelegate.user.last_name isEqualToString:@""] || [appDelegate.user.location isEqualToString:@""]) {
             headerLabel.text = @"Complete your profile...";
@@ -147,6 +146,7 @@ int naviHeight;
         appDelegate.user.last_name = [user objectForKey:@"last_name"]; //    
         appDelegate.user.email = user.email; 
         appDelegate.user.username = [user objectForKey:@"username"];
+        appDelegate.user.parseUser = user;
     } else {  //else, go ask FB for data
         [[PFFacebookUtils facebook] requestWithGraphPath:@"me?fields=first_name,last_name,email,location,username" //REQUEST_WITH_GRAPH_PATH
                                              andDelegate:self];
@@ -217,12 +217,18 @@ int naviHeight;
 - (void)signUpViewController:(PFSignUpViewController *)signUpController didSignUpUser:(PFUser *)user {
     NSLog(@"We signed up!");
     
-    appDelegate.user.email = [user objectForKey:@"email"];
+    if ([user objectForKey:@"email"]) {
+        appDelegate.user.email = [user objectForKey:@"email"];
+    }
+    if (user.username) {
+        appDelegate.user.username = user.username;
+    }
     [self dismissModalViewControllerAnimated:YES];
     appDelegate.user.first_name = @"";
     appDelegate.user.last_name = @"";
     appDelegate.user.location = @"";
-    appDelegate.user.username = @"";
+    //appDelegate.user.username = @"";
+    appDelegate.user.parseUser = user;
     
     [self rowDataArrayLoadData];
     [tableViewForAccount reloadData];
@@ -307,9 +313,9 @@ int naviHeight;
     if (self.rowDataArray.count != 0) {
         NSLog(@"Indexpath: we have: %@",[self.rowDataArray objectAtIndex:indexPath.row]); 
         [dataLabel setText:[self.rowDataArray objectAtIndex:indexPath.row]];
-        if ([[self.rowTitleArray objectAtIndex:indexPath.row] isEqualToString:@"Username"]) {
-            [dataLabel setUserInteractionEnabled:NO];
-        }
+//        if ([[self.rowTitleArray objectAtIndex:indexPath.row] isEqualToString:@"Username"]) {
+//            [dataLabel setUserInteractionEnabled:NO];
+//        }
     }
     return cell;
 }
@@ -374,18 +380,45 @@ int naviHeight;
     
     //self.rowDataArray = [NSMutableArray arrayWithObjects:appDelegate.user.first_name, appDelegate.user.last_name, appDelegate.user.email, appDelegate.user.username, appDelegate.user.location, nil]; 
     if (textField.tag - 10 == 0) {
-        appDelegate.user.first_name = dataElement;
+        appDelegate.user.first_name = [dataElement copy];
+        [appDelegate.user.parseUser setObject:dataElement forKey:@"first_name"];
     } if (textField.tag - 10 == 1) {
         appDelegate.user.last_name = dataElement;
+        [appDelegate.user.parseUser setObject:dataElement forKey:@"last_name"];
     } if (textField.tag - 10 == 2) {
         appDelegate.user.email = dataElement;
+        [appDelegate.user.parseUser setObject:dataElement forKey:@"email"];
     } if (textField.tag - 10 == 3) {
-        appDelegate.user.username = dataElement;
+        PFQuery *query = [PFQuery queryForUser];
+        [query whereKey:@"username" equalTo:dataElement]; // find all users
+        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            if (!error) {
+                NSLog(@"Successfully retrieved %d users.", objects.count);
+                if(objects.count == 0) {
+                    NSLog(@"dataElement: %@", dataElement);
+                    NSLog(@"appDelegate.user.username: %@", appDelegate.user.username);
+                    NSLog(@"appDelegate.user.parseUser: %@", appDelegate.user.parseUser);
+                    appDelegate.user.username = dataElement;
+                    appDelegate.user.parseUser.username = dataElement;
+                    activeField = nil;
+                    NSLog(@"appDelegate.user.username after dataElement: %@", appDelegate.user.username);
+                    [appDelegate.user.parseUser saveInBackground];
+                    NSLog(@"Saving user");
+                } else {
+                    NSLog(@"Someone has that username");
+                    //TELL USER
+                }
+            } else {
+                // Log details of the failure
+                NSLog(@"Error: %@ %@", error, [error userInfo]);
+            }
+        }];
     } if (textField.tag - 10 == 4) {
         appDelegate.user.location = dataElement;
+        [appDelegate.user.parseUser setObject:dataElement forKey:@"location"];
     }
     activeField = nil;
-    if(appDelegate.user.parseUser) {
+    if(appDelegate.user.parseUser && textField.tag-10 != 3) {
         [appDelegate.user.parseUser saveInBackground];
         NSLog(@"Saving user");
     }

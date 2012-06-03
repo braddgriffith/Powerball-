@@ -53,7 +53,7 @@ NSDate *today;
     
     NSDate *drawDate = [[NSDate alloc] initWithTimeIntervalSinceNow:(interval)];
     drawDate = [self roundDateToTime:drawDate usingHour:22 usingMinute:59 usingDirection:direction];
-    [self scheduleNotification:drawDate];
+    //[self scheduleNotification:drawDate];
     return drawDate;
 }
 

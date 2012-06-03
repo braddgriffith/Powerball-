@@ -31,25 +31,27 @@
 
 @synthesize theArrowView;
 @synthesize encourageLabel;
-@synthesize firstTime; 
+//@synthesize firstTime; 
 
 @synthesize appDelegate;
 
 @synthesize today;
 
 bool playAnimationForImage = YES;
-bool triedPick = NO;
+bool triedPickOne = NO;
+bool triedPickTwo = NO;
 bool triedClear = NO;
 bool triedEdit = NO;
-bool triedSave = NO;
-
+bool triedSaveOne = NO;
+bool triedSaveTwo = NO;
+bool smartPickActivatedYet = NO;
 
 //Encouragement Arrow
 int arrowWidth = 32;
-int arrowStartXoffset = 24;
-int arrowStartY = 324;
 int arrowHeight = 38;
 int arrowBounce = 5;
+int arrowStartXoffset = 24;
+int arrowStartY = 324;
 int horizArrowHeight = 32;
 int horizArrowWidth = 38;
 
@@ -61,7 +63,31 @@ float encourageAlpha = 0.8;
 {
     [super viewDidLoad];
     
-    firstTime = YES; //NEED TO STORE IN NSUSERDEFAULTS
+    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
+    triedClear = [[currentDefaults objectForKey:@"triedClear"] boolValue];
+    triedPickOne = [[currentDefaults objectForKey:@"triedPickOne"] boolValue];
+    triedPickTwo = [[currentDefaults objectForKey:@"triedPickTwo"] boolValue];
+    triedEdit = [[currentDefaults objectForKey:@"triedEdit"] boolValue];
+    triedSaveOne = [[currentDefaults objectForKey:@"triedSaveOne"] boolValue];
+    triedSaveTwo = [[currentDefaults objectForKey:@"triedSaveTwo"] boolValue];
+    smartPickActivatedYet = [[currentDefaults objectForKey:@"smartPickActivatedYet"] boolValue];
+    NSLog(@"triedClear: %s", triedClear ? "YES" : "NO");
+    NSLog(@"triedPickOne: %s", triedPickOne ? "YES" : "NO");
+    NSLog(@"triedPickTwo: %s", triedPickTwo ? "YES" : "NO");
+    NSLog(@"triedEdit: %s", triedEdit ? "YES" : "NO");
+    NSLog(@"triedSaveOne: %s", triedSaveOne ? "YES" : "NO");
+    NSLog(@"triedSaveTwo: %s", triedSaveTwo ? "YES" : "NO");
+     NSLog(@"smartPickActivatedYet: %s", smartPickActivatedYet ? "YES" : "NO");
+    
+    //****ERASE THIS AFTER TESTING
+    triedClear = NO;
+    triedPickOne = NO;
+    triedPickTwo = NO;
+    triedEdit = NO;
+    triedSaveOne = NO;
+    triedSaveTwo = NO;
+    smartPickActivatedYet = NO;
+    //*****ERASE THIS AFTER TESTING
     
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]];
@@ -76,17 +102,6 @@ float encourageAlpha = 0.8;
     double interval = [theTime getTimeZoneOffset];
     upcomingDrawDate = [nextDrawDateEST dateByAddingTimeInterval:interval];
     
-    //Put next draw date on screen
-    //NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
-    //[dateFormatter setTimeZone:[NSTimeZone systemTimeZone]]; //Current time of local timezone - drawings are 10:59PM EST
-    //[dateFormatter setDateFormat:@"EEEE - h:mm a"];//Was @"MM/dd h:mm a"];
-    //NSString *dateStr = [dateFormatter stringFromDate:upcomingDrawDate];
-    
-    //NSString *dateIntro = @"Next: ";
-    //currentDrawDate.text = [dateIntro stringByAppendingString:dateStr];
-    
-    //dateFormatter = nil;
-    
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewTapped)];
     tapRecognizer.numberOfTapsRequired = 1;
     tapRecognizer.cancelsTouchesInView = NO;
@@ -96,48 +111,77 @@ float encourageAlpha = 0.8;
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:NO];
-    
+    [IntroAnimation removeEncouragement];
     NSLog(@"Selector has %d selections", [self.selections count]);
     NSLog(@"viewWillAppear Email is %@", appDelegate.user.email);
-    if (firstTime) {
-        [self encourageEditing];
-        //[self encourageSave];
-        //[self encourageClear];
-        //[self encourageQuickPick];
-        if (triedPick) {
-            [self encourageClear];
+    
+    [pickButton.titleLabel setText:@"QuickPick"];
+    [pickButton setTitle:@"QuickPick" forState:(UIControlStateNormal)];
+    [pickButton setTitle:@"QuickPick" forState:(UIControlStateSelected)];
+    
+    if (triedPickTwo && [appDelegate.user.email isEqualToString:@""]) {
+        [self encourageAccount];
+    } else if (![appDelegate.user.email isEqualToString:@""]) {
+        if (!smartPickActivatedYet) {
+            smartPickActivatedYet = YES;
+            [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:smartPickActivatedYet] forKey:@"smartPickActivatedYet"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [HudView hudInView:self.navigationController.view text:@"SmartPick!" lineTwo:@"Activated" animated:YES];
+            
+            UIAlertView *alert = [[UIAlertView alloc]
+                                  initWithTitle: @"Do you love Powerball+?"
+                                  message: @"Please help us keep the app free by rating it in the App Store!"
+                                  delegate: self
+                                  cancelButtonTitle:@"No thanks"
+                                  otherButtonTitles:@"Rate it!",nil];
+            [alert show];
         }
-    } else if ([appDelegate.user.email isEqualToString:@""]) {
-        [pickButton.titleLabel setText:@"QuickPick"];
-        [pickButton setTitle:@"QuickPick" forState:(UIControlStateNormal)];
-        [pickButton setTitle:@"QuickPick" forState:(UIControlStateSelected)];
-        int arrowStartX = self.view.frame.size.width-arrowWidth-arrowStartXoffset;
-        int labelStartX = self.view.frame.size.width-(1.8*arrowWidth)-encourageLabelWidth;
-        [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowStartY withText:@"Sign In to enable SmartPick" withYOffset:8 atStartX:arrowStartX atLabelStartX:labelStartX withDirection:@"vertical"];
-    } else {
         [pickButton.titleLabel setText:@"SmartPick"];
         [pickButton setTitle:@"SmartPick" forState:(UIControlStateNormal)];
         [pickButton setTitle:@"SmartPick" forState:(UIControlStateSelected)];
-        if (theArrowView) {
-            [self removeEncouragement];
-        }
     }
     [pickButton.titleLabel setTextAlignment:UITextAlignmentCenter];
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    if (!triedPickOne) {
+        //[self encourageClear];
+        [self encourageQuickPick];
+    } else if(!triedClear) {
+        [self encourageClear];
+    }
+}
+
+-(void)encourageAccount
+{
+    int arrowPickStartY = self.view.frame.origin.y+self.view.frame.size.height-arrowBounce-arrowHeight;
+    int arrowPickStartX = self.view.frame.size.width-arrowWidth-arrowStartXoffset;
+    int labelStartX = self.view.frame.size.width-(1.8*arrowWidth)-encourageLabelWidth;
+    [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowPickStartY withText:@"Sign In to enable SmartPick" withYOffset:8 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+}
+
+-(void)encourageMyPicks
+{
+    int arrowPickStartY = self.view.frame.origin.y+self.view.frame.size.height-arrowBounce-arrowHeight;
+    int arrowPickStartX = self.view.frame.size.width-arrowWidth-arrowStartXoffset-(self.view.frame.size.width/4);
+    int labelStartX = self.view.frame.size.width-(1.3*arrowWidth)-encourageLabelWidth;
+    [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowPickStartY withText:@"Check MyPicks" withYOffset:8 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
 }
 
 -(void)encourageQuickPick
 {
     int arrowPickStartY = pickButton.frame.origin.y-pickButton.frame.size.height-arrowBounce;
-    int arrowPickStartX = pickButton.frame.origin.x + (pickButton.frame.size.width/4);
-    int labelStartX = arrowPickStartX;
+    int arrowPickStartX = self.view.frame.size.width/2 - arrowWidth/2;
+    int labelStartX = arrowPickStartX - (pickButton.frame.size.width/4.5);
     [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowPickStartY withText:@"Click to QuickPick numbers..." withYOffset:18 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
 }
 
 -(void)encourageClear
 {
     int arrowPickStartY = self.view.frame.origin.y;
-    int arrowPickStartX = self.view.frame.origin.x+1.5*arrowWidth;
-    int labelStartX = arrowPickStartX-arrowWidth;
+    int arrowPickStartX = self.view.frame.origin.x+.5*arrowWidth;
+    int labelStartX = arrowPickStartX+arrowWidth+2;
     [IntroAnimation encourageSomething:self.view withImage:@"03-arrow-north@2x.png" atStartY:arrowPickStartY withText:@"Now, click to clear..." withYOffset:-6 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
 }
 
@@ -157,21 +201,6 @@ float encourageAlpha = 0.8;
     [IntroAnimation encourageSomething:self.view withImage:@"09-arrow-west@2x.png" atStartY:arrowPickStartY withText:@"Edit the Powerball..." withYOffset:-4 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"horizontal"];
 }
 
--(void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:NO];
-    [IntroAnimation removeEncouragement:encourageLabel withImageView:theArrowView];
-}
-
--(void)removeEncouragement
-{
-    [encourageLabel removeFromSuperview];
-    [theArrowView removeFromSuperview];
-    playAnimationForImage = NO;
-    encourageLabel = nil;
-    theArrowView = nil;
-}
-
 - (void)loadSelection
 {
     self.numberOne.text = [selection.selectionOne stringValue];
@@ -184,6 +213,13 @@ float encourageAlpha = 0.8;
 
 - (IBAction)clear:(id)sender
 {
+    if (!triedClear) {
+        triedClear = YES;
+        [IntroAnimation removeEncouragement];
+        [self encourageQuickPick];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:triedClear] forKey:@"triedClear"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     self.numberOne.text = @"";
     self.numberTwo.text = @"";
     self.numberThree.text = @"";
@@ -204,6 +240,19 @@ float encourageAlpha = 0.8;
 
 - (IBAction)save:(id)sender
 {
+    if (!triedSaveOne) {
+        triedSaveOne = YES;
+        [IntroAnimation removeEncouragement];
+        [self encourageMyPicks];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:triedSaveOne] forKey:@"triedSaveOne"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    } else if (!triedSaveTwo) {
+        triedSaveTwo = YES;
+        [IntroAnimation removeEncouragement];
+        [self encourageAccount];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:triedSaveTwo] forKey:@"triedSaveTwo"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     [self resignAll];
     
     if (![[numberOne text] intValue]) {
@@ -360,7 +409,19 @@ float encourageAlpha = 0.8;
 
 -(IBAction)quikPik:(id)sender
 {
-    triedPick = YES;
+    if (!triedPickOne) {
+        triedPickOne = YES;
+        [IntroAnimation removeEncouragement];
+        [self encourageSave];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:triedPickOne] forKey:@"triedPickOne"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    } else if (!triedPickTwo) {
+        triedPickTwo = YES;
+        [IntroAnimation removeEncouragement];
+        [self encourageEditing];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:triedPickTwo] forKey:@"triedPickTwo"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     if ([pickButton.titleLabel.text isEqualToString:@"SmartPick"]) {
         [self smartPick];
     } else {
@@ -470,7 +531,23 @@ float encourageAlpha = 0.8;
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {   
-    [self removeEncouragement];
+    if (!triedEdit) {
+        triedEdit = YES;
+        [IntroAnimation removeEncouragement];
+        [self encourageSave];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:triedEdit] forKey:@"triedEdit"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	if (buttonIndex == 0) {
+		NSLog(@"user pressed Rate It");
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://userpub.itunes.apple.com/WebObjects/MZUserPublishing.woa/wa/addUserReview?id=517545261&type=Purple+Software"]];
+	}
+	else {
+		NSLog(@"user pressed Cancel");
+	}
 }
 
 @end

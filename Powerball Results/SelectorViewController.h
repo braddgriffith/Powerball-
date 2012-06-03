@@ -10,7 +10,7 @@
 #import "Selection.h"
 #import "AppDelegate.h"
 
-@interface SelectorViewController : UIViewController <UITextFieldDelegate>
+@interface SelectorViewController : UIViewController <UITextFieldDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UITextField *numberOne;
 @property (nonatomic, strong) IBOutlet UITextField *numberTwo;
@@ -26,7 +26,7 @@
 @property (nonatomic, strong) NSMutableArray *selections;
 @property (nonatomic, strong) NSDate *upcomingDrawDate;
 @property (nonatomic, strong) NSDate *nextDrawDateEST;
-@property (nonatomic, assign) BOOL firstTime;
+//@property (nonatomic, assign) BOOL firstTime;
 
 @property (nonatomic, weak) AppDelegate *appDelegate;
 

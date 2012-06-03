@@ -9,6 +9,14 @@
 #import "HistoryViewController.h"
 #import "HistoryCell.h"
 #import <Parse/Parse.h>
+#import "IntroAnimation.h"
+
+int HarrowWidth = 32;
+int HarrowHeight = 38;
+int HarrowBounce = 5;
+int HencourageLabelWidth = 200;
+
+bool triedSelect;
 
 @interface HistoryViewController ()
 
@@ -22,14 +30,24 @@
 
 bool inserting;
 
+-(void)viewDidLoad
+{
+    triedSelect = NO; //CHANGE THIS = NSUSERDEFAULTS
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:NO];
+    [IntroAnimation removeEncouragement];
     
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
 //    if (self.selections > 0) {
 //        self.navigationItem.rightBarButtonItem = self.editButtonItem;
 //    }
+    
+    if(!triedSelect) {
+        [self encourageSelect];
+    }
     
     NSLog(@"History has %d selections", [self.selections count]);
     inserting = NO;
@@ -47,6 +65,21 @@ bool inserting;
     [super viewDidAppear:NO];
     [self.spinner removeFromSuperview];
     self.spinner = nil;
+}
+
+-(void) viewWillDisappear:(BOOL)animated
+{
+    NSLog(@"History viewWillDisappear");
+    [super viewWillDisappear:NO];
+}
+
+-(void)encourageSelect
+{
+    int arrowPickStartY = self.view.frame.origin.y+self.view.frame.size.height-HarrowBounce-HarrowHeight;
+    int arrowPickStartX = self.view.frame.size.width-1.8*HarrowWidth-(self.view.frame.size.width/2);
+    int labelStartX = arrowPickStartX +.5*HarrowWidth-.5*HencourageLabelWidth+HarrowWidth; //HarrowWidth is not ideal
+    [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowPickStartY withText:@"Great, back to Select..." withYOffset:18 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+    triedSelect = YES;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

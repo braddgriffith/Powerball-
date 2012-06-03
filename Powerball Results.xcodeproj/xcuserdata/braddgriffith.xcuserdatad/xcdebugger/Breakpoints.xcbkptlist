@@ -8,11 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Powerball Results/HistoryViewController.m"
-         timestampString = "359662938.521351"
+         timestampString = "360290243.933385"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "66"
-         endingLineNumber = "66"
+         startingLineNumber = "99"
+         endingLineNumber = "99"
          landmarkName = "-tableView:cellForRowAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -21,11 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Powerball Results/HistoryViewController.m"
-         timestampString = "359662938.521351"
+         timestampString = "360290243.933385"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "130"
-         endingLineNumber = "130"
+         startingLineNumber = "163"
+         endingLineNumber = "163"
          landmarkName = "-rowsFade:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -34,25 +34,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Powerball Results/HistoryViewController.m"
-         timestampString = "359662938.521351"
+         timestampString = "360290243.933385"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "146"
-         endingLineNumber = "146"
+         startingLineNumber = "179"
+         endingLineNumber = "179"
          landmarkName = "-insertRow"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Powerball Results/SelectorViewController.m"
-         timestampString = "360191336.831894"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "76"
-         endingLineNumber = "76"
-         landmarkName = "-viewDidLoad"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -229,11 +216,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Powerball Results/AccountViewController.m"
-         timestampString = "360106056.809772"
+         timestampString = "360437101.70157"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "97"
-         endingLineNumber = "97"
+         startingLineNumber = "96"
+         endingLineNumber = "96"
          landmarkName = "-viewWillAppear:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -242,7 +229,7 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Powerball Results/AccountViewController.m"
-         timestampString = "360106056.809772"
+         timestampString = "360437101.70157"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "175"
@@ -255,11 +242,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Powerball Results/AccountViewController.m"
-         timestampString = "360106056.809772"
+         timestampString = "360437101.70157"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "129"
-         endingLineNumber = "129"
+         startingLineNumber = "128"
+         endingLineNumber = "128"
          landmarkName = "-displayParseLoginVC"
          landmarkType = "5">
       </FileBreakpoint>
@@ -268,11 +255,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Powerball Results/AccountViewController.m"
-         timestampString = "360106056.809772"
+         timestampString = "360437101.70157"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "136"
-         endingLineNumber = "136"
+         startingLineNumber = "135"
+         endingLineNumber = "135"
          landmarkName = "@implementation AccountViewController"
          landmarkType = "3">
       </FileBreakpoint>
@@ -281,7 +268,7 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Powerball Results/AccountViewController.m"
-         timestampString = "360106056.809772"
+         timestampString = "360437101.70157"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "194"
@@ -294,25 +281,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Powerball Results/AccountViewController.m"
-         timestampString = "360106056.809772"
+         timestampString = "360437101.70157"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "121"
-         endingLineNumber = "121"
+         startingLineNumber = "120"
+         endingLineNumber = "120"
          landmarkName = "-displayParseLoginVC"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Powerball Results/AppDelegate.m"
-         timestampString = "360105548.772474"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "66"
-         endingLineNumber = "66"
-         landmarkName = "-application:didFinishLaunchingWithOptions:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -333,11 +307,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Powerball Results/SelectorViewController.m"
-         timestampString = "360191827.75627"
+         timestampString = "360441067.784038"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "372"
-         endingLineNumber = "372"
+         startingLineNumber = "433"
+         endingLineNumber = "433"
          landmarkName = "-regularPick"
          landmarkType = "5">
       </FileBreakpoint>
@@ -345,13 +319,78 @@
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "Powerball Results/SelectorViewController.m"
-         timestampString = "360191336.831894"
+         filePath = "Powerball Results/IntroAnimation.m"
+         timestampString = "360197413.243436"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "102"
-         endingLineNumber = "102"
-         landmarkName = "-viewWillAppear:"
+         startingLineNumber = "37"
+         endingLineNumber = "37"
+         landmarkName = "-animateImageBounce:inView:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Powerball Results/AccountViewController.m"
+         timestampString = "360437101.70157"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "406"
+         endingLineNumber = "406"
+         landmarkName = "-textFieldDidEndEditing:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Powerball Results/SelectorViewController.m"
+         timestampString = "360441067.784038"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "180"
+         endingLineNumber = "180"
+         landmarkName = "-encourageClear"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Powerball Results/SelectorViewController.m"
+         timestampString = "360441067.784038"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "164"
+         endingLineNumber = "164"
+         landmarkName = "-encourageMyPicks"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Powerball Results/SelectorViewController.m"
+         timestampString = "360441067.784038"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "172"
+         endingLineNumber = "172"
+         landmarkName = "-encourageQuickPick"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Powerball Results/SelectorViewController.m"
+         timestampString = "360441067.784038"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "534"
+         endingLineNumber = "534"
+         landmarkName = "-textFieldDidEndEditing:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -359,12 +398,64 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Powerball Results/IntroAnimation.m"
-         timestampString = "360192836.235318"
+         timestampString = "360205303.042633"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "33"
-         endingLineNumber = "33"
-         landmarkName = "-animateImageBounce:inView:"
+         startingLineNumber = "130"
+         endingLineNumber = "130"
+         landmarkName = "+removeEncouragement"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Powerball Results/HistoryViewController.m"
+         timestampString = "360290243.933385"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "72"
+         endingLineNumber = "72"
+         landmarkName = "-viewWillDisappear:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Powerball Results/SelectorViewController.m"
+         timestampString = "360441067.784038"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "152"
+         endingLineNumber = "152"
+         landmarkName = "-viewDidAppear:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Powerball Results/SelectorViewController.m"
+         timestampString = "360441067.784038"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "150"
+         endingLineNumber = "150"
+         landmarkName = "-viewDidAppear:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Powerball Results/SelectorViewController.m"
+         timestampString = "360441067.784038"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "146"
+         endingLineNumber = "146"
+         landmarkName = "-viewDidAppear:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
