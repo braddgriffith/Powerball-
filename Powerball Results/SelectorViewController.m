@@ -32,6 +32,7 @@
 @synthesize theArrowView;
 @synthesize encourageLabel;
 //@synthesize firstTime; 
+@synthesize activeField;
 
 @synthesize appDelegate;
 
@@ -59,6 +60,11 @@ int encourageLabelWidth = 200;
 int encourageLabelHeight = 22;
 float encourageAlpha = 0.8;
 
+int viewWillAppearCount = 0;
+bool reviewedApp = NO;
+
+UIButton *doneButton;
+
 -(void)viewDidLoad
 {
     [super viewDidLoad];
@@ -71,22 +77,24 @@ float encourageAlpha = 0.8;
     triedSaveOne = [[currentDefaults objectForKey:@"triedSaveOne"] boolValue];
     triedSaveTwo = [[currentDefaults objectForKey:@"triedSaveTwo"] boolValue];
     smartPickActivatedYet = [[currentDefaults objectForKey:@"smartPickActivatedYet"] boolValue];
+    viewWillAppearCount = [[currentDefaults objectForKey:@"viewWillAppearCount"] intValue];
+    reviewedApp = [[currentDefaults objectForKey:@"reviewedApp"] boolValue];
     NSLog(@"triedClear: %s", triedClear ? "YES" : "NO");
     NSLog(@"triedPickOne: %s", triedPickOne ? "YES" : "NO");
     NSLog(@"triedPickTwo: %s", triedPickTwo ? "YES" : "NO");
     NSLog(@"triedEdit: %s", triedEdit ? "YES" : "NO");
     NSLog(@"triedSaveOne: %s", triedSaveOne ? "YES" : "NO");
     NSLog(@"triedSaveTwo: %s", triedSaveTwo ? "YES" : "NO");
-     NSLog(@"smartPickActivatedYet: %s", smartPickActivatedYet ? "YES" : "NO");
+    NSLog(@"smartPickActivatedYet: %s", smartPickActivatedYet ? "YES" : "NO");
     
     //****ERASE THIS AFTER TESTING
-    triedClear = NO;
-    triedPickOne = NO;
-    triedPickTwo = NO;
-    triedEdit = NO;
-    triedSaveOne = NO;
-    triedSaveTwo = NO;
-    smartPickActivatedYet = NO;
+//    triedClear = NO;
+//    triedPickOne = NO;
+//    triedPickTwo = NO;
+//    triedEdit = NO;
+//    triedSaveOne = NO;
+//    triedSaveTwo = NO;
+//    smartPickActivatedYet = NO;
     //*****ERASE THIS AFTER TESTING
     
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
@@ -106,6 +114,14 @@ float encourageAlpha = 0.8;
     tapRecognizer.numberOfTapsRequired = 1;
     tapRecognizer.cancelsTouchesInView = NO;
     [self.view addGestureRecognizer:tapRecognizer];
+    
+    [self registerForKeyboardNotifications];
+}
+
+-(void)viewWillUnload
+{
+    [super viewWillUnload];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -127,26 +143,35 @@ float encourageAlpha = 0.8;
             [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:smartPickActivatedYet] forKey:@"smartPickActivatedYet"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             [HudView hudInView:self.navigationController.view text:@"SmartPick!" lineTwo:@"Activated" animated:YES];
-            
-            UIAlertView *alert = [[UIAlertView alloc]
-                                  initWithTitle: @"Do you love Powerball+?"
-                                  message: @"Please help us keep the app free by rating it in the App Store!"
-                                  delegate: self
-                                  cancelButtonTitle:@"No thanks"
-                                  otherButtonTitles:@"Rate it!",nil];
-            [alert show];
         }
         [pickButton.titleLabel setText:@"SmartPick"];
         [pickButton setTitle:@"SmartPick" forState:(UIControlStateNormal)];
         [pickButton setTitle:@"SmartPick" forState:(UIControlStateSelected)];
     }
     [pickButton.titleLabel setTextAlignment:UITextAlignmentCenter];
+    
+    
+    viewWillAppearCount++;
+    if((viewWillAppearCount == 5 || !(viewWillAppearCount % 25)) && reviewedApp == NO) {
+        UIAlertView *alert = [[UIAlertView alloc]
+                              initWithTitle: @"Do you love Powerball+?"
+                              message: @"Please help us keep the app free by rating it in the App Store!"
+                              delegate: self
+                              cancelButtonTitle:@"Rate it!"
+                              otherButtonTitles:@"No thanks",nil];
+        [alert show];
+    }
+    
+    NSLog(@"viewHasAppeared %i times", viewWillAppearCount);
+    NSLog(@"reviewedApp %@", reviewedApp);
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:viewWillAppearCount] forKey:@"viewWillAppearCount"];
+    [[NSUserDefaults standardUserDefaults] setInteger:viewWillAppearCount forKey:@"viewWillAppearCount"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     if (!triedPickOne) {
-        //[self encourageClear];
         [self encourageQuickPick];
     } else if(!triedClear) {
         [self encourageClear];
@@ -182,7 +207,7 @@ float encourageAlpha = 0.8;
     int arrowPickStartY = self.view.frame.origin.y;
     int arrowPickStartX = self.view.frame.origin.x+.5*arrowWidth;
     int labelStartX = arrowPickStartX+arrowWidth+2;
-    [IntroAnimation encourageSomething:self.view withImage:@"03-arrow-north@2x.png" atStartY:arrowPickStartY withText:@"Now, click to clear..." withYOffset:-6 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+    [IntroAnimation encourageSomething:self.view withImage:@"03-arrow-north@2x.png" atStartY:arrowPickStartY withText:@"Click to clear..." withYOffset:-6 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
 }
 
 -(void)encourageSave
@@ -346,8 +371,14 @@ float encourageAlpha = 0.8;
         [newSelection setObject:parseArray forKey:@"selectionArray"];
     }
     
+    currentSelection.matches = [NSNumber numberWithInt:-1];
+    currentSelection.specialMatches = [NSNumber numberWithInt:-1];
+    
+    NSLog(@"appDelegate.user.username = %@", appDelegate.user.username);
     if(appDelegate.user.username == @""){ 
-        [newSelection setObject:@"Unknown User" forKey:@"userID"];
+        [newSelection setObject:@"Blank user" forKey:@"userID"];
+    } else if  (appDelegate.user.username == nil) {
+        [newSelection setObject:@"Nil user" forKey:@"userID"];
     } else {
         [newSelection setObject:appDelegate.user.username forKey:@"userID"];
     }
@@ -382,19 +413,6 @@ float encourageAlpha = 0.8;
     [numberFour resignFirstResponder];
     [numberFive resignFirstResponder];
     [powerball resignFirstResponder];
-}
-
--(BOOL)textFieldShouldReturn:(UITextField*)textField;
-{
-    NSInteger nextTag = textField.tag + 1;     // Try to find next responder
-    UIResponder* nextResponder = [textField.superview viewWithTag:nextTag];
-
-    if (nextResponder) {
-        [nextResponder becomeFirstResponder];         // Found next responder, so set it.
-    } else {
-        [self save:(selection)];         // Not found, so go to save.
-    }
-    return NO; // We do not want UITextField to insert line-breaks.
 }
 
 - (NSInteger)generateRandom
@@ -523,17 +541,18 @@ float encourageAlpha = 0.8;
     currentNumbers = nil;
 }
 
-- (void)viewDidUnload 
-{
-    //[self setCurrentDrawDate:nil];
-    [super viewDidUnload];
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{   
+    activeField = textField;
+    if (!triedEdit) {
+        [IntroAnimation removeEncouragement];
+    }
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
-{   
+{
     if (!triedEdit) {
         triedEdit = YES;
-        [IntroAnimation removeEncouragement];
         [self encourageSave];
         [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:triedEdit] forKey:@"triedEdit"];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -544,10 +563,60 @@ float encourageAlpha = 0.8;
 	if (buttonIndex == 0) {
 		NSLog(@"user pressed Rate It");
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://userpub.itunes.apple.com/WebObjects/MZUserPublishing.woa/wa/addUserReview?id=517545261&type=Purple+Software"]];
+        reviewedApp = YES;
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:reviewedApp] forKey:@"reviewedApp"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
 	}
 	else {
 		NSLog(@"user pressed Cancel");
 	}
+}
+
+- (void)registerForKeyboardNotifications
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidShowNotification:)//keyboardWillShow:)
+                                                 name:UIKeyboardDidShowNotification object:nil];
+    NSLog(@"Registered for keyboardDidShowNotification");
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidHideNotification:)
+                                                 name:UIKeyboardWillHideNotification object:nil];
+    NSLog(@"Registered for keyboardDidHideNotification");
+}
+
+- (void) keyboardDidShowNotification: (id) sender 
+{
+    NSLog(@"keyboardDidShowNotification");
+    // create custom button
+    doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    doneButton.frame = CGRectMake(0, 427, 106, 53);
+    doneButton.adjustsImageWhenHighlighted = NO;
+    [doneButton setBackgroundImage:[UIImage imageNamed:@"DONE.png"] forState:UIControlStateNormal];
+    [doneButton setBackgroundImage:[UIImage imageNamed:@"DONEpressed.png"] forState:UIControlStateHighlighted];
+    [doneButton addTarget:self action:@selector(doneButton:) forControlEvents:UIControlEventTouchUpInside];
+    UIWindow* tempWindow = [[[UIApplication sharedApplication] windows] objectAtIndex:1];
+    [tempWindow addSubview:doneButton];
+}
+
+- (void) keyboardDidHideNotification: (id) sender 
+{
+    NSLog(@"keyboardDidHideNotification");
+    [doneButton removeFromSuperview];
+    doneButton = nil;
+}
+
+-(void)doneButton:(id)sender
+{
+    [activeField resignFirstResponder]; 
+    NSInteger nextTag = activeField.tag + 1;     // Try to find next responder
+    UIResponder *nextResponder = [activeField.superview viewWithTag:nextTag];
+    
+    if (nextResponder) {
+        [nextResponder becomeFirstResponder];         // Found next responder, so set it.
+    } else {
+        [self save:(selection)];         // Not found, so go to save.
+    }
 }
 
 @end

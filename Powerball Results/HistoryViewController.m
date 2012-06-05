@@ -30,9 +30,11 @@ bool triedSelect;
 
 bool inserting;
 
--(void)viewDidLoad
+- (void)viewDidLoad
 {
-    triedSelect = NO; //CHANGE THIS = NSUSERDEFAULTS
+    [super viewDidLoad];
+    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
+    triedSelect = [[currentDefaults objectForKey:@"triedClear"] boolValue];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -41,12 +43,14 @@ bool inserting;
     [IntroAnimation removeEncouragement];
     
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
-//    if (self.selections > 0) {
-//        self.navigationItem.rightBarButtonItem = self.editButtonItem;
-//    }
     
-    if(!triedSelect) {
+    if (self.selections.count == 0) {
         [self encourageSelect];
+    } else if (!triedSelect) {
+        triedSelect = YES;
+        [self encourageSelect];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:triedSelect] forKey:@"triedSelect"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }
     
     NSLog(@"History has %d selections", [self.selections count]);
@@ -67,19 +71,18 @@ bool inserting;
     self.spinner = nil;
 }
 
--(void) viewWillDisappear:(BOOL)animated
-{
-    NSLog(@"History viewWillDisappear");
-    [super viewWillDisappear:NO];
-}
-
 -(void)encourageSelect
 {
     int arrowPickStartY = self.view.frame.origin.y+self.view.frame.size.height-HarrowBounce-HarrowHeight;
     int arrowPickStartX = self.view.frame.size.width-1.8*HarrowWidth-(self.view.frame.size.width/2);
     int labelStartX = arrowPickStartX +.5*HarrowWidth-.5*HencourageLabelWidth+HarrowWidth; //HarrowWidth is not ideal
-    [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowPickStartY withText:@"Great, back to Select..." withYOffset:18 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
-    triedSelect = YES;
+    NSString *messageText;
+    if (self.selections.count == 0 ) {
+        messageText = @"Hit Select to add a ticket...";
+    } else {
+        messageText = @"Added, now back to Select...";
+    }
+    [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowPickStartY withText:messageText withYOffset:18 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

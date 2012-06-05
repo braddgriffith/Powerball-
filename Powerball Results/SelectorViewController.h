@@ -21,6 +21,7 @@
 @property (nonatomic, strong) IBOutlet UIButton *pickButton;
 @property (strong, nonatomic) IBOutlet UIImageView *theArrowView;
 @property (strong, nonatomic) IBOutlet UILabel *encourageLabel;
+@property (nonatomic, strong) IBOutlet UITextField *activeField;
 
 @property (strong, nonatomic) Selection *selection;
 @property (nonatomic, strong) NSMutableArray *selections;

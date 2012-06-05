@@ -49,21 +49,22 @@
     if (userData) {
         self.user = [NSKeyedUnarchiver unarchiveObjectWithData:userData];
         NSLog(@"Loaded stored user.");
-    } else {
-        NSLog(@"No user. Creating anonymous user...");
-        [PFUser enableAutomaticUser];
-        [PFAnonymousUtils logInWithBlock:^(PFUser *currentUser, NSError *error) {
-            if (error) {
-                NSLog(@"Anonymous login failed.");
-            } else {
-                NSLog(@"Anonymous user logged in.");
-                NSLog(@"Anonymous username = %@",currentUser.username);
-            }
-        }];
-        self.user = [[User alloc] init]; 
-        PFUser *anonUser = [PFUser currentUser];
-        self.user.username = anonUser.username;
-    }
+    } 
+//    else {
+//        NSLog(@"No user. Creating anonymous user...");
+//        [PFUser enableAutomaticUser];
+//        [PFAnonymousUtils logInWithBlock:^(PFUser *currentUser, NSError *error) {
+//            if (error) {
+//                NSLog(@"Anonymous login failed.");
+//            } else {
+//                NSLog(@"Anonymous user logged in.");
+//                NSLog(@"Anonymous username = %@",currentUser.username);
+//            }
+//        }];
+//        self.user = [[User alloc] init]; 
+//        PFUser *anonUser = [PFUser currentUser];
+//        self.user.username = anonUser.username;
+//    }
     [self setupViewControllers];
     return YES;
 }

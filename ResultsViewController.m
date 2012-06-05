@@ -142,7 +142,7 @@ NSMutableArray *matchingArray;
     NSString *dateStr = [dateFormatter stringFromDate:upcomingDrawDate];
      
     UILabel *nextLabel = [[UILabel alloc] initWithFrame:CGRectMake(xLindent,nextLabelH,nextLabelWidth,yLheight)];
-    nextLabel.font = [UIFont boldSystemFontOfSize:16];
+    nextLabel.font = [UIFont boldSystemFontOfSize:16]; //[UIFont systemFontOfSize:16];
     nextLabel.textColor = [UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:1.0];//[UIColor redColor];
     nextLabel.textAlignment = UITextAlignmentLeft;
     nextLabel.backgroundColor = [UIColor clearColor];
@@ -351,5 +351,4 @@ NSMutableArray *matchingArray;
         }
     }
 }
-
 @end

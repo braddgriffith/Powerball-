@@ -10,6 +10,7 @@
 #import <Parse/Parse.h>
 #import "AppDelegate.h"
 #import "ParseLoginViewController.h"
+#import "HudView.h"
 
 @interface AccountViewController ()
 
@@ -30,6 +31,8 @@
 int introHeight = 39;
 int tableViewForAccountHeight = 400;
 int naviHeight;
+
+bool userEdited = NO;
 
 - (void)viewDidLoad
 {
@@ -74,7 +77,6 @@ int naviHeight;
     titleItem.leftBarButtonItem = logoutButton;
     [navigationBar setItems:[NSArray arrayWithObject:titleItem]];
     
-    //[self.view addSubview:scrollView]; //add the tableView
     [self.view addSubview:tableViewForAccount]; //add the tableView
     [self.view addSubview:navigationBar]; //add the bar
     [self.view addSubview:headerLabel]; //add the intro
@@ -94,7 +96,7 @@ int naviHeight;
 {
     NSLog(@"viewWillAppear appDelegate.user.email = %@", appDelegate.user.email);
     
-    self.rowTitleArray = [NSMutableArray arrayWithObjects:@"First Name", @"Last Name", @"Email", @"Username", @"Location", nil]; 
+    self.rowTitleArray = [NSMutableArray arrayWithObjects:@"First Name", @"Last Name", @"Email", @"Username", @"Location", nil];
     [self rowDataArrayLoadData];
     
     NSLog(@"viewWillAppear appDelegate.user.email = %@", appDelegate.user.email);
@@ -104,13 +106,24 @@ int naviHeight;
         headerLabel.font = [UIFont boldSystemFontOfSize:14];
         headerLabel.text = @"Press Login to get updates on winning tickets and enable Smartpick.";
     } else { 
-        if ([appDelegate.user.first_name isEqualToString:@""] || [appDelegate.user.last_name isEqualToString:@""] || [appDelegate.user.location isEqualToString:@""]) {
+        if ([appDelegate.user.first_name isEqualToString:@""] || [appDelegate.user.last_name isEqualToString:@""] || [appDelegate.user.location isEqualToString:@""] 
+            || [appDelegate.user.first_name isEqualToString:@"Tap to edit"] || [appDelegate.user.last_name isEqualToString:@"Tap to edit"]) {
             headerLabel.text = @"Complete your profile...";
         } else {
             headerLabel.text = @"Welcome to Powerball+";// @"Maximize winnings by selecting unique numbers. With Smartpick and accounts, no two Powerball+ users will choose the same numbers.";/
         }
         headerLabel.font = [UIFont boldSystemFontOfSize:18];
         logoutButton.title = @"Logout";
+    }
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:NO];
+    if(appDelegate.user.parseUser && userEdited) {
+        [appDelegate.user.parseUser saveInBackground];
+        NSLog(@"Saving user");
+        userEdited = NO;
     }
 }
 
@@ -147,7 +160,14 @@ int naviHeight;
         appDelegate.user.email = user.email; 
         appDelegate.user.username = [user objectForKey:@"username"];
         appDelegate.user.parseUser = user;
+        [self rowDataArrayLoadData];
+        [tableViewForAccount reloadData]; 
     } else {  //else, go ask FB for data
+//        [PFFacebookUtils linkUser:user permissions:nil block:^(BOOL succeeded, NSError *error) {
+//            if (succeeded) {
+//                NSLog(@"Woohoo, user logged in with Facebook!");
+//            }
+//        }];
         [[PFFacebookUtils facebook] requestWithGraphPath:@"me?fields=first_name,last_name,email,location,username" //REQUEST_WITH_GRAPH_PATH
                                              andDelegate:self];
         NSLog(@"Got to FB");
@@ -155,8 +175,6 @@ int naviHeight;
     appDelegate.user.parseUser = user;
     NSLog(@"didLogInUser currentUser = %@", [PFUser currentUser]);
     NSLog(@"didLogInUser user = %@", user);
-    [self rowDataArrayLoadData];
-    [tableViewForAccount reloadData]; 
     [self dismissModalViewControllerAnimated:YES];
     
     //PUSH - subscribe to MY channel for scored tickets - appDelegate.user.id
@@ -177,6 +195,7 @@ int naviHeight;
     {
         NSLog(@"didLoad result = %@",result);
         
+        //Puts the latest appDelegate.user.X into the rowDataArray for display
         appDelegate.user.first_name = [result objectForKey:@"first_name"];
         appDelegate.user.last_name = [result objectForKey:@"last_name"];
         appDelegate.user.email = [result objectForKey:@"email"];
@@ -217,27 +236,54 @@ int naviHeight;
 - (void)signUpViewController:(PFSignUpViewController *)signUpController didSignUpUser:(PFUser *)user {
     NSLog(@"We signed up!");
     
+    if ([user objectForKey:@"first_name"]) {
+        appDelegate.user.first_name = [user objectForKey:@"first_name"];
+    } else {
+        appDelegate.user.first_name = @"Tap to edit";
+    }
+    
+    if ([user objectForKey:@"last_name"]) {
+        appDelegate.user.last_name = [user objectForKey:@"last_name"];
+    } else {
+        appDelegate.user.last_name = @"Tap to edit";
+    }
+    
     if ([user objectForKey:@"email"]) {
         appDelegate.user.email = [user objectForKey:@"email"];
+    } else {
+        appDelegate.user.email = @"Tap to edit";
     }
+    
     if (user.username) {
         appDelegate.user.username = user.username;
+    } else {
+        appDelegate.user.username = @"nil";
     }
-    [self dismissModalViewControllerAnimated:YES];
-    appDelegate.user.first_name = @"";
-    appDelegate.user.last_name = @"";
-    appDelegate.user.location = @"";
-    //appDelegate.user.username = @"";
-    appDelegate.user.parseUser = user;
     
+    if ([user objectForKey:@"location"]) {
+        appDelegate.user.location = [user objectForKey:@"location"];
+    } else {
+        appDelegate.user.location = @"Tap to edit";
+    }
+    
+    [self dismissModalViewControllerAnimated:YES];
+    appDelegate.user.parseUser = user;
     [self rowDataArrayLoadData];
     [tableViewForAccount reloadData];
     logoutButton.title = @"Logout";
 }
 
-- (void)rowDataArrayLoadData
+- (void)rowDataArrayLoadData //Puts the latest appDelegate.user.X into the rowDataArray for display
 {
-    self.rowDataArray = [NSMutableArray arrayWithObjects:appDelegate.user.first_name, appDelegate.user.last_name, appDelegate.user.email, appDelegate.user.username, appDelegate.user.location, nil]; 
+//    self.rowDataArray = [NSMutableArray arrayWithObjects:
+//                         [NSString stringWithString:appDelegate.user.first_name], 
+//                         [NSString stringWithString:appDelegate.user.last_name],//appDelegate.user.last_name, 
+//                         [NSString stringWithString:appDelegate.user.email],//appDelegate.user.email, 
+//                         [NSString stringWithString:appDelegate.user.username],//appDelegate.user.username, 
+//                         [NSString stringWithString:appDelegate.user.location],//appDelegate.user.location, 
+//                         nil]; 
+    self.rowDataArray = [NSMutableArray arrayWithObjects:appDelegate.user.first_name, appDelegate.user.last_name, appDelegate.user.email, appDelegate.user.username, appDelegate.user.location, nil];
+    NSLog(@"rowDataArray loaded data");
 }
 
 - (void)signUpViewControllerDidCancelLogIn:(PFSignUpViewController *)signUpController {
@@ -250,9 +296,9 @@ int naviHeight;
     if ([logoutButton.title isEqualToString:@"Logout"]) {
         [PFUser logOut]; // Logout user, this automatically clears the cache
         
-        appDelegate.user.email = @"";
         appDelegate.user.first_name = @"";
         appDelegate.user.last_name = @"";
+        appDelegate.user.email = @"";
         appDelegate.user.location = @"";
         appDelegate.user.username = @"";
         
@@ -272,7 +318,8 @@ int naviHeight;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.rowTitleArray.count;
+    NSLog(@"self.rowDataArray.count = %d", self.rowDataArray.count);
+    return self.rowDataArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -367,11 +414,15 @@ int naviHeight;
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
+    if ([textField.text isEqualToString:@"Tap to edit"]) {
+        textField.text = @"";
+    }
     activeField = textField;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
+    userEdited= YES;
     NSString *dataElement = [self.rowDataArray objectAtIndex:(textField.tag - 10)];
     NSLog(@"dataElement: %@", dataElement);
     dataElement = [textField text];
@@ -380,13 +431,13 @@ int naviHeight;
     
     //self.rowDataArray = [NSMutableArray arrayWithObjects:appDelegate.user.first_name, appDelegate.user.last_name, appDelegate.user.email, appDelegate.user.username, appDelegate.user.location, nil]; 
     if (textField.tag - 10 == 0) {
-        appDelegate.user.first_name = [dataElement copy];
+        appDelegate.user.first_name = [NSString stringWithString:dataElement];
         [appDelegate.user.parseUser setObject:dataElement forKey:@"first_name"];
     } if (textField.tag - 10 == 1) {
-        appDelegate.user.last_name = dataElement;
+        appDelegate.user.last_name = [NSString stringWithString:dataElement];
         [appDelegate.user.parseUser setObject:dataElement forKey:@"last_name"];
     } if (textField.tag - 10 == 2) {
-        appDelegate.user.email = dataElement;
+        appDelegate.user.email = [NSString stringWithString:dataElement];
         [appDelegate.user.parseUser setObject:dataElement forKey:@"email"];
     } if (textField.tag - 10 == 3) {
         PFQuery *query = [PFQuery queryForUser];
@@ -398,15 +449,17 @@ int naviHeight;
                     NSLog(@"dataElement: %@", dataElement);
                     NSLog(@"appDelegate.user.username: %@", appDelegate.user.username);
                     NSLog(@"appDelegate.user.parseUser: %@", appDelegate.user.parseUser);
-                    appDelegate.user.username = dataElement;
-                    appDelegate.user.parseUser.username = dataElement;
+                    appDelegate.user.username = [NSString stringWithString:dataElement];;
+                    appDelegate.user.parseUser.username = [NSString stringWithString:dataElement];;
                     activeField = nil;
                     NSLog(@"appDelegate.user.username after dataElement: %@", appDelegate.user.username);
                     [appDelegate.user.parseUser saveInBackground];
                     NSLog(@"Saving user");
+                    [HudView hudInView:self.view text:@"Username" lineTwo:@"Updated" animated:YES];
                 } else {
+                    [HudView hudInView:self.view text:@"Username Taken" lineTwo:@"Choose Another" animated:YES];
                     NSLog(@"Someone has that username");
-                    //TELL USER
+                    textField.text = appDelegate.user.username;
                 }
             } else {
                 // Log details of the failure
@@ -414,19 +467,16 @@ int naviHeight;
             }
         }];
     } if (textField.tag - 10 == 4) {
-        appDelegate.user.location = dataElement;
+        appDelegate.user.location = [NSString stringWithString:dataElement];;
         [appDelegate.user.parseUser setObject:dataElement forKey:@"location"];
     }
     activeField = nil;
-    if(appDelegate.user.parseUser && textField.tag-10 != 3) {
-        [appDelegate.user.parseUser saveInBackground];
-        NSLog(@"Saving user");
-    }
     if ([appDelegate.user.first_name isEqualToString:@""] || [appDelegate.user.last_name isEqualToString:@""] || [appDelegate.user.location isEqualToString:@""] || !appDelegate.user.first_name || !appDelegate.user.last_name || !appDelegate.user.location) {
         [headerLabel setText:@"Complete your profile..."];
     } else {
         [headerLabel setText:@"Welcome to Powerball+"];//@"Maximize winnings by selecting unique numbers. With Smartpick and accounts, no two Powerball+ users will choose the same numbers.";
     }
+    [self rowDataArrayLoadData];
 }
 
 - (void)registerForKeyboardNotifications
