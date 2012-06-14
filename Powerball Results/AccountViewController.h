@@ -10,10 +10,12 @@
 #import "AppDelegate.h"
 #import "ParseLoginViewController.h"
 
-@interface AccountViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate, PF_FBRequestDelegate, UITextFieldDelegate>
+@interface AccountViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate, PF_FBRequestDelegate, UITextFieldDelegate> {
+    //AppDelegate *appDelegate;
+}
 
 // Connections
-@property (nonatomic, strong) AppDelegate *appDelegate;
+//@property (nonatomic, weak) AppDelegate *appDelegate;
 
 // Data
 @property (nonatomic, strong) NSArray *permissions; 

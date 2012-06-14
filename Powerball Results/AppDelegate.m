@@ -23,13 +23,15 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [Parse setApplicationId:@"RitD22GrDUjVP3P04EdlvMu3IYJoRQmYoRYo2Sma" 
-                  clientKey:@"DTFNe2YNrrp3gFayj4jBkIEeD4vDjnhK5AhMCs9X"]; //Dev
+//    [Parse setApplicationId:@"RitD22GrDUjVP3P04EdlvMu3IYJoRQmYoRYo2Sma" 
+//                  clientKey:@"DTFNe2YNrrp3gFayj4jBkIEeD4vDjnhK5AhMCs9X"]; //Dev
     
-//    [Parse setApplicationId:@"uS5c2WJ8Osp94YRmWOHPEKL9NsNazKuS4eUIZ1Wl" 
-//                  clientKey:@"qMMetsxWm44XomrL7a153GlCFVBKbNiipe5Z9iUj"]; //Prod
+    [Parse setApplicationId:@"uS5c2WJ8Osp94YRmWOHPEKL9NsNazKuS4eUIZ1Wl" 
+                  clientKey:@"qMMetsxWm44XomrL7a153GlCFVBKbNiipe5Z9iUj"]; //Prod
     
     [PFFacebookUtils initializeWithApplicationId:@"456093817750986"]; //Setup FB
+    
+    NSLog(@"App finishedLaunching");
     
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge| UIRemoteNotificationTypeAlert| UIRemoteNotificationTypeSound];
     
@@ -65,6 +67,9 @@
 //        PFUser *anonUser = [PFUser currentUser];
 //        self.user.username = anonUser.username;
 //    }
+    if (!self.user) {
+        self.user = [[User alloc] init];
+    }
     [self setupViewControllers];
     return YES;
 }
@@ -95,7 +100,14 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
  
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+    NSLog(@"App Became Active.");
+    
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+    
+//    bool firstTime = YES;
+//    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:firstTime] forKey:@"firstTime"];
+//    [[NSUserDefaults standardUserDefaults] setInteger:firstTime forKey:@"firstTime"];
+//    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 							
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -107,12 +119,14 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
     } else {
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user"];
     }
-    [[NSUserDefaults standardUserDefaults] synchronize];
+//    bool firstTime = YES;
+//    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:firstTime] forKey:@"firstTime"];
+//    [[NSUserDefaults standardUserDefaults] setInteger:firstTime forKey:@"firstTime"];
+//    [[NSUserDefaults standardUserDefaults] synchronize];
     NSLog(@"App Resigned Active.");
 }
 
 // PUSH REGISTRATION
-
 - (void)application:(UIApplication *)application 
 didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
 {
@@ -140,6 +154,16 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     return [PFFacebookUtils handleOpenURL:url];
+}
+
++ (AppDelegate *)appDelegate
+{
+    return (AppDelegate*)[[UIApplication sharedApplication] delegate]; 
+}
+
++ (User *)user
+{
+    return ((AppDelegate*)[[UIApplication sharedApplication] delegate]).user;
 }
 
 @end

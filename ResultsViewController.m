@@ -35,7 +35,7 @@
 @synthesize scrollView;
 @synthesize spinner;
 
-BOOL firstTime;
+BOOL firstTime = YES;
 
 //LabelHeights
 int nextLabelH = 8;
@@ -51,7 +51,7 @@ int lastJackpotVariableLabelWidth = 170;
 int starTransitionHeight = 64;
 
 //Big ball spacing
-int xindent = 17; //distance from left side for first item - aka X
+int xindent = 24;//17; //distance from left side for first item - aka X
 int xbuffer = 7; //distance between items
 int ystart = 97; //distance from top for items - aka Y
 int numItems = 6; //number of items
@@ -103,8 +103,6 @@ NSMutableArray *matchingArray;
     [matchingArray addObject:@"selectionFive"];
     [matchingArray addObject:@"selectionPowerball"];
     
-    firstTime = YES;
-    
     self.payoutsTableView.tableView.center = CGPointMake(payoutsViewCenterX,payoutsViewCenterY);
     self.payoutsTableView.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.payoutsTableView.tableView.scrollEnabled = NO;
@@ -114,13 +112,86 @@ NSMutableArray *matchingArray;
 {
     [super viewWillAppear:YES];
     
+//    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
+//    firstTime = [[currentDefaults objectForKey:@"firstTime"] boolValue];
     NSLog(@"ViewWillAppear firstTime:%d",firstTime);
+//    if (firstTime) {
+//        [self.date1 setHidden:YES];
+//        [self.date2 setHidden:YES];
+//        [self.date3 setHidden:YES];
+//        [self.date4 setHidden:YES];
+//        [self.date5 setHidden:YES];
+//        [self.nextDateLabel setHidden:YES];
+//        [self.nextJackpotLabel setHidden:YES];
+//        [self.lastJackpotLabel setHidden:YES];
+//        [self.lastDateLabel setHidden:YES];
+//        [self.payoutsTableView.tableView setHidden:YES];
+//        NSLog(@"Relaoding inputViews");
+//    }
     [self getDrawData];
     
     self.spinner.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds));
     self.spinner.hidesWhenStopped = YES;
     [self.spinner startAnimating];
     [self.view addSubview:self.spinner];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    NSLog(@"viewDidAppear");
+}
+
+- (void)getDrawData //Gets all the draw data from Parse
+{
+    PFQuery *query = [PFQuery queryWithClassName:@"Drawings"];
+    [query orderByDescending:@"Date"];
+    query.limit = 100;
+    
+    NSMutableArray *selectionsAndPendingSelections = [[NSMutableArray alloc] init]; 
+    if (!self.allSelections) {
+        self.allSelections = [[NSMutableArray alloc] init];
+    }
+    
+    __block int counter = 0;
+    NSNumberFormatter * formatter = [[NSNumberFormatter alloc] init];
+    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        NSLog(@"Sent query.");
+        if (!error) {
+            NSLog(@"Successfully retrieved %d past jackpots and drawing results.", objects.count); 
+            for (PFObject *object in objects) {  
+                Selection *selection = [[Selection alloc] init];
+                
+                selection.jackpot = [object objectForKey:@"Jackpot"];
+                selection.drawingDate = [object objectForKey:@"Date"];
+                selection.selectionOne = [formatter numberFromString:[object objectForKey:@"Ball1"]];
+                selection.selectionTwo = [formatter numberFromString:[object objectForKey:@"Ball2"]];
+                selection.selectionThree = [formatter numberFromString:[object objectForKey:@"Ball3"]];
+                selection.selectionFour = [formatter numberFromString:[object objectForKey:@"Ball4"]];
+                selection.selectionFive = [formatter numberFromString:[object objectForKey:@"Ball5"]];
+                selection.selectionPowerball = [formatter numberFromString:[object objectForKey:@"BallPowerball"]];
+                selection.userID = nil;
+                selection.userChosenDate = nil;
+                selection.matches = nil;
+                selection.specialMatches = nil;
+                
+                [selectionsAndPendingSelections insertObject:selection atIndex:counter];                
+                counter ++;
+            }
+            self.allSelections = selectionsAndPendingSelections;
+            [self setUpViewData];
+        } else {
+            UIAlertView * alert = [[UIAlertView alloc] 
+                                   initWithTitle:@"Alert" 
+                                   message:@"Couldn't connect to the network. Please try again later." 
+                                   delegate:self cancelButtonTitle:@"Hide" 
+                                   otherButtonTitles:nil];
+            alert.alertViewStyle = UIAlertViewStyleDefault;
+            [alert show];            
+        }
+    }];
+    query = nil;
 }
 
 - (void)setUpViewData //Does all the view setup, then calls AddResults
@@ -178,12 +249,6 @@ NSMutableArray *matchingArray;
     self.lastJackpotLabel.frame = CGRectMake(xLindent+jackpotLabelWidth,lastJackpotVariableLabelY,lastJackpotVariableLabelWidth,yLheight);
     
     self.nextDateLabel.text = dateStr;
-    
-//    CGRect frame = CGRectMake(self.view.frame.size.width/2.0f, starTransitionHeight, 70, 10);
-//    UIImageView *starTransition = [[UIImageView alloc] initWithFrame:frame];
-//    starTransition.center = CGPointMake(self.view.frame.size.width/2.0f,starTransitionHeight);
-//    starTransition.image = [UIImage imageNamed:@"stars.png"]; 
-//    [self.scrollView addSubview:starTransition];
     
     //Put LAST draw date on screen
     NSDate *lastDrawDateEST = [theTime getDrawDate:@"backward"]; 
@@ -243,63 +308,14 @@ NSMutableArray *matchingArray;
     
     Selection *mainSelection = [self.allSelections objectAtIndex:1];
     [self animateResults:mainSelection xsize:xsize endX:xindent endY:ystart width:xsize height:xsize count:1];
-    firstTime = NO;
+    
+    firstTime = NO; //AnimateResults loops through all balls
+//    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:firstTime] forKey:@"firstTime"];
+//    [[NSUserDefaults standardUserDefaults] setInteger:firstTime forKey:@"firstTime"];
+//    [[NSUserDefaults standardUserDefaults] synchronize];
     
     [self.spinner removeFromSuperview];
     self.spinner = nil;
-}
-
-- (void)getDrawData //Gets all the draw data from Parse
-{
-    PFQuery *query = [PFQuery queryWithClassName:@"Drawings"];
-    [query orderByDescending:@"Date"];
-    query.limit = 100;
-    
-    NSMutableArray *selectionsAndPendingSelections = [[NSMutableArray alloc] init]; 
-    if (!self.allSelections) {
-        self.allSelections = [[NSMutableArray alloc] init];
-    }
-    
-    __block int counter = 0;
-    NSNumberFormatter * formatter = [[NSNumberFormatter alloc] init];
-    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
-    
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        NSLog(@"Sent query.");
-        if (!error) {
-            NSLog(@"Successfully retrieved %d past jackpots and drawing results.", objects.count); 
-            for (PFObject *object in objects) {  
-                Selection *selection = [[Selection alloc] init];
-                
-                selection.jackpot = [object objectForKey:@"Jackpot"];
-                selection.drawingDate = [object objectForKey:@"Date"];
-                selection.selectionOne = [formatter numberFromString:[object objectForKey:@"Ball1"]];
-                selection.selectionTwo = [formatter numberFromString:[object objectForKey:@"Ball2"]];
-                selection.selectionThree = [formatter numberFromString:[object objectForKey:@"Ball3"]];
-                selection.selectionFour = [formatter numberFromString:[object objectForKey:@"Ball4"]];
-                selection.selectionFive = [formatter numberFromString:[object objectForKey:@"Ball5"]];
-                selection.selectionPowerball = [formatter numberFromString:[object objectForKey:@"BallPowerball"]];
-                selection.userID = nil;
-                selection.userChosenDate = nil;
-                selection.matches = nil;
-                selection.specialMatches = nil;
-                
-                [selectionsAndPendingSelections insertObject:selection atIndex:counter];                
-                counter ++;
-            }
-            self.allSelections = selectionsAndPendingSelections;
-            [self setUpViewData];
-        } else {
-            UIAlertView * alert = [[UIAlertView alloc] 
-                                   initWithTitle:@"Alert" 
-                                   message:@"Couldn't connect to the network. Please try again later." 
-                                   delegate:self cancelButtonTitle:@"Hide" 
-                                   otherButtonTitles:nil];
-            alert.alertViewStyle = UIAlertViewStyleDefault;
-            [alert show];            
-        }
-    }];
-    query = nil;
 }
 
 - (void)animateResults:(Selection *)selection xsize:(int)xsize endX:(int)endX endY:(int)endY width:(int)width height:(int)height count:(int)count //Animates the results onto the screen

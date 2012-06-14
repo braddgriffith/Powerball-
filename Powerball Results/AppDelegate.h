@@ -20,4 +20,10 @@
 @property (nonatomic, strong) UITabBarController *tabBarController;
 @property (nonatomic, strong) User *user;
 
++(UIApplication *)appDelegate;
+//Call this to get the appDelegate
+//AppDelegate *appDelegate = [AppDelegate appDelegate];
+//[AppDelegate appDelegate].user
++ (User *)user;
+
 @end

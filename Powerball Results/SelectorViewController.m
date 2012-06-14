@@ -13,6 +13,7 @@
 #import "Time.h"
 #import <Parse/Parse.h>
 #import "IntroAnimation.h"
+//#import "Three20/Three20.h"
 
 @implementation SelectorViewController
 
@@ -34,7 +35,8 @@
 //@synthesize firstTime; 
 @synthesize activeField;
 
-@synthesize appDelegate;
+//@synthesize appDelegate;
+@synthesize myDelegate;
 
 @synthesize today;
 
@@ -64,6 +66,8 @@ int viewWillAppearCount = 0;
 bool reviewedApp = NO;
 
 UIButton *doneButton;
+
+AppDelegate *localDelegate;
 
 -(void)viewDidLoad
 {
@@ -100,7 +104,11 @@ UIButton *doneButton;
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]];
     
-    appDelegate = [[UIApplication sharedApplication] delegate]; 
+    appDelegate = [[UIApplication sharedApplication] delegate];
+    NSLog(@"appDelegate:%@",appDelegate);
+    id x = [[UIApplication sharedApplication] delegate]; 
+    NSLog(@"x:%@",x);
+
     
     //Calculate the next draw date in EST
     NSLog(@"Local Time Zone %@",[[NSTimeZone localTimeZone] name]);
@@ -115,13 +123,44 @@ UIButton *doneButton;
     tapRecognizer.cancelsTouchesInView = NO;
     [self.view addGestureRecognizer:tapRecognizer];
     
-    [self registerForKeyboardNotifications];
-}
+    float cornerRadius = 10.0;
 
--(void)viewWillUnload
-{
-    [super viewWillUnload];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self.pickButton.layer setBorderWidth:2.0];
+    [self.pickButton.layer setCornerRadius:cornerRadius];
+    [self.pickButton.layer setBorderColor:[[UIColor colorWithWhite:0.3 alpha:0.7] CGColor]];
+        
+//    CAGradientLayer *gradient = [CAGradientLayer layer];
+//    gradient.frame = self.pickButton.bounds;
+//    gradient.cornerRadius = 10.0;
+////    UIColor *lightGrayColorRGB = [UIColor colorWithRed:224.0 green:224.0 blue:224.0 alpha:1.0];
+////    gradient.colors = [NSArray arrayWithObjects:(id)[lightGrayColorRGB CGColor], (id)[[UIColor whiteColor] CGColor], nil];
+////    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor lightGrayColor] CGColor], (id)[[UIColor whiteColor] CGColor], nil];
+//    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor whiteColor] CGColor], (id)[[UIColor whiteColor] CGColor], nil];
+////    gradient.masksToBounds = NO;
+////    gradient.shadowOffset = CGSizeMake(-5, 5);
+////    gradient.shadowRadius = 8;
+////    gradient.shadowOpacity = 0.75;
+//    [self.pickButton.layer insertSublayer:gradient atIndex:0];
+
+    //http://undefinedvalue.com/2010/02/27/shiny-iphone-buttons-without-photoshop
+    CAGradientLayer *shineLayer = [CAGradientLayer layer];
+    shineLayer.frame = self.pickButton.bounds;
+    shineLayer.cornerRadius = cornerRadius;
+    shineLayer.colors = [NSArray arrayWithObjects:
+                         (id)[UIColor colorWithWhite:1.0f alpha:0.4f].CGColor,
+                         (id)[UIColor colorWithWhite:1.0f alpha:0.2f].CGColor,
+                         (id)[UIColor colorWithWhite:0.75f alpha:0.2f].CGColor,
+                         (id)[UIColor colorWithWhite:0.4f alpha:0.2f].CGColor,
+                         (id)[UIColor colorWithWhite:1.0f alpha:0.4f].CGColor,
+                         nil];
+    shineLayer.locations = [NSArray arrayWithObjects:
+                            [NSNumber numberWithFloat:0.0f],
+                            [NSNumber numberWithFloat:0.5f],
+                            [NSNumber numberWithFloat:0.5f],
+                            [NSNumber numberWithFloat:0.8f],
+                            [NSNumber numberWithFloat:1.0f],
+                            nil];
+    [self.pickButton.layer addSublayer:shineLayer];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -131,9 +170,10 @@ UIButton *doneButton;
     NSLog(@"Selector has %d selections", [self.selections count]);
     NSLog(@"viewWillAppear Email is %@", appDelegate.user.email);
     
-    [pickButton.titleLabel setText:@"QuickPick"];
-    [pickButton setTitle:@"QuickPick" forState:(UIControlStateNormal)];
-    [pickButton setTitle:@"QuickPick" forState:(UIControlStateSelected)];
+    [self.pickButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.pickButton setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
+    [self.pickButton setTitle:@"QuickPick" forState:(UIControlStateNormal)];
+    [self.pickButton setTitle:@"QuickPick" forState:(UIControlStateSelected)];
     
     if (triedPickTwo && [appDelegate.user.email isEqualToString:@""]) {
         [self encourageAccount];
@@ -144,15 +184,14 @@ UIButton *doneButton;
             [[NSUserDefaults standardUserDefaults] synchronize];
             [HudView hudInView:self.navigationController.view text:@"SmartPick!" lineTwo:@"Activated" animated:YES];
         }
-        [pickButton.titleLabel setText:@"SmartPick"];
-        [pickButton setTitle:@"SmartPick" forState:(UIControlStateNormal)];
-        [pickButton setTitle:@"SmartPick" forState:(UIControlStateSelected)];
+        [self.pickButton setTitle:@"SmartPick" forState:(UIControlStateNormal)];
+        [self.pickButton setTitle:@"SmartPick" forState:(UIControlStateSelected)];
     }
-    [pickButton.titleLabel setTextAlignment:UITextAlignmentCenter];
+    [self.pickButton.titleLabel setTextAlignment:UITextAlignmentCenter];
     
     
     viewWillAppearCount++;
-    if((viewWillAppearCount == 5 || !(viewWillAppearCount % 25)) && reviewedApp == NO) {
+    if((viewWillAppearCount == 7 || !(viewWillAppearCount % 25)) && reviewedApp == NO) {
         UIAlertView *alert = [[UIAlertView alloc]
                               initWithTitle: @"Do you love Powerball+?"
                               message: @"Please help us keep the app free by rating it in the App Store!"
@@ -163,10 +202,18 @@ UIButton *doneButton;
     }
     
     NSLog(@"viewHasAppeared %i times", viewWillAppearCount);
-    NSLog(@"reviewedApp %@", reviewedApp);
+    NSLog(@"reviewedApp %d", reviewedApp);
     [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:viewWillAppearCount] forKey:@"viewWillAppearCount"];
     [[NSUserDefaults standardUserDefaults] setInteger:viewWillAppearCount forKey:@"viewWillAppearCount"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self registerForKeyboardNotifications];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:NO];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -376,7 +423,7 @@ UIButton *doneButton;
     
     NSLog(@"appDelegate.user.username = %@", appDelegate.user.username);
     if(appDelegate.user.username == @""){ 
-        [newSelection setObject:@"Blank user" forKey:@"userID"];
+        [newSelection setObject:@"Brad's test prod version" forKey:@"userID"]; //
     } else if  (appDelegate.user.username == nil) {
         [newSelection setObject:@"Nil user" forKey:@"userID"];
     } else {

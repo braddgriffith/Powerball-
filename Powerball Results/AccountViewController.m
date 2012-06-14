@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import "ParseLoginViewController.h"
 #import "HudView.h"
+#import "User.h"
 
 @interface AccountViewController ()
 
@@ -19,7 +20,6 @@
 @implementation AccountViewController
 
 @synthesize rowTitleArray, rowDataArray;
-@synthesize appDelegate;
 @synthesize tableViewForAccount;
 @synthesize tableViewForAccountFrame;
 @synthesize permissions;
@@ -32,13 +32,16 @@ int introHeight = 39;
 int tableViewForAccountHeight = 400;
 int naviHeight;
 
+AppDelegate *localDelegate;
+
 bool userEdited = NO;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    self.appDelegate = [[UIApplication sharedApplication] delegate]; 
+    User *localUser = [AppDelegate user];
+    
     self.permissions = [NSArray arrayWithObjects:@"email", @"user_location", @"user_about_me", nil]; 
     
     UINavigationBar *navigationBar = [[UINavigationBar alloc] init];
@@ -70,7 +73,7 @@ bool userEdited = NO;
                     target:self 
                     action:@selector(logoutButtonTouchHandler:)];
     
-    if (!([appDelegate.user.email isEqualToString:@""] || appDelegate.user.email == nil)) {
+    if (!([localUser.email isEqualToString:@""] || localUser.email == nil)) {
         logoutButton.title = @"Login";
     }
     
@@ -86,28 +89,28 @@ bool userEdited = NO;
     tapRecognizer.cancelsTouchesInView = NO;
     [self.view addGestureRecognizer:tapRecognizer];
     
-    if ([appDelegate.user.email isEqualToString:@""] || appDelegate.user.email == nil) {
+    if ([localUser.email isEqualToString:@""] || localUser.email == nil) {
         [self displayParseLoginVC];
     }
     [self registerForKeyboardNotifications];
+    
+    self.rowTitleArray = [NSMutableArray arrayWithObjects:@"First Name", @"Last Name", @"Email", @"Username", @"Location", nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated //Creates and instatiates ParseLoginViewController if appdelegate.user.email == ""
 {
-    NSLog(@"viewWillAppear appDelegate.user.email = %@", appDelegate.user.email);
+    User *localUser = [AppDelegate user];
+    NSLog(@"viewWillAppear localUser.email = %@", localUser.email);
     
-    self.rowTitleArray = [NSMutableArray arrayWithObjects:@"First Name", @"Last Name", @"Email", @"Username", @"Location", nil];
     [self rowDataArrayLoadData];
     
-    NSLog(@"viewWillAppear appDelegate.user.email = %@", appDelegate.user.email);
-    
-    if ([appDelegate.user.email isEqualToString:@""] || appDelegate.user.email == nil) {
+    if ([localUser.email isEqualToString:@""] || localUser.email == nil) {
         logoutButton.title = @"Login";
         headerLabel.font = [UIFont boldSystemFontOfSize:14];
         headerLabel.text = @"Press Login to get updates on winning tickets and enable Smartpick.";
     } else { 
-        if ([appDelegate.user.first_name isEqualToString:@""] || [appDelegate.user.last_name isEqualToString:@""] || [appDelegate.user.location isEqualToString:@""] 
-            || [appDelegate.user.first_name isEqualToString:@"Tap to edit"] || [appDelegate.user.last_name isEqualToString:@"Tap to edit"]) {
+        if ([localUser.first_name isEqualToString:@""] || [localUser.last_name isEqualToString:@""] || [localUser.location isEqualToString:@""] 
+            || [localUser.first_name isEqualToString:@"Tap to edit"] || [localUser.last_name isEqualToString:@"Tap to edit"]) {
             headerLabel.text = @"Complete your profile...";
         } else {
             headerLabel.text = @"Welcome to Powerball+";// @"Maximize winnings by selecting unique numbers. With Smartpick and accounts, no two Powerball+ users will choose the same numbers.";/
@@ -119,9 +122,11 @@ bool userEdited = NO;
 
 -(void)viewWillDisappear:(BOOL)animated
 {
+    User *localUser = [AppDelegate user]; 
+    
     [super viewWillDisappear:NO];
-    if(appDelegate.user.parseUser && userEdited) {
-        [appDelegate.user.parseUser saveInBackground];
+    if(localUser.parseUser && userEdited) {
+        [localUser.parseUser saveInBackground];
         NSLog(@"Saving user");
         userEdited = NO;
     }
@@ -129,7 +134,8 @@ bool userEdited = NO;
 
 - (void)displayParseLoginVC
 {
-    NSLog(@"displayParseLoginVC appDelegate.user.email = %@", appDelegate.user.email);
+    User *localUser = [AppDelegate user];
+    NSLog(@"displayParseLoginVC localUser.email = %@", localUser.email);
     [PFUser logOut]; //WATCH FOR THIS
     ParseLoginViewController *logInController = [[ParseLoginViewController alloc] init];
     
@@ -150,16 +156,17 @@ bool userEdited = NO;
 
 - (void)logInViewController:(ParseLoginViewController *)controller didLogInUser:(PFUser *)user //If FB user, ask FB for details w requestWithGraphPath me?fields=id
 { 
+    User *localUser = [AppDelegate user];
     NSLog(@"Logged in and User: %@",user);
     
     if (![PFFacebookUtils isLinkedWithUser:user]) { //if account not linked w FB, use PFuser
         NSLog(@"Got to PFuser - not in FB");
-        appDelegate.user.location = [user objectForKey:@"location"]; //just location from PFUser
-        appDelegate.user.first_name = [user objectForKey:@"first_name"]; 
-        appDelegate.user.last_name = [user objectForKey:@"last_name"]; //    
-        appDelegate.user.email = user.email; 
-        appDelegate.user.username = [user objectForKey:@"username"];
-        appDelegate.user.parseUser = user;
+        localUser.location = [user objectForKey:@"location"]; //just location from PFUser
+        localUser.first_name = [user objectForKey:@"first_name"]; 
+        localUser.last_name = [user objectForKey:@"last_name"]; //    
+        localUser.email = user.email; 
+        localUser.username = [user objectForKey:@"username"];
+        localUser.parseUser = user;
         [self rowDataArrayLoadData];
         [tableViewForAccount reloadData]; 
     } else {  //else, go ask FB for data
@@ -172,59 +179,71 @@ bool userEdited = NO;
                                              andDelegate:self];
         NSLog(@"Got to FB");
     }
-    appDelegate.user.parseUser = user;
+    localUser.parseUser = user;
     NSLog(@"didLogInUser currentUser = %@", [PFUser currentUser]);
     NSLog(@"didLogInUser user = %@", user);
     [self dismissModalViewControllerAnimated:YES];
     
-    //PUSH - subscribe to MY channel for scored tickets - appDelegate.user.id
-    NSString *channel = [NSString stringWithFormat:@"a%@", user.objectId];
-    [PFPush subscribeToChannelInBackground:channel block:^(BOOL succeeded, NSError *error) {
-        if (succeeded) {
-            NSLog(@"Successfully subscribed to the PERSONAL (%@) broadcast channel.",appDelegate.user.id);
-        } else {
-            NSLog(@"Failed to subscribe to the PERSONAL (%@) broadcast channel.",appDelegate.user.id);
-        }
-    }];
+    //PUSH - subscribe to MY channel for scored tickets
+    NSLog(@"a%@",localUser.parseUser.objectId);
+    if (localUser.parseUser.objectId) {
+        NSString *channel = [NSString stringWithFormat:@"a%@", localUser.parseUser.objectId];
+        [PFPush subscribeToChannelInBackground:channel block:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                NSLog(@"Successfully subscribed to the PERSONAL (%@) broadcast channel.",localUser.parseUser.objectId);
+            } else {
+                NSLog(@"Failed to subscribe to the PERSONAL (%@) broadcast channel.",localUser.parseUser.objectId);
+            }
+        }];
+    }
 }
 
 -(void)request:(PF_FBRequest *)request didLoad:(id)result //IF WE GET DATA BACK FROM FB, SAVE TO NETWORK
 {       
+    User *localUser = [AppDelegate user];
+    
     NSLog(@"didLoad - Facebook request %@ loaded", result);
     if ([[request url] rangeOfString:@"/me"].location != NSNotFound)
     {
         NSLog(@"didLoad result = %@",result);
         
         //Puts the latest appDelegate.user.X into the rowDataArray for display
-        appDelegate.user.first_name = [result objectForKey:@"first_name"];
-        appDelegate.user.last_name = [result objectForKey:@"last_name"];
-        appDelegate.user.email = [result objectForKey:@"email"];
-        appDelegate.user.location = [[result objectForKey:@"location"]objectForKey:@"name"];
-        appDelegate.user.username = [result objectForKey:@"username"];
+        NSLog(@"result first_name: %@",[result objectForKey:@"first_name"]);
+        NSString *first = [result objectForKey:@"first_name"];
+        localUser.first_name = [NSString stringWithString:first];
+        NSLog(@"localUser.first_name: %@",localUser.first_name);
+        [localUser.parseUser setObject:first forKey:@"first_name"];
         
-        NSLog(@"didLoad appDelegate id = %@, first = %@, last = %@, email = %@, location = %@",[result objectForKey:@"id"], appDelegate.user.first_name, appDelegate.user.last_name, appDelegate.user.email, appDelegate.user.location);
+        localUser.first_name = [result objectForKey:@"first_name"];
+        localUser.last_name = [result objectForKey:@"last_name"];
+        localUser.email = [result objectForKey:@"email"];
+        localUser.location = [[result objectForKey:@"location"]objectForKey:@"name"];
+        localUser.username = [result objectForKey:@"username"];
+        
+        NSLog(@"didLoad localDelegate id = %@, first = %@, last = %@, email = %@, location = %@",[result objectForKey:@"id"], localUser.first_name, localUser.last_name, localUser.email, localUser.location);
         
         // https://parse.com/docs/ios_guide#users
         // other fields can be set just like with PFObject
         // [user setObject:@"415-392-0202" forKey:@"phone"];
         
-        [[PFUser currentUser] refresh];
+        //[[PFUser currentUser] refresh];
         
         NSLog(@"didLoad currentUser = %@",[PFUser currentUser]);
-        NSLog(@"didLoad appDelegate.user.parseUser = %@", appDelegate.user.parseUser);
-        [appDelegate.user.parseUser setObject:appDelegate.user.first_name forKey:@"first_name"];
-        [appDelegate.user.parseUser setObject:appDelegate.user.last_name forKey:@"last_name"];
-        [appDelegate.user.parseUser setObject:appDelegate.user.email forKey:@"email"];
-        [appDelegate.user.parseUser setObject:appDelegate.user.location forKey:@"location"];
-        [appDelegate.user.parseUser setObject:appDelegate.user.username forKey:@"username"];
-        NSLog(@"Saving user %@, stuff like %@ for first_name.", appDelegate.user.parseUser, appDelegate.user.first_name);
-        [appDelegate.user.parseUser saveInBackground];
+        NSLog(@"didLoad localUser.parseUser = %@", localUser.parseUser);
+        [localUser.parseUser setObject:localUser.first_name forKey:@"first_name"];
+        [localUser.parseUser setObject:localUser.last_name forKey:@"last_name"];
+        [localUser.parseUser setObject:localUser.email forKey:@"email"];
+        [localUser.parseUser setObject:localUser.location forKey:@"location"];
+        [localUser.parseUser setObject:localUser.username forKey:@"username"];
+        NSLog(@"Saving user %@, stuff like %@ for first_name.", localUser.parseUser, localUser.first_name);
+        [localUser.parseUser saveInBackground];
         
         logoutButton.title = @"Logout";
     }
     [self rowDataArrayLoadData];
     [self.tableViewForAccount reloadData];
     [self viewWillAppear:NO];
+    logoutButton.title = @"Logout";
 }
 
 - (void)logInViewControllerDidCancelLogIn:(ParseLoginViewController *)logInController {
@@ -235,39 +254,40 @@ bool userEdited = NO;
 
 - (void)signUpViewController:(PFSignUpViewController *)signUpController didSignUpUser:(PFUser *)user {
     NSLog(@"We signed up!");
+    User *localUser = [AppDelegate user];
     
     if ([user objectForKey:@"first_name"]) {
-        appDelegate.user.first_name = [user objectForKey:@"first_name"];
+        localUser.first_name = [user objectForKey:@"first_name"];
     } else {
-        appDelegate.user.first_name = @"Tap to edit";
+        localUser.first_name = @"Tap to edit";
     }
     
     if ([user objectForKey:@"last_name"]) {
-        appDelegate.user.last_name = [user objectForKey:@"last_name"];
+        localUser.last_name = [user objectForKey:@"last_name"];
     } else {
-        appDelegate.user.last_name = @"Tap to edit";
+        localUser.last_name = @"Tap to edit";
     }
     
     if ([user objectForKey:@"email"]) {
-        appDelegate.user.email = [user objectForKey:@"email"];
+        localUser.email = [user objectForKey:@"email"];
     } else {
-        appDelegate.user.email = @"Tap to edit";
+        localUser.email = @"Tap to edit";
     }
     
     if (user.username) {
-        appDelegate.user.username = user.username;
+        localUser.username = user.username;
     } else {
-        appDelegate.user.username = @"nil";
+        localUser.username = @"nil";
     }
     
     if ([user objectForKey:@"location"]) {
-        appDelegate.user.location = [user objectForKey:@"location"];
+        localUser.location = [user objectForKey:@"location"];
     } else {
-        appDelegate.user.location = @"Tap to edit";
+        localUser.location = @"Tap to edit";
     }
     
     [self dismissModalViewControllerAnimated:YES];
-    appDelegate.user.parseUser = user;
+    localUser.parseUser = user;
     [self rowDataArrayLoadData];
     [tableViewForAccount reloadData];
     logoutButton.title = @"Logout";
@@ -275,6 +295,7 @@ bool userEdited = NO;
 
 - (void)rowDataArrayLoadData //Puts the latest appDelegate.user.X into the rowDataArray for display
 {
+    User *localUser = [AppDelegate user];
 //    self.rowDataArray = [NSMutableArray arrayWithObjects:
 //                         [NSString stringWithString:appDelegate.user.first_name], 
 //                         [NSString stringWithString:appDelegate.user.last_name],//appDelegate.user.last_name, 
@@ -282,8 +303,13 @@ bool userEdited = NO;
 //                         [NSString stringWithString:appDelegate.user.username],//appDelegate.user.username, 
 //                         [NSString stringWithString:appDelegate.user.location],//appDelegate.user.location, 
 //                         nil]; 
-    self.rowDataArray = [NSMutableArray arrayWithObjects:appDelegate.user.first_name, appDelegate.user.last_name, appDelegate.user.email, appDelegate.user.username, appDelegate.user.location, nil];
-    NSLog(@"rowDataArray loaded data");
+    NSLog(@"localUser.first_name = %@", localUser.first_name);
+    NSLog(@"localUser.last_name = %@", localUser.last_name);
+    NSLog(@" localUser.email = %@", localUser.email);
+    NSLog(@" localUser.username = %@", localUser.username);
+    NSLog(@" localUser.location = %@", localUser.location);
+    self.rowDataArray = [NSMutableArray arrayWithObjects:localUser.first_name, localUser.last_name, localUser.email, localUser.username, localUser.location, nil];
+    NSLog(@"rowDataArray loaded data self.rowDataArray.count = %d", self.rowDataArray.count);
 }
 
 - (void)signUpViewControllerDidCancelLogIn:(PFSignUpViewController *)signUpController {
@@ -293,14 +319,16 @@ bool userEdited = NO;
 
 - (void)logoutButtonTouchHandler:(id)sender 
 {
+    User *localUser = [AppDelegate user];
+    
     if ([logoutButton.title isEqualToString:@"Logout"]) {
         [PFUser logOut]; // Logout user, this automatically clears the cache
         
-        appDelegate.user.first_name = @"";
-        appDelegate.user.last_name = @"";
-        appDelegate.user.email = @"";
-        appDelegate.user.location = @"";
-        appDelegate.user.username = @"";
+        localUser.first_name = @"";
+        localUser.last_name = @"";
+        localUser.email = @"";
+        localUser.location = @"";
+        localUser.username = @"";
         
         [self rowDataArrayLoadData];
         [self.tableViewForAccount reloadData];
@@ -311,15 +339,15 @@ bool userEdited = NO;
     } else {
         [self displayParseLoginVC];
     }
-    NSLog(@"logoutButton appDelegate.user.email = %@", appDelegate.user.email);
+    NSLog(@"logoutButton localUser.email = %@", localUser.email);
 }
 
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSLog(@"self.rowDataArray.count = %d", self.rowDataArray.count);
-    return self.rowDataArray.count;
+    NSLog(@"self.rowTitleArray.count = %d", self.rowTitleArray.count);
+    return self.rowTitleArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -422,6 +450,8 @@ bool userEdited = NO;
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
+    User *localUser = [AppDelegate user];
+    
     userEdited= YES;
     NSString *dataElement = [self.rowDataArray objectAtIndex:(textField.tag - 10)];
     NSLog(@"dataElement: %@", dataElement);
@@ -431,14 +461,14 @@ bool userEdited = NO;
     
     //self.rowDataArray = [NSMutableArray arrayWithObjects:appDelegate.user.first_name, appDelegate.user.last_name, appDelegate.user.email, appDelegate.user.username, appDelegate.user.location, nil]; 
     if (textField.tag - 10 == 0) {
-        appDelegate.user.first_name = [NSString stringWithString:dataElement];
-        [appDelegate.user.parseUser setObject:dataElement forKey:@"first_name"];
+        localUser.first_name = [NSString stringWithString:dataElement];
+        [localUser.parseUser setObject:dataElement forKey:@"first_name"];
     } if (textField.tag - 10 == 1) {
-        appDelegate.user.last_name = [NSString stringWithString:dataElement];
-        [appDelegate.user.parseUser setObject:dataElement forKey:@"last_name"];
+        localUser.last_name = [NSString stringWithString:dataElement];
+        [localUser.parseUser setObject:dataElement forKey:@"last_name"];
     } if (textField.tag - 10 == 2) {
-        appDelegate.user.email = [NSString stringWithString:dataElement];
-        [appDelegate.user.parseUser setObject:dataElement forKey:@"email"];
+        localUser.email = [NSString stringWithString:dataElement];
+        [localUser.parseUser setObject:dataElement forKey:@"email"];
     } if (textField.tag - 10 == 3) {
         PFQuery *query = [PFQuery queryForUser];
         [query whereKey:@"username" equalTo:dataElement]; // find all users
@@ -447,19 +477,19 @@ bool userEdited = NO;
                 NSLog(@"Successfully retrieved %d users.", objects.count);
                 if(objects.count == 0) {
                     NSLog(@"dataElement: %@", dataElement);
-                    NSLog(@"appDelegate.user.username: %@", appDelegate.user.username);
-                    NSLog(@"appDelegate.user.parseUser: %@", appDelegate.user.parseUser);
-                    appDelegate.user.username = [NSString stringWithString:dataElement];;
-                    appDelegate.user.parseUser.username = [NSString stringWithString:dataElement];;
+                    NSLog(@"appDelegate.user.username: %@", localUser.username);
+                    NSLog(@"appDelegate.user.parseUser: %@", localUser.parseUser);
+                    localUser.username = [NSString stringWithString:dataElement];;
+                    localUser.parseUser.username = [NSString stringWithString:dataElement];;
                     activeField = nil;
-                    NSLog(@"appDelegate.user.username after dataElement: %@", appDelegate.user.username);
-                    [appDelegate.user.parseUser saveInBackground];
+                    NSLog(@"appDelegate.user.username after dataElement: %@", localUser.username);
+                    [localUser.parseUser saveInBackground];
                     NSLog(@"Saving user");
                     [HudView hudInView:self.view text:@"Username" lineTwo:@"Updated" animated:YES];
                 } else {
                     [HudView hudInView:self.view text:@"Username Taken" lineTwo:@"Choose Another" animated:YES];
                     NSLog(@"Someone has that username");
-                    textField.text = appDelegate.user.username;
+                    textField.text = localUser.username;
                 }
             } else {
                 // Log details of the failure
@@ -467,11 +497,11 @@ bool userEdited = NO;
             }
         }];
     } if (textField.tag - 10 == 4) {
-        appDelegate.user.location = [NSString stringWithString:dataElement];;
-        [appDelegate.user.parseUser setObject:dataElement forKey:@"location"];
+        localUser.location = [NSString stringWithString:dataElement];;
+        [localUser.parseUser setObject:dataElement forKey:@"location"];
     }
     activeField = nil;
-    if ([appDelegate.user.first_name isEqualToString:@""] || [appDelegate.user.last_name isEqualToString:@""] || [appDelegate.user.location isEqualToString:@""] || !appDelegate.user.first_name || !appDelegate.user.last_name || !appDelegate.user.location) {
+    if ([localUser.first_name isEqualToString:@""] || [localUser.last_name isEqualToString:@""] || [localUser.location isEqualToString:@""] || !localUser.first_name || !localUser.last_name || !localUser.location) {
         [headerLabel setText:@"Complete your profile..."];
     } else {
         [headerLabel setText:@"Welcome to Powerball+"];//@"Maximize winnings by selecting unique numbers. With Smartpick and accounts, no two Powerball+ users will choose the same numbers.";

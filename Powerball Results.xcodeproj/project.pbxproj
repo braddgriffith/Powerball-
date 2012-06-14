@@ -66,7 +66,6 @@
 		E6F5E269156C2BB000BFE33B /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = E6F5E268156C2BAF00BFE33B /* User.m */; };
 		E6F5E272156C963300BFE33B /* whiteball.png in Resources */ = {isa = PBXBuildFile; fileRef = E6F5E271156C963300BFE33B /* whiteball.png */; };
 		E6F5E274156C963A00BFE33B /* redball.png in Resources */ = {isa = PBXBuildFile; fileRef = E6F5E273156C963A00BFE33B /* redball.png */; };
-		E6F5E276156C964000BFE33B /* stars.png in Resources */ = {isa = PBXBuildFile; fileRef = E6F5E275156C964000BFE33B /* stars.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -149,7 +148,6 @@
 		E6F5E268156C2BAF00BFE33B /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		E6F5E271156C963300BFE33B /* whiteball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteball.png; sourceTree = "<group>"; };
 		E6F5E273156C963A00BFE33B /* redball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redball.png; sourceTree = "<group>"; };
-		E6F5E275156C964000BFE33B /* stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stars.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,7 +198,6 @@
 				E6990AD315767E2F006795F9 /* Stars02.png */,
 				E6F5E271156C963300BFE33B /* whiteball.png */,
 				E6F5E273156C963A00BFE33B /* redball.png */,
-				E6F5E275156C964000BFE33B /* stars.png */,
 				E6F5E265156C2B1C00BFE33B /* 112-group.png */,
 				E6E5DD9A154F0AC20020D847 /* Default@2x.png */,
 				E6E5DD9B154F0AC20020D847 /* Default.png */,
@@ -265,10 +262,10 @@
 				E686B71E153251020068A08D /* SelectorViewController.m */,
 				E67D6B3C15468864002FC024 /* AccountViewController.h */,
 				E67D6B3D15468864002FC024 /* AccountViewController.m */,
-				E686B72015326A8D0068A08D /* HistoryViewController.h */,
-				E686B72115326A8D0068A08D /* HistoryViewController.m */,
 				E6F5E262156C2A8100BFE33B /* ParseLoginViewController.h */,
 				E6F5E263156C2A8100BFE33B /* ParseLoginViewController.m */,
+				E686B72015326A8D0068A08D /* HistoryViewController.h */,
+				E686B72115326A8D0068A08D /* HistoryViewController.m */,
 				E6F5E258156B073800BFE33B /* PayoutTableView.h */,
 				E6F5E259156B073800BFE33B /* PayoutTableView.m */,
 				E6F5E254156B03E100BFE33B /* PayoutCell.h */,
@@ -279,8 +276,6 @@
 				E6F5E268156C2BAF00BFE33B /* User.m */,
 				E644BE621561A59E00C62D83 /* Time.h */,
 				E644BE631561A59E00C62D83 /* Time.m */,
-				E6EFAC12152F53660031CCD3 /* PBViewController.h */,
-				E6EFAC13152F53660031CCD3 /* PBViewController.m */,
 				E686B72D15329D360068A08D /* FeedbackViewController.h */,
 				E686B72E15329D360068A08D /* FeedbackViewController.m */,
 				E686B737153340860068A08D /* HistoryCell.h */,
@@ -291,6 +286,8 @@
 				E6990AEE157800EC006795F9 /* IntroAnimation.m */,
 				E686B73A153345AE0068A08D /* HudView.h */,
 				E686B73B153345AE0068A08D /* HudView.m */,
+				E6EFAC12152F53660031CCD3 /* PBViewController.h */,
+				E6EFAC13152F53660031CCD3 /* PBViewController.m */,
 				E686B74E153492850068A08D /* Images */,
 				E686B6CB15311BCA0068A08D /* PowerballPlus Icons */,
 				E6EFAC01152F53650031CCD3 /* Supporting Files */,
@@ -375,7 +372,6 @@
 				E6F5E266156C2B1C00BFE33B /* 112-group.png in Resources */,
 				E6F5E272156C963300BFE33B /* whiteball.png in Resources */,
 				E6F5E274156C963A00BFE33B /* redball.png in Resources */,
-				E6F5E276156C964000BFE33B /* stars.png in Resources */,
 				E6990AD415767E2F006795F9 /* Stars02.png in Resources */,
 				E6990AE21576E31C006795F9 /* 06-arrow-south@2x.png in Resources */,
 				E6990AEA1577F246006795F9 /* 09-arrow-west@2x.png in Resources */,
@@ -448,8 +444,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Brad Grifffith";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Brad Grifffith";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -458,6 +454,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -467,19 +465,24 @@
 		E6BE6C04155088A900D6A97A /* AppStore */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Brad Grifffith (35DT78TGW2)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Brad Grifffith (35DT78TGW2)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Brad Grifffith";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Brad Grifffith";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Powerball Results/Powerball Results-Prefix.pch";
+				"HEADER_SEARCH_PATHS[arch=*]" = three20/Build/Products/three20;
 				INFOPLIST_FILE = "Powerball Results/Powerball Results-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../three20/Build/Products/Release-iphoneos\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "AB7F4F40-F2EC-4D94-B605-E58C99991E13";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AB7F4F40-F2EC-4D94-B605-E58C99991E13";
+				PROVISIONING_PROFILE = "82B1A604-74F0-42F2-A4C6-89ED8A7E9FA9";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "82B1A604-74F0-42F2-A4C6-89ED8A7E9FA9";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = NO;
 				WRAPPER_EXTENSION = app;
@@ -548,6 +551,10 @@
 				GCC_PREFIX_HEADER = "Powerball Results/Powerball Results-Prefix.pch";
 				INFOPLIST_FILE = "Powerball Results/Powerball Results-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../three20/Build/Products/Release-iphoneos\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "AB7F4F40-F2EC-4D94-B605-E58C99991E13";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AB7F4F40-F2EC-4D94-B605-E58C99991E13";
@@ -569,6 +576,10 @@
 				GCC_PREFIX_HEADER = "Powerball Results/Powerball Results-Prefix.pch";
 				INFOPLIST_FILE = "Powerball Results/Powerball Results-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../three20/Build/Products/Release-iphoneos\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "AB7F4F40-F2EC-4D94-B605-E58C99991E13";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AB7F4F40-F2EC-4D94-B605-E58C99991E13";

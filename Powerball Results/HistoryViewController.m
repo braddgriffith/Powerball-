@@ -35,6 +35,7 @@ bool inserting;
     [super viewDidLoad];
     NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
     triedSelect = [[currentDefaults objectForKey:@"triedClear"] boolValue];
+    [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]]];
 }
 
 - (void)viewWillAppear:(BOOL)animated
