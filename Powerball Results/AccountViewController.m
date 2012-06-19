@@ -214,11 +214,41 @@ bool userEdited = NO;
         NSLog(@"localUser.first_name: %@",localUser.first_name);
         [localUser.parseUser setObject:first forKey:@"first_name"];
         
-        localUser.first_name = [result objectForKey:@"first_name"];
-        localUser.last_name = [result objectForKey:@"last_name"];
-        localUser.email = [result objectForKey:@"email"];
-        localUser.location = [[result objectForKey:@"location"]objectForKey:@"name"];
-        localUser.username = [result objectForKey:@"username"];
+        if ([result objectForKey:@"first_name"]) {
+            localUser.first_name = [result objectForKey:@"first_name"];
+        } else {
+            localUser.first_name = @"";
+        }
+        
+        if ([result objectForKey:@"last_name"]) {
+            localUser.last_name = [result objectForKey:@"last_name"];
+        } else {
+            localUser.last_name = @"";
+        }
+        
+        if ([result objectForKey:@"email"]) {
+            localUser.email = [result objectForKey:@"email"];
+        } else {
+            localUser.email = @"";
+        }
+        
+        if ([[result objectForKey:@"location"]objectForKey:@"name"]) {
+           localUser.location = [[result objectForKey:@"location"]objectForKey:@"name"];
+        } else {
+            localUser.location = @"";
+        }
+        
+        if ([result objectForKey:@"username"]) {
+            localUser.username = [result objectForKey:@"username"];
+        } else {
+            localUser.username = @"";
+        }
+        
+//        localUser.first_name = [result objectForKey:@"first_name"];
+//        localUser.last_name = [result objectForKey:@"last_name"];
+//        localUser.email = [result objectForKey:@"email"];
+//        localUser.location = [[result objectForKey:@"location"]objectForKey:@"name"];
+//        localUser.username = [result objectForKey:@"username"];
         
         NSLog(@"didLoad localDelegate id = %@, first = %@, last = %@, email = %@, location = %@",[result objectForKey:@"id"], localUser.first_name, localUser.last_name, localUser.email, localUser.location);
         

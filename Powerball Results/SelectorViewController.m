@@ -13,7 +13,6 @@
 #import "Time.h"
 #import <Parse/Parse.h>
 #import "IntroAnimation.h"
-//#import "Three20/Three20.h"
 
 @implementation SelectorViewController
 
@@ -128,19 +127,6 @@ AppDelegate *localDelegate;
     [self.pickButton.layer setBorderWidth:2.0];
     [self.pickButton.layer setCornerRadius:cornerRadius];
     [self.pickButton.layer setBorderColor:[[UIColor colorWithWhite:0.3 alpha:0.7] CGColor]];
-        
-//    CAGradientLayer *gradient = [CAGradientLayer layer];
-//    gradient.frame = self.pickButton.bounds;
-//    gradient.cornerRadius = 10.0;
-////    UIColor *lightGrayColorRGB = [UIColor colorWithRed:224.0 green:224.0 blue:224.0 alpha:1.0];
-////    gradient.colors = [NSArray arrayWithObjects:(id)[lightGrayColorRGB CGColor], (id)[[UIColor whiteColor] CGColor], nil];
-////    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor lightGrayColor] CGColor], (id)[[UIColor whiteColor] CGColor], nil];
-//    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor whiteColor] CGColor], (id)[[UIColor whiteColor] CGColor], nil];
-////    gradient.masksToBounds = NO;
-////    gradient.shadowOffset = CGSizeMake(-5, 5);
-////    gradient.shadowRadius = 8;
-////    gradient.shadowOpacity = 0.75;
-//    [self.pickButton.layer insertSublayer:gradient atIndex:0];
 
     //http://undefinedvalue.com/2010/02/27/shiny-iphone-buttons-without-photoshop
     CAGradientLayer *shineLayer = [CAGradientLayer layer];
@@ -270,7 +256,7 @@ AppDelegate *localDelegate;
     int arrowPickStartY = self.powerball.frame.origin.y + .5*self.powerball.frame.size.height -.5*horizArrowHeight;
     int arrowPickStartX = self.powerball.frame.origin.x + self.powerball.frame.size.width + .8*arrowBounce;
     int labelStartX = arrowPickStartX + horizArrowWidth +1*arrowBounce;
-    [IntroAnimation encourageSomething:self.view withImage:@"09-arrow-west@2x.png" atStartY:arrowPickStartY withText:@"Edit the Powerball..." withYOffset:-4 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"horizontal"];
+    [IntroAnimation encourageSomething:self.view withImage:@"09-arrow-west@2x.png" atStartY:arrowPickStartY withText:@"Tap to edit..." withYOffset:-4 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"horizontal"];
 }
 
 - (void)loadSelection
