@@ -90,6 +90,17 @@ AppDelegate *localDelegate;
     NSLog(@"triedSaveTwo: %s", triedSaveTwo ? "YES" : "NO");
     NSLog(@"smartPickActivatedYet: %s", smartPickActivatedYet ? "YES" : "NO");
     
+    int usingIpad = self.view.frame.size.width/2;// 160;
+    if (usingIpad != 160) {
+        triedClear = YES;
+        triedPickOne = YES;
+        triedPickTwo = YES;
+        triedEdit = YES;
+        triedSaveOne = YES;
+        triedSaveTwo = YES;
+        smartPickActivatedYet = YES;
+    }
+    
     //****ERASE THIS AFTER TESTING
 //    triedClear = NO;
 //    triedPickOne = NO;
@@ -108,7 +119,6 @@ AppDelegate *localDelegate;
     id x = [[UIApplication sharedApplication] delegate]; 
     NSLog(@"x:%@",x);
 
-    
     //Calculate the next draw date in EST
     NSLog(@"Local Time Zone %@",[[NSTimeZone localTimeZone] name]);
     NSLog(@"System Time Zone %@",[[NSTimeZone systemTimeZone] name]);
@@ -177,7 +187,7 @@ AppDelegate *localDelegate;
     
     
     viewWillAppearCount++;
-    if((viewWillAppearCount == 7 || !(viewWillAppearCount % 25)) && reviewedApp == NO) {
+    if((viewWillAppearCount == 25 || !(viewWillAppearCount % 25)) && reviewedApp == NO) {
         UIAlertView *alert = [[UIAlertView alloc]
                               initWithTitle: @"Do you love Powerball+?"
                               message: @"Please help us keep the app free by rating it in the App Store!"
@@ -213,8 +223,14 @@ AppDelegate *localDelegate;
 
 -(void)encourageAccount
 {
-    int arrowPickStartY = self.view.frame.origin.y+self.view.frame.size.height-arrowBounce-arrowHeight;
     int arrowPickStartX = self.view.frame.size.width-arrowWidth-arrowStartXoffset;
+    int arrowPickStartY = self.view.frame.origin.y+self.view.frame.size.height-arrowBounce-arrowHeight;
+    int iPad = self.view.frame.size.width;
+    if (iPad != 160) {
+        arrowPickStartX = self.view.frame.size.width-arrowWidth-arrowStartXoffset-180;
+        arrowPickStartY = self.view.frame.origin.y+self.view.frame.size.height-arrowBounce-arrowHeight;
+    }
+    
     int labelStartX = self.view.frame.size.width-(1.8*arrowWidth)-encourageLabelWidth;
     [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowPickStartY withText:@"Sign In to enable SmartPick" withYOffset:8 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
 }

@@ -35,6 +35,9 @@
 @synthesize scrollView;
 @synthesize spinner;
 
+@synthesize emailBody;
+@synthesize emailSubject;
+
 BOOL firstTime = YES;
 
 //LabelHeights
@@ -68,12 +71,12 @@ int yhistoryDateLabel = 182;
 int yhistoryBallAdjust = 1;
 int dateLabelWidth = 63;
 
-//Payouts tableView
-int payoutsViewCenterX = 160;
-int payoutsViewCenterY = 494;
-
 //Scrollview 
 int scrollviewHeight = 620;
+
+//GroupButton
+int groupButtonWidth = 42;
+int groupButtonY = 14;
 
 NSMutableArray *matchingArray;
 
@@ -103,6 +106,18 @@ NSMutableArray *matchingArray;
     [matchingArray addObject:@"selectionFive"];
     [matchingArray addObject:@"selectionPowerball"];
     
+    //Payouts tableView
+    int payoutsViewCenterX = self.scrollView.frame.size.width/2;// 160;
+    int payoutsViewCenterY;
+    if (payoutsViewCenterX == 160) { //if iPhone
+        payoutsViewCenterY = 494;
+    } else {
+        payoutsViewCenterY = 790;
+        xindent = 250;
+        xLindent = 250;
+        payoutsViewCenterX = self.scrollView.frame.size.width/2 + 240 ;
+    }
+    
     self.payoutsTableView.tableView.center = CGPointMake(payoutsViewCenterX,payoutsViewCenterY);
     self.payoutsTableView.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.payoutsTableView.tableView.scrollEnabled = NO;
@@ -111,23 +126,7 @@ NSMutableArray *matchingArray;
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
-    
-//    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
-//    firstTime = [[currentDefaults objectForKey:@"firstTime"] boolValue];
     NSLog(@"ViewWillAppear firstTime:%d",firstTime);
-//    if (firstTime) {
-//        [self.date1 setHidden:YES];
-//        [self.date2 setHidden:YES];
-//        [self.date3 setHidden:YES];
-//        [self.date4 setHidden:YES];
-//        [self.date5 setHidden:YES];
-//        [self.nextDateLabel setHidden:YES];
-//        [self.nextJackpotLabel setHidden:YES];
-//        [self.lastJackpotLabel setHidden:YES];
-//        [self.lastDateLabel setHidden:YES];
-//        [self.payoutsTableView.tableView setHidden:YES];
-//        NSLog(@"Relaoding inputViews");
-//    }
     [self getDrawData];
     
     self.spinner.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds));
@@ -221,6 +220,38 @@ NSMutableArray *matchingArray;
     [self.scrollView addSubview:nextLabel];
     self.nextDateLabel.frame = CGRectMake(xLindent+nextLabelWidth,nextLabelH,255,yLheight);
     
+    
+    UIButton *groupButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    groupButton.frame = CGRectMake(self.scrollView.frame.size.width - xLindent - groupButtonWidth, groupButtonY, groupButtonWidth, groupButtonWidth);
+    [groupButton addTarget:self action:@selector(sendEmail) forControlEvents:UIControlEventTouchUpInside];
+    [groupButton setBackgroundColor:[UIColor blackColor]];
+    float cornerRadius = 10.0;
+    [groupButton.layer setBorderWidth:2.0];
+    [groupButton.layer setCornerRadius:cornerRadius];
+    [groupButton.layer setBorderColor:[[UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:1.0] CGColor]];//colorWithWhite:0.9 alpha:0.9] CGColor]];
+    CAGradientLayer *shineLayer = [CAGradientLayer layer];
+    shineLayer.frame = groupButton.bounds;
+    shineLayer.cornerRadius = cornerRadius;
+    shineLayer.colors = [NSArray arrayWithObjects:
+                         (id)[UIColor colorWithWhite:1.0f alpha:0.4f].CGColor,
+                         (id)[UIColor colorWithWhite:1.0f alpha:0.2f].CGColor,
+                         (id)[UIColor colorWithWhite:0.75f alpha:0.2f].CGColor,
+                         (id)[UIColor colorWithWhite:0.4f alpha:0.2f].CGColor,
+                         (id)[UIColor colorWithWhite:1.0f alpha:0.4f].CGColor,
+                         nil];
+    shineLayer.locations = [NSArray arrayWithObjects:
+                            [NSNumber numberWithFloat:0.0f],
+                            [NSNumber numberWithFloat:0.5f],
+                            [NSNumber numberWithFloat:0.5f],
+                            [NSNumber numberWithFloat:0.8f],
+                            [NSNumber numberWithFloat:1.0f],
+                            nil];
+    [groupButton.layer addSublayer:shineLayer];
+    UIImage *groupButtonImage = [UIImage imageNamed:@"286-speechbubble.png"];
+    //[groupButton setBackgroundImage:[groupButtonImage stretchableImageWithLeftCapWidth:cornerRadius topCapHeight:cornerRadius] forState:UIControlStateNormal];
+    [groupButton setImage:groupButtonImage forState:UIControlStateNormal];
+    [self.scrollView addSubview:groupButton];
+    
     UILabel *jackpotLabel = [[UILabel alloc] initWithFrame:CGRectMake(xLindent,jackpotLabelY,jackpotLabelWidth,yLheight)];
     jackpotLabel.font = [UIFont boldSystemFontOfSize:16];
     jackpotLabel.textColor = [UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:1.0];//[UIColor redColor];
@@ -238,6 +269,7 @@ NSMutableArray *matchingArray;
     lastLabel.text = @"Last:";
     [self.scrollView addSubview:lastLabel];
     self.lastDateLabel.frame = CGRectMake(xLindent+lastLabelWidth,lastLabelY,255,yLheight);
+    self.lastDateLabel.textColor = [UIColor whiteColor];
     
     UILabel *whiteJackpotLabel = [[UILabel alloc] initWithFrame:CGRectMake(xLindent,lastJackpotVariableLabelY,jackpotLabelWidth,yLheight)];
     whiteJackpotLabel.font = [UIFont boldSystemFontOfSize:16];
@@ -247,6 +279,7 @@ NSMutableArray *matchingArray;
     whiteJackpotLabel.text = @"Jackpot:";
     [self.scrollView addSubview:whiteJackpotLabel];
     self.lastJackpotLabel.frame = CGRectMake(xLindent+jackpotLabelWidth,lastJackpotVariableLabelY,lastJackpotVariableLabelWidth,yLheight);
+    self.lastJackpotLabel.textColor = [UIColor whiteColor];
     
     self.nextDateLabel.text = dateStr;
     
@@ -295,7 +328,7 @@ NSMutableArray *matchingArray;
         
         Selection *currentSelection = [self.allSelections objectAtIndex:x+1];
         int screenWidth = self.view.frame.size.width-40; 
-        int xsize = (screenWidth - xLindent - dateLabelWidth - (numItems*xbuffer)) / numItems;
+        int xsize = MIN(25, (screenWidth - xLindent - dateLabelWidth - (numItems*xbuffer)) / numItems);
         [self animateResults:currentSelection xsize:xsize endX:(xLindent + dateLabelWidth) endY:yhistoryBallAdjust+yhistoryDateLabel+((x-1)*yLheight)  width:xsize height:xsize count:x+1];
     }
     [self addResults];
@@ -304,16 +337,13 @@ NSMutableArray *matchingArray;
 - (void)addResults //Adds the Big Balls - main results(last version)
 {
     int screenWidth = self.view.frame.size.width; 
-    int xsize = (screenWidth - (2*xindent) - (numItems*xbuffer)) / numItems;
+    int xsize = MIN(38, (screenWidth - (2*xindent) - (numItems*xbuffer)) / numItems);
     
     Selection *mainSelection = [self.allSelections objectAtIndex:1];
     [self animateResults:mainSelection xsize:xsize endX:xindent endY:ystart width:xsize height:xsize count:1];
     
     firstTime = NO; //AnimateResults loops through all balls
-//    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:firstTime] forKey:@"firstTime"];
-//    [[NSUserDefaults standardUserDefaults] setInteger:firstTime forKey:@"firstTime"];
-//    [[NSUserDefaults standardUserDefaults] synchronize];
-    
+
     [self.spinner removeFromSuperview];
     self.spinner = nil;
 }
@@ -366,5 +396,33 @@ NSMutableArray *matchingArray;
             [endView.layer addAnimation:ballRotator forKey:@"ballRotator"];
         }
     }
+}
+
+-(void)sendEmail 
+{
+    NSLog(@"SendEmail");
+    MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
+    picker.mailComposeDelegate = self;
+    
+    if(emailBody == nil) {
+        emailBody = @"Hey, \n\n Let's create a group to buy tickets for Powerball.";
+        
+        Selection *nextDraw = [self.allSelections objectAtIndex:0];
+        NSString *title = [@"Powerball jackpot: " stringByAppendingString:nextDraw.jackpot];
+        title = [title stringByAppendingString:@" ... says the Powerball Plus app"];
+        emailSubject = title;
+    }
+    if(emailBody != nil) {
+        [picker setSubject:emailSubject];
+        [picker setMessageBody:emailBody isHTML:NO];
+        [self presentModalViewController:picker animated:YES];
+    }
+}
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller
+          didFinishWithResult:(MFMailComposeResult)result
+                        error:(NSError *)error
+{
+    [self dismissModalViewControllerAnimated:YES];
 }
 @end

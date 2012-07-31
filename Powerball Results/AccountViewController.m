@@ -61,6 +61,7 @@ bool userEdited = NO;
     
     frame = CGRectMake(0, navigationBar.frame.size.height+introHeight, self.view.frame.size.width, tableViewForAccountHeight);
     self.tableViewForAccount = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
+    self.tableViewForAccount.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]];
     
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]];
     [self.tableViewForAccount setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]]];

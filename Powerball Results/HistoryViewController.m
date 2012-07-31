@@ -36,6 +36,11 @@ bool inserting;
     NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
     triedSelect = [[currentDefaults objectForKey:@"triedClear"] boolValue];
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]]];
+    
+    int usingIpad = self.view.frame.size.width/2;// 160;
+    if (usingIpad != 160) {
+        triedSelect = YES;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -119,7 +124,8 @@ bool inserting;
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
     [dateFormatter setDateFormat:@"M/d/yyyy"];
-    cell.dateLabel.text = [dateFormatter stringFromDate:selection.drawingDate]; 
+    cell.dateLabel.text = [dateFormatter stringFromDate:selection.drawingDate];
+    cell.dateLabel.textColor = [UIColor whiteColor];
     
     NSString *selectionList = [[selection.selectionOne stringValue] stringByAppendingString:@"-"];
     selectionList = [selectionList stringByAppendingString:[selection.selectionTwo stringValue]];

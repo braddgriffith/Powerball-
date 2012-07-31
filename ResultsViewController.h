@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "PayoutTableView.h"
+#import <MessageUI/MessageUI.h>
 
-@interface ResultsViewController : UIViewController
+@interface ResultsViewController : UIViewController <MFMailComposeViewControllerDelegate> 
 
 @property (weak, nonatomic) IBOutlet UILabel *nextDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *nextJackpotLabel;
@@ -28,5 +29,10 @@
 @property (strong, nonatomic) IBOutlet PayoutTableView *payoutsTableView;
 
 @property (nonatomic, strong) NSDate *upcomingDrawDate;
+
+@property (nonatomic, strong) NSString *emailBody;
+@property (nonatomic, strong) NSString *emailSubject;
+
+-(void)sendEmail;
 
 @end
