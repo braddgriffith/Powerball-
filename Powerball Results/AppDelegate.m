@@ -19,20 +19,23 @@
 @synthesize selections = _selections;
 @synthesize drawDates;
 @synthesize tabBarController;
-@synthesize user;
+@synthesize user = _user;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [Parse setApplicationId:@"RitD22GrDUjVP3P04EdlvMu3IYJoRQmYoRYo2Sma" 
-                  clientKey:@"DTFNe2YNrrp3gFayj4jBkIEeD4vDjnhK5AhMCs9X"]; //Dev
+//    [Parse setApplicationId:@"RitD22GrDUjVP3P04EdlvMu3IYJoRQmYoRYo2Sma" 
+//                  clientKey:@"DTFNe2YNrrp3gFayj4jBkIEeD4vDjnhK5AhMCs9X"]; //Dev
     
-//    [Parse setApplicationId:@"uS5c2WJ8Osp94YRmWOHPEKL9NsNazKuS4eUIZ1Wl" 
-//                  clientKey:@"qMMetsxWm44XomrL7a153GlCFVBKbNiipe5Z9iUj"]; //Prod
+    [Parse setApplicationId:@"uS5c2WJ8Osp94YRmWOHPEKL9NsNazKuS4eUIZ1Wl" 
+                  clientKey:@"qMMetsxWm44XomrL7a153GlCFVBKbNiipe5Z9iUj"]; //Prod
+    
+    [PFFacebookUtils initializeWithApplicationId:@"456093817750986"]; //Setup FB
+    
+    NSLog(@"App finishedLaunching");
     
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge| UIRemoteNotificationTypeAlert| UIRemoteNotificationTypeSound];
     
     [application setStatusBarStyle:UIStatusBarStyleBlackOpaque];
-    
     [[UITabBar appearance] setSelectedImageTintColor:[UIColor colorWithRed:100.0/255.0 green:190.0/255.0 blue:10.0/255.0 alpha:0.8]];
     
     NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
@@ -48,24 +51,26 @@
     if (userData) {
         self.user = [NSKeyedUnarchiver unarchiveObjectWithData:userData];
         NSLog(@"Loaded stored user.");
-    } else {
-        NSLog(@"No user. Creating anonymous user...");
-                    //self.user = [[PFUser alloc] init];
-        [PFUser enableAutomaticUser];
-                    //[[PFUser currentUser] incrementKey:@"RunCount"];
-                    //[[PFUser currentUser] saveInBackground];
-        [PFAnonymousUtils logInWithBlock:^(PFUser *currentUser, NSError *error) {
-            if (error) {
-                NSLog(@"Anonymous login failed.");
-            } else {
-                NSLog(@"Anonymous user logged in.");
-                NSLog(@"Anonymous username = %@",currentUser.username);
-            }
-        }];
+    } 
+//    else {
+//        NSLog(@"No user. Creating anonymous user...");
+//        [PFUser enableAutomaticUser];
+//        [PFAnonymousUtils logInWithBlock:^(PFUser *currentUser, NSError *error) {
+//            if (error) {
+//                NSLog(@"Anonymous login failed.");
+//            } else {
+//                NSLog(@"Anonymous user logged in.");
+//                NSLog(@"Anonymous username = %@",currentUser.username);
+//            }
+//        }];
+//        self.user = [[User alloc] init]; 
+//        PFUser *anonUser = [PFUser currentUser];
+//        self.user.username = anonUser.username;
+//    }
+    if (!self.user) {
+        self.user = [[User alloc] init];
     }
-    
     [self setupViewControllers];
-    
     return YES;
 }
 
@@ -95,19 +100,33 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
  
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+    NSLog(@"App Became Active.");
+    
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+    
+//    bool firstTime = YES;
+//    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:firstTime] forKey:@"firstTime"];
+//    [[NSUserDefaults standardUserDefaults] setInteger:firstTime forKey:@"firstTime"];
+//    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 							
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-    //NSLog(@"Archiving :%@ selections", [self.selections count]);
+//    self.user = nil; //REMOVE FOR LAUNCH
     [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:self.selections] forKey:@"selections"];
+    if (self.user) {
+        [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:self.user] forKey:@"user"];
+    } else {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"user"];
+    }
+    bool firstTime = YES;
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:firstTime] forKey:@"firstTime"];
+    [[NSUserDefaults standardUserDefaults] setInteger:firstTime forKey:@"firstTime"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     NSLog(@"App Resigned Active.");
 }
 
 // PUSH REGISTRATION
-
 - (void)application:(UIApplication *)application 
 didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
 {
@@ -115,15 +134,36 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
     // Subscribe this user to the broadcast channel, "" 
     [PFPush subscribeToChannelInBackground:@"" block:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
-            NSLog(@"Successfully subscribed to the broadcast channel.");
+            NSLog(@"Successfully subscribed to the GROUP broadcast channel.");
         } else {
-            NSLog(@"Failed to subscribe to the broadcast channel.");
+            NSLog(@"Failed to subscribe to the GROUP broadcast channel.");
         }
     }];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [PFPush handlePush:userInfo];
+}
+
+// Pre 4.2 support
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    return [PFFacebookUtils handleOpenURL:url];
+}
+
+// For 4.2+ support
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    return [PFFacebookUtils handleOpenURL:url];
+}
+
++ (AppDelegate *)appDelegate
+{
+    return (AppDelegate*)[[UIApplication sharedApplication] delegate]; 
+}
+
++ (User *)user
+{
+    return ((AppDelegate*)[[UIApplication sharedApplication] delegate]).user;
 }
 
 @end

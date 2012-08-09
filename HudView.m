@@ -92,7 +92,7 @@
     
     [[UIColor whiteColor] set];
     
-    UIFont *font = [UIFont boldSystemFontOfSize:16.0f];
+    UIFont *font = [UIFont boldSystemFontOfSize:16.0f]; //All fonts - http://iosfonts.com/ - [_titleLabel setFont:[UIFont fontWithName:@"chalkboard" size:_titleLabel.font.pointSize]];
     CGSize textSize = [self.text sizeWithFont:font];
     
     CGPoint textPoint = CGPointMake(

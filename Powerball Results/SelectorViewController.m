@@ -10,7 +10,11 @@
 #import "HudView.h"
 #import "Selection.h"
 #import "AppDelegate.h"
+#import "Time.h"
 #import <Parse/Parse.h>
+#import "IntroAnimation.h"
+#import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 
 @implementation SelectorViewController
 
@@ -20,121 +24,258 @@
 @synthesize numberFour;
 @synthesize numberFive;
 @synthesize powerball;
-@synthesize currentDrawDate;
+@synthesize nextDrawDateEST;
 
 @synthesize selection;
 @synthesize selections;
 @synthesize upcomingDrawDate;
+@synthesize pickButton;
+
+@synthesize theArrowView;
+@synthesize encourageLabel;
+//@synthesize firstTime; 
+@synthesize activeField;
+
+//@synthesize appDelegate;
+@synthesize myDelegate;
 
 @synthesize today;
 
--(void)viewWillAppear:(BOOL)animated
-{
-    NSLog(@"Selector has %d selections", [self.selections count]);
-}
+bool playAnimationForImage = YES;
+bool triedPickOne = NO;
+bool triedPickTwo = NO;
+bool triedClear = NO;
+bool triedEdit = NO;
+bool triedSaveOne = NO;
+bool triedSaveTwo = NO;
+bool smartPickActivatedYet = NO;
+
+//Encouragement Arrow
+int arrowWidth = 32;
+int arrowHeight = 38;
+int arrowBounce = 5;
+int arrowStartXoffset = 24;
+int arrowStartY = 324;
+int horizArrowHeight = 32;
+int horizArrowWidth = 38;
+
+int encourageLabelWidth = 200;
+int encourageLabelHeight = 22;
+float encourageAlpha = 0.8;
+
+int viewWillAppearCount = 0;
+bool reviewedApp = NO;
+
+UIButton *doneButton;
+
+AppDelegate *localDelegate;
 
 -(void)viewDidLoad
 {
     [super viewDidLoad];
     
+    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
+    triedClear = [[currentDefaults objectForKey:@"triedClear"] boolValue];
+    triedPickOne = [[currentDefaults objectForKey:@"triedPickOne"] boolValue];
+    triedPickTwo = [[currentDefaults objectForKey:@"triedPickTwo"] boolValue];
+    triedEdit = [[currentDefaults objectForKey:@"triedEdit"] boolValue];
+    triedSaveOne = [[currentDefaults objectForKey:@"triedSaveOne"] boolValue];
+    triedSaveTwo = [[currentDefaults objectForKey:@"triedSaveTwo"] boolValue];
+    smartPickActivatedYet = [[currentDefaults objectForKey:@"smartPickActivatedYet"] boolValue];
+    viewWillAppearCount = [[currentDefaults objectForKey:@"viewWillAppearCount"] intValue];
+    reviewedApp = [[currentDefaults objectForKey:@"reviewedApp"] boolValue];
+    NSLog(@"triedClear: %s", triedClear ? "YES" : "NO");
+    NSLog(@"triedPickOne: %s", triedPickOne ? "YES" : "NO");
+    NSLog(@"triedPickTwo: %s", triedPickTwo ? "YES" : "NO");
+    NSLog(@"triedEdit: %s", triedEdit ? "YES" : "NO");
+    NSLog(@"triedSaveOne: %s", triedSaveOne ? "YES" : "NO");
+    NSLog(@"triedSaveTwo: %s", triedSaveTwo ? "YES" : "NO");
+    NSLog(@"smartPickActivatedYet: %s", smartPickActivatedYet ? "YES" : "NO");
+    
+    int usingIpad = self.view.frame.size.width/2;// 160;
+    if (usingIpad != 160) {
+        triedClear = YES;
+        triedPickOne = YES;
+        triedPickTwo = YES;
+        triedEdit = YES;
+        triedSaveOne = YES;
+        triedSaveTwo = YES;
+        smartPickActivatedYet = YES;
+    }
+    
+    //****ERASE THIS AFTER TESTING
+//    triedClear = NO;
+//    triedPickOne = NO;
+//    triedPickTwo = NO;
+//    triedEdit = NO;
+//    triedSaveOne = NO;
+//    triedSaveTwo = NO;
+//    smartPickActivatedYet = NO;
+    //*****ERASE THIS AFTER TESTING
+    
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
+    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]];
     
-    today = [NSDate date]; //get RIGHT NOW
-    
-    NSTimeZone *localTimeZone = [NSTimeZone systemTimeZone];
-    NSTimeZone *estTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"EST"];
-    
-    NSInteger localOffset = [localTimeZone secondsFromGMTForDate:today];
-    NSInteger estOffset = [estTimeZone secondsFromGMTForDate:today];
-    NSTimeInterval interval = localOffset - estOffset;
-    
+    appDelegate = [[UIApplication sharedApplication] delegate];
+    NSLog(@"appDelegate:%@",appDelegate);
+    id x = [[UIApplication sharedApplication] delegate]; 
+    NSLog(@"x:%@",x);
+
     //Calculate the next draw date in EST
-    NSDate *nextDrawDateEST = [self getNextDrawDate]; 
+    NSLog(@"Local Time Zone %@",[[NSTimeZone localTimeZone] name]);
+    NSLog(@"System Time Zone %@",[[NSTimeZone systemTimeZone] name]);
+    Time *theTime = [[Time alloc] init];
+    nextDrawDateEST = [theTime getDrawDate:@"forward"]; 
+    double interval = [theTime getTimeZoneOffset];
     upcomingDrawDate = [nextDrawDateEST dateByAddingTimeInterval:interval];
-    
-    //Put next draw date on screen
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
-    [dateFormatter setTimeZone:localTimeZone]; //Current time of local timezone - drawings are at 10:59PM EST
-    [dateFormatter setDateFormat:@"EEEE - h:mm a"];//Was @"MM/dd h:mm a"];
-    NSString *dateStr = [dateFormatter stringFromDate:upcomingDrawDate];
-    NSString *dateIntro = @"Next: ";
-    currentDrawDate.text = [dateIntro stringByAppendingString:dateStr];
-    
-    dateFormatter = nil;
     
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewTapped)];
     tapRecognizer.numberOfTapsRequired = 1;
     tapRecognizer.cancelsTouchesInView = NO;
     [self.view addGestureRecognizer:tapRecognizer];
+    
+    float cornerRadius = 10.0;
+
+    [self.pickButton.layer setBorderWidth:2.0];
+    [self.pickButton.layer setCornerRadius:cornerRadius];
+    [self.pickButton.layer setBorderColor:[[UIColor colorWithWhite:0.3 alpha:0.7] CGColor]];
+
+    //http://undefinedvalue.com/2010/02/27/shiny-iphone-buttons-without-photoshop
+    CAGradientLayer *shineLayer = [CAGradientLayer layer];
+    shineLayer.frame = self.pickButton.bounds;
+    shineLayer.cornerRadius = cornerRadius;
+    shineLayer.colors = [NSArray arrayWithObjects:
+                         (id)[UIColor colorWithWhite:1.0f alpha:0.4f].CGColor,
+                         (id)[UIColor colorWithWhite:1.0f alpha:0.2f].CGColor,
+                         (id)[UIColor colorWithWhite:0.75f alpha:0.2f].CGColor,
+                         (id)[UIColor colorWithWhite:0.4f alpha:0.2f].CGColor,
+                         (id)[UIColor colorWithWhite:1.0f alpha:0.4f].CGColor,
+                         nil];
+    shineLayer.locations = [NSArray arrayWithObjects:
+                            [NSNumber numberWithFloat:0.0f],
+                            [NSNumber numberWithFloat:0.5f],
+                            [NSNumber numberWithFloat:0.5f],
+                            [NSNumber numberWithFloat:0.8f],
+                            [NSNumber numberWithFloat:1.0f],
+                            nil];
+    [self.pickButton.layer addSublayer:shineLayer];
 }
 
-- (NSDate *)getNextDrawDate
+-(void)viewWillAppear:(BOOL)animated
 {
-    today = [NSDate date]; //get time/date right now
+    [super viewWillAppear:NO];
+    [IntroAnimation removeEncouragement];
+    NSLog(@"Selector has %d selections", [self.selections count]);
+    NSLog(@"viewWillAppear Email is %@", appDelegate.user.email);
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; 
-    NSCalendar *gregorian = [[NSCalendar alloc] 
-                             initWithCalendarIdentifier:NSGregorianCalendar];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]]; //Eastern Time of USA - drawings are at 10:59PM EST
-
-    NSDateComponents *weekdayComponents = [gregorian components:(NSDayCalendarUnit | NSWeekdayCalendarUnit) fromDate:today];
-    NSInteger weekday = [weekdayComponents weekday];
-    NSString *weekdayStr = [NSString stringWithFormat:@"%d", weekday];
-    NSLog(@"Weekday: %@", weekdayStr);
+    [self.pickButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.pickButton setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
+    [self.pickButton setTitle:@"QuickPick" forState:(UIControlStateNormal)];
+    [self.pickButton setTitle:@"QuickPick" forState:(UIControlStateSelected)];
     
-    NSTimeInterval secondsPerDay = 24 * 60 * 60;
-    NSTimeInterval interval = 0;
+    if (triedPickTwo && [appDelegate.user.email isEqualToString:@""]) {
+        [self encourageAccount];
+    } else if (![appDelegate.user.email isEqualToString:@""]) {
+        if (!smartPickActivatedYet) {
+            smartPickActivatedYet = YES;
+            [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:smartPickActivatedYet] forKey:@"smartPickActivatedYet"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [HudView hudInView:self.navigationController.view text:@"SmartPick!" lineTwo:@"Activated" animated:YES];
+        }
+        [self.pickButton setTitle:@"SmartPick" forState:(UIControlStateNormal)];
+        [self.pickButton setTitle:@"SmartPick" forState:(UIControlStateSelected)];
+    }
+    [self.pickButton.titleLabel setTextAlignment:UITextAlignmentCenter];
     
-    if (weekday == 1) { //This is Sunday
-        interval = (3 * secondsPerDay);
-    } else if (weekday == 2) {
-       interval = (2 * secondsPerDay);
-    } else if (weekday == 3) {
-        interval = (1 * secondsPerDay);
-    } else if (weekday == 4) {
-        interval = (0 * secondsPerDay);    
-    } else if (weekday == 5) {
-        interval = (2 * secondsPerDay);
-    } else if (weekday == 6) {
-        interval = (1 * secondsPerDay);
-    } else if (weekday == 7) {
-        interval = (0 * secondsPerDay);
+    
+    viewWillAppearCount++;
+    if((viewWillAppearCount == 25 || !(viewWillAppearCount % 25)) && reviewedApp == NO) {
+        UIAlertView *alert = [[UIAlertView alloc]
+                              initWithTitle: @"Do you love Powerball+?"
+                              message: @"Please help us keep the app free by rating it in the App Store!"
+                              delegate: self
+                              cancelButtonTitle:@"Rate it!"
+                              otherButtonTitles:@"No thanks",nil];
+        [alert show];
     }
     
-    NSDate *drawFollowingDay = [[NSDate alloc] initWithTimeIntervalSinceNow:(interval)];
-    drawFollowingDay = [self roundDateForwardTo11PM:drawFollowingDay];
-    [self scheduleNotification:drawFollowingDay];
-    return drawFollowingDay;
-}
-
-- (void)scheduleNotification:(NSDate *)nextDate
-{
-    UILocalNotification *futureAlert;
-    futureAlert = [[UILocalNotification alloc] init];
-    futureAlert.fireDate = nextDate;
-    futureAlert.timeZone = [NSTimeZone defaultTimeZone];//ids this right - or do we want GMT?
-    futureAlert.alertBody = @"The Powerball drawing just went down!";
-    [[UIApplication sharedApplication] scheduleLocalNotification:futureAlert];
-}
-
-- (NSDate *)roundDateForwardTo11PM:(NSDate *)startDate
-{
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar]; 
-    NSDateComponents *todayComponents = [gregorian components:(NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit) fromDate:startDate];
-    NSInteger theDay = [todayComponents day];
-    NSInteger theMonth = [todayComponents month];
-    NSInteger theYear = [todayComponents year];
+    NSLog(@"viewHasAppeared %i times", viewWillAppearCount);
+    NSLog(@"reviewedApp %d", reviewedApp);
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:viewWillAppearCount] forKey:@"viewWillAppearCount"];
+    [[NSUserDefaults standardUserDefaults] setInteger:viewWillAppearCount forKey:@"viewWillAppearCount"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     
-    NSDateComponents *components = [[NSDateComponents alloc] init];
-    [components setDay:theDay]; 
-    [components setMonth:theMonth]; 
-    [components setYear:theYear];
-    [components setHour:22]; //If we're passed an EST date
-    [components setMinute:59]; 
-    NSDate *roundedDate = [gregorian dateFromComponents:components];
+    [self registerForKeyboardNotifications];
+}
 
-    return roundedDate;
-}    
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:NO];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    if (!triedPickOne) {
+        [self encourageQuickPick];
+    } else if(!triedClear) {
+        [self encourageClear];
+    }
+}
+
+-(void)encourageAccount
+{
+    int arrowPickStartX = self.view.frame.size.width-arrowWidth-arrowStartXoffset;
+    int arrowPickStartY = self.view.frame.origin.y+self.view.frame.size.height-arrowBounce-arrowHeight;
+    int iPad = self.view.frame.size.width;
+    if (iPad != 320) {
+        arrowPickStartX = self.view.frame.size.width-arrowWidth-arrowStartXoffset-180;
+        arrowPickStartY = self.view.frame.origin.y+self.view.frame.size.height-arrowBounce-arrowHeight;
+    }
+    
+    int labelStartX = self.view.frame.size.width-(1.8*arrowWidth)-encourageLabelWidth;
+    [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowPickStartY withText:@"Sign In to enable SmartPick" withYOffset:8 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+}
+
+-(void)encourageMyPicks
+{
+    int arrowPickStartY = self.view.frame.origin.y+self.view.frame.size.height-arrowBounce-arrowHeight;
+    int arrowPickStartX = self.view.frame.size.width-arrowWidth-arrowStartXoffset-(self.view.frame.size.width/4);
+    int labelStartX = self.view.frame.size.width-(1.3*arrowWidth)-encourageLabelWidth;
+    [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowPickStartY withText:@"Check MyPicks" withYOffset:8 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+}
+
+-(void)encourageQuickPick
+{
+    int arrowPickStartY = pickButton.frame.origin.y-pickButton.frame.size.height-arrowBounce;
+    int arrowPickStartX = self.view.frame.size.width/2 - arrowWidth/2;
+    int labelStartX = arrowPickStartX - (pickButton.frame.size.width/4.5);
+    [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowPickStartY withText:@"Click to QuickPick numbers..." withYOffset:18 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+}
+
+-(void)encourageClear
+{
+    int arrowPickStartY = self.view.frame.origin.y;
+    int arrowPickStartX = self.view.frame.origin.x+.5*arrowWidth;
+    int labelStartX = arrowPickStartX+arrowWidth+2;
+    [IntroAnimation encourageSomething:self.view withImage:@"03-arrow-north@2x.png" atStartY:arrowPickStartY withText:@"Click to clear..." withYOffset:-6 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+}
+
+-(void)encourageSave
+{
+    int arrowPickStartY = self.view.frame.origin.y;
+    int arrowPickStartX = self.view.frame.size.width-1.35*arrowWidth;
+    int labelStartX = arrowPickStartX-4.8*arrowWidth;
+    [IntroAnimation encourageSomething:self.view withImage:@"03-arrow-north@2x.png" atStartY:arrowPickStartY withText:@"Now, click to save..." withYOffset:-6 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+}
+
+-(void)encourageEditing
+{
+    int arrowPickStartY = self.powerball.frame.origin.y + .5*self.powerball.frame.size.height -.5*horizArrowHeight;
+    int arrowPickStartX = self.powerball.frame.origin.x + self.powerball.frame.size.width + .8*arrowBounce;
+    int labelStartX = arrowPickStartX + horizArrowWidth +1*arrowBounce;
+    [IntroAnimation encourageSomething:self.view withImage:@"09-arrow-west@2x.png" atStartY:arrowPickStartY withText:@"Tap to edit..." withYOffset:-4 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"horizontal"];
+}
 
 - (void)loadSelection
 {
@@ -148,6 +289,13 @@
 
 - (IBAction)clear:(id)sender
 {
+    if (!triedClear) {
+        triedClear = YES;
+        [IntroAnimation removeEncouragement];
+        [self encourageQuickPick];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:triedClear] forKey:@"triedClear"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     self.numberOne.text = @"";
     self.numberTwo.text = @"";
     self.numberThree.text = @"";
@@ -159,7 +307,7 @@
 - (void)presentWarning
 {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Change Needed!"
-                                                    message:@"All entries need to be a number! Try QuikPik to select numbers fast."
+                                                    message:@"All entries need to be a number! Try QuickPick to select numbers fast."
                                                    delegate:NULL 
                                           cancelButtonTitle:@"OK" 
                                           otherButtonTitles:NULL];
@@ -168,6 +316,19 @@
 
 - (IBAction)save:(id)sender
 {
+    if (!triedSaveOne) {
+        triedSaveOne = YES;
+        [IntroAnimation removeEncouragement];
+        [self encourageMyPicks];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:triedSaveOne] forKey:@"triedSaveOne"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    } else if (!triedSaveTwo) {
+        triedSaveTwo = YES;
+        [IntroAnimation removeEncouragement];
+        [self encourageAccount];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:triedSaveTwo] forKey:@"triedSaveTwo"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     [self resignAll];
     
     if (![[numberOne text] intValue]) {
@@ -209,6 +370,8 @@
     currentSelection.selectionFive = [numFormatter numberFromString:entryFive];
     currentSelection.selectionPowerball = [numFormatter numberFromString:entryPowerball];
     currentSelection.drawingDate = upcomingDrawDate;
+    NSTimeInterval since70 = [nextDrawDateEST timeIntervalSince1970];
+    currentSelection.since70 = [NSNumber numberWithFloat:since70];
     currentSelection.userChosenDate = [NSDate date];
     
     currentSelection.selectionArray = [NSMutableArray array];
@@ -251,21 +414,32 @@
     if(currentSelection.drawingDate){
         [newSelection setObject:currentSelection.drawingDate forKey:@"drawDate"];
     }
+    if(currentSelection.since70){
+        [newSelection setObject:currentSelection.since70 forKey:@"since70"];
+    }
     if(currentSelection.selectionArray){
         NSArray *parseArray = [NSArray arrayWithArray:currentSelection.selectionArray];
         [newSelection setObject:parseArray forKey:@"selectionArray"];
     }
-    currentSelection.userID = @"devVersion";
-    if(currentSelection.userID){ // OVERWRITE WITH REAL USERID
-        [newSelection setObject:currentSelection.userID forKey:@"userID"];
+    
+    currentSelection.matches = [NSNumber numberWithInt:-1];
+    currentSelection.specialMatches = [NSNumber numberWithInt:-1];
+    
+    NSLog(@"appDelegate.user.username = %@", appDelegate.user.username);
+    if(appDelegate.user.username == @""){ 
+        [newSelection setObject:@"Brad's test prod version" forKey:@"userID"]; //
+    } else if  (appDelegate.user.username == nil) {
+        [newSelection setObject:@"Nil user" forKey:@"userID"];
+    } else {
+        [newSelection setObject:appDelegate.user.username forKey:@"userID"];
     }
+    
     currentSelection.type = @"Powerball";
     if(currentSelection.type){ // OVERWRITE WITH REAL type
         [newSelection setObject:currentSelection.type forKey:@"type"];
     }
     [newSelection setObject:currentSelection.userChosenDate forKey:@"addedDate"];
     [newSelection saveInBackground];
-//    [newSelection saveEventually];
 
     [HudView hudInView:self.navigationController.view text:@"Saved!" lineTwo:@"Check MyPicks" animated:YES];
 
@@ -292,25 +466,39 @@
     [powerball resignFirstResponder];
 }
 
--(BOOL)textFieldShouldReturn:(UITextField*)textField;
-{
-    NSInteger nextTag = textField.tag + 1;     // Try to find next responder
-    UIResponder* nextResponder = [textField.superview viewWithTag:nextTag];
-
-    if (nextResponder) {
-        [nextResponder becomeFirstResponder];         // Found next responder, so set it.
-    } else {
-        [self save:(selection)];         // Not found, so go to save.
-    }
-    return NO; // We do not want UITextField to insert line-breaks.
-}
-
 - (NSInteger)generateRandom
 {
     return arc4random()%59+1;
 }
 
+- (NSInteger)generateSmart
+{
+    return arc4random()%28+32;
+}
+
 -(IBAction)quikPik:(id)sender
+{
+    if (!triedPickOne) {
+        triedPickOne = YES;
+        [IntroAnimation removeEncouragement];
+        [self encourageSave];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:triedPickOne] forKey:@"triedPickOne"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    } else if (!triedPickTwo) {
+        triedPickTwo = YES;
+        [IntroAnimation removeEncouragement];
+        [self encourageEditing];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:triedPickTwo] forKey:@"triedPickTwo"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    if ([pickButton.titleLabel.text isEqualToString:@"SmartPick"]) {
+        [self smartPick];
+    } else {
+        [self regularPick];
+    }
+}
+
+-(IBAction)regularPick
 {
     NSMutableArray *currentNumbers = [[NSMutableArray alloc] init];
     
@@ -357,8 +545,129 @@
     currentNumbers = nil;
 }
 
-- (void)viewDidUnload {
-    [self setCurrentDrawDate:nil];
-    [super viewDidUnload];
+-(IBAction)smartPick
+{
+    NSMutableArray *currentNumbers = [[NSMutableArray alloc] init];
+    
+    NSInteger a = [self generateRandom];
+    self.numberOne.text = [NSString stringWithFormat:@"%d", a];
+    NSNumber *anumber = [NSNumber numberWithInteger:a];
+    [currentNumbers addObject:anumber];
+    
+    NSInteger b = [self generateRandom];
+    while ([currentNumbers containsObject:[NSNumber numberWithInt:b]]) {
+        b = [self generateRandom];
+    }
+    self.numberTwo.text = [NSString stringWithFormat:@"%d", b];
+    anumber = [NSNumber numberWithInteger:b];
+    [currentNumbers addObject:anumber];
+    
+    NSInteger c = [self generateRandom];
+    while ([currentNumbers containsObject:[NSNumber numberWithInt:c]]) {
+        c = [self generateRandom];
+    }
+    self.numberThree.text = [NSString stringWithFormat:@"%d", c];
+    anumber = [NSNumber numberWithInteger:c];
+    [currentNumbers addObject:anumber];
+    
+    NSInteger d = [self generateSmart];
+    while ([currentNumbers containsObject:[NSNumber numberWithInt:d]]) {
+        d =[self generateSmart];
+    }
+    self.numberFour.text = [NSString stringWithFormat:@"%d", d];
+    anumber = [NSNumber numberWithInteger:d];
+    [currentNumbers addObject:anumber];
+    
+    NSInteger e = [self generateSmart];
+    while ([currentNumbers containsObject:[NSNumber numberWithInt:e]]) {
+        e =[self generateSmart];
+    }
+    self.numberFive.text = [NSString stringWithFormat:@"%d", e];
+    anumber = [NSNumber numberWithInteger:e];
+    [currentNumbers addObject:anumber];
+    
+    NSInteger f = arc4random()%35 +1;
+    self.powerball.text = [NSString stringWithFormat:@"%d", f];
+    
+    currentNumbers = nil;
 }
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{   
+    activeField = textField;
+    if (!triedEdit) {
+        [IntroAnimation removeEncouragement];
+    }
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    if (!triedEdit) {
+        triedEdit = YES;
+        [self encourageSave];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:triedEdit] forKey:@"triedEdit"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	if (buttonIndex == 0) {
+		NSLog(@"user pressed Rate It");
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://userpub.itunes.apple.com/WebObjects/MZUserPublishing.woa/wa/addUserReview?id=517545261&type=Purple+Software"]];
+        reviewedApp = YES;
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:reviewedApp] forKey:@"reviewedApp"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+	}
+	else {
+		NSLog(@"user pressed Cancel");
+	}
+}
+
+- (void)registerForKeyboardNotifications
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidShowNotification:)//keyboardWillShow:)
+                                                 name:UIKeyboardDidShowNotification object:nil];
+    NSLog(@"Registered for keyboardDidShowNotification");
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidHideNotification:)
+                                                 name:UIKeyboardWillHideNotification object:nil];
+    NSLog(@"Registered for keyboardDidHideNotification");
+}
+
+- (void) keyboardDidShowNotification: (id) sender 
+{
+    NSLog(@"keyboardDidShowNotification");
+    // create custom button
+    doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    doneButton.frame = CGRectMake(0, 427, 106, 53);
+    doneButton.adjustsImageWhenHighlighted = NO;
+    [doneButton setBackgroundImage:[UIImage imageNamed:@"DONE.png"] forState:UIControlStateNormal];
+    [doneButton setBackgroundImage:[UIImage imageNamed:@"DONEpressed.png"] forState:UIControlStateHighlighted];
+    [doneButton addTarget:self action:@selector(doneButton:) forControlEvents:UIControlEventTouchUpInside];
+    UIWindow* tempWindow = [[[UIApplication sharedApplication] windows] objectAtIndex:1];
+    [tempWindow addSubview:doneButton];
+}
+
+- (void) keyboardDidHideNotification: (id) sender 
+{
+    NSLog(@"keyboardDidHideNotification");
+    [doneButton removeFromSuperview];
+    doneButton = nil;
+}
+
+-(void)doneButton:(id)sender
+{
+    [activeField resignFirstResponder]; 
+    NSInteger nextTag = activeField.tag + 1;     // Try to find next responder
+    UIResponder *nextResponder = [activeField.superview viewWithTag:nextTag];
+    
+    if (nextResponder) {
+        [nextResponder becomeFirstResponder];         // Found next responder, so set it.
+    } else {
+        [self save:(selection)];         // Not found, so go to save.
+    }
+}
+
 @end

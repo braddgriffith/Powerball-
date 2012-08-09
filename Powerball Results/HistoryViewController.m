@@ -9,6 +9,14 @@
 #import "HistoryViewController.h"
 #import "HistoryCell.h"
 #import <Parse/Parse.h>
+#import "IntroAnimation.h"
+
+int HarrowWidth = 32;
+int HarrowHeight = 38;
+int HarrowBounce = 5;
+int HencourageLabelWidth = 200;
+
+bool triedSelect;
 
 @interface HistoryViewController ()
 
@@ -22,12 +30,34 @@
 
 bool inserting;
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
+    triedSelect = [[currentDefaults objectForKey:@"triedClear"] boolValue];
+    [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]]];
+    
+    int usingIpad = self.view.frame.size.width/2;// 160;
+    if (usingIpad != 160) {
+        triedSelect = YES;
+    }
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:NO];
+    [IntroAnimation removeEncouragement];
+    
     self.navigationController.navigationBar.barStyle=UIBarStyleBlackOpaque;
-//    if (self.selections > 0) {
-//        self.navigationItem.rightBarButtonItem = self.editButtonItem;
-//    }
+    
+    if (self.selections.count == 0) {
+        [self encourageSelect];
+    } else if (!triedSelect) {
+        triedSelect = YES;
+        [self encourageSelect];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:triedSelect] forKey:@"triedSelect"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     
     NSLog(@"History has %d selections", [self.selections count]);
     inserting = NO;
@@ -42,40 +72,29 @@ bool inserting;
 
 - (void) viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:NO];
     [self.spinner removeFromSuperview];
     self.spinner = nil;
+}
+
+-(void)encourageSelect
+{
+    int arrowPickStartY = self.view.frame.origin.y+self.view.frame.size.height-HarrowBounce-HarrowHeight;
+    int arrowPickStartX = self.view.frame.size.width-1.8*HarrowWidth-(self.view.frame.size.width/2);
+    int labelStartX = arrowPickStartX +.5*HarrowWidth-.5*HencourageLabelWidth+HarrowWidth; //HarrowWidth is not ideal
+    NSString *messageText;
+    if (self.selections.count == 0 ) {
+        messageText = @"Hit Select to add a ticket...";
+    } else {
+        messageText = @"Added, now back to Select...";
+    }
+    [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowPickStartY withText:messageText withYOffset:18 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     int count = [self.selections count];
     return count;
-}
-
-- (void)configureCell:(HistoryCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-    Selection *selection = [selections objectAtIndex:indexPath.row];
-    
-    if (selection.selectionPowerball) {
-        cell.powerballLabel.text = [selection.selectionPowerball stringValue];//stringValue];
-    } else {
-        cell.powerballLabel.text = @"(?)";
-    }
-    
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
-    [dateFormatter setDateFormat:@"MM/dd/yyyy"];
-    cell.dateLabel.text = [dateFormatter stringFromDate:selection.drawingDate]; 
-    
-    NSString *selectionList = [[selection.selectionOne stringValue] stringByAppendingString:@"-"];
-    selectionList = [selectionList stringByAppendingString:[selection.selectionTwo stringValue]];
-    selectionList = [selectionList stringByAppendingString:@"-"];
-    selectionList = [selectionList stringByAppendingString:[selection.selectionThree stringValue]];
-    selectionList = [selectionList stringByAppendingString:@"-"];
-    selectionList = [selectionList stringByAppendingString:[selection.selectionFour stringValue]];
-    selectionList = [selectionList stringByAppendingString:@"-"];
-    selectionList = [selectionList stringByAppendingString:[selection.selectionFive stringValue]];
-    
-    cell.numbersLabel.text = selectionList;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -104,8 +123,9 @@ bool inserting;
     }
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; //create a date formatter
-    [dateFormatter setDateFormat:@"MM/dd/yyyy"];
-    cell.dateLabel.text = [dateFormatter stringFromDate:selection.drawingDate]; 
+    [dateFormatter setDateFormat:@"M/d/yyyy"];
+    cell.dateLabel.text = [dateFormatter stringFromDate:selection.drawingDate];
+    cell.dateLabel.textColor = [UIColor whiteColor];
     
     NSString *selectionList = [[selection.selectionOne stringValue] stringByAppendingString:@"-"];
     selectionList = [selectionList stringByAppendingString:[selection.selectionTwo stringValue]];
@@ -130,7 +150,7 @@ bool inserting;
 {
     Selection *selection = [self.selections objectAtIndex:indexPath.row];
     PFQuery *query = [PFQuery queryWithClassName:@"Selections"];
-    [query whereKey:@"userID" equalTo:selection.userID];
+    //[query whereKey:@"userID" equalTo:selection.userID];
     [query whereKey:@"addedDate" equalTo:selection.userChosenDate];
     [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         if (!object) {

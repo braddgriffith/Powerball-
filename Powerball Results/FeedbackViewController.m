@@ -28,8 +28,11 @@
 
 - (IBAction)rateGame 
 {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=517545261"]];
-    //@"https://userpub.itunes.apple.com/WebObjects/MZUserPublishing.woa/wa/addUserReview?id=517545261&type=Purple+Software"]]; - does triple redirect - works on non iOS devices
+
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://userpub.itunes.apple.com/WebObjects/MZUserPublishing.woa/wa/addUserReview?id=517545261&type=Purple+Software"]]; //http://itunes.apple.com/us/app/powerball+/id517545261?ls=1&mt=8
+    //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.apple.com/us/app/powerball+/id517545261?ls=1&mt=8"]];// - gets us to the App, not the reviews
+
+//REAL PREVIOUS [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=409954448"]]
 }
 
 - (IBAction)sendEmail 

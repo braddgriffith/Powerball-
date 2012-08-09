@@ -33,7 +33,6 @@
     UINavigationItem *titleItem = [[UINavigationItem alloc] initWithTitle:@"Results"];
     
     refreshButton = [[UIBarButtonItem alloc] 
-                    //How do I make this init with
                     initWithTitle:@"Refresh" 
                     style:UIBarButtonItemStyleBordered 
                     target:self 
@@ -77,7 +76,6 @@
 {
     self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     self.spinner.center = CGPointMake(CGRectGetMidX(self.webView.bounds), CGRectGetMidY(self.webView.bounds));
-    //[self.spinner setColor:[UIColor blackColor]];
     [self.spinner startAnimating];
     [self.view addSubview:self.spinner];
     

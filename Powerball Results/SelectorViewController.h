@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "Selection.h"
+#import "AppDelegate.h"
 
-@interface SelectorViewController : UIViewController <UITextFieldDelegate>
+@interface SelectorViewController : UIViewController <UITextFieldDelegate, UIAlertViewDelegate> {
+    AppDelegate *appDelegate;
+}
 
 @property (nonatomic, strong) IBOutlet UITextField *numberOne;
 @property (nonatomic, strong) IBOutlet UITextField *numberTwo;
@@ -17,11 +20,19 @@
 @property (nonatomic, strong) IBOutlet UITextField *numberFour;
 @property (nonatomic, strong) IBOutlet UITextField *numberFive;
 @property (nonatomic, strong) IBOutlet UITextField *powerball;
-@property (strong, nonatomic) IBOutlet UILabel *currentDrawDate;
+@property (nonatomic, strong) IBOutlet UIButton *pickButton;
+@property (strong, nonatomic) IBOutlet UIImageView *theArrowView;
+@property (strong, nonatomic) IBOutlet UILabel *encourageLabel;
+@property (nonatomic, strong) IBOutlet UITextField *activeField;
 
 @property (strong, nonatomic) Selection *selection;
 @property (nonatomic, strong) NSMutableArray *selections;
 @property (nonatomic, strong) NSDate *upcomingDrawDate;
+@property (nonatomic, strong) NSDate *nextDrawDateEST;
+//@property (nonatomic, assign) BOOL firstTime;
+
+@property (nonatomic, weak) AppDelegate *myDelegate;//appDelegate
+//@property (nonatomic, weak) AppDelegate *appDelegate;
 
 @property (nonatomic, strong) NSDate *today;
 

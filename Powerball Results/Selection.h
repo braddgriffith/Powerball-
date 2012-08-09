@@ -21,5 +21,9 @@
 @property (nonatomic, strong) NSString * userID;
 @property (nonatomic, strong) NSMutableArray * selectionArray;
 @property (nonatomic, strong) NSDate * userChosenDate;
+@property (nonatomic, strong) NSString * jackpot;
+@property (nonatomic, strong) NSNumber * matches;
+@property (nonatomic, strong) NSNumber * specialMatches;
+@property (nonatomic, strong) NSNumber * since70;
 
 @end
