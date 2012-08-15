@@ -500,10 +500,6 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = three20/Build/Products/three20;
 				INFOPLIST_FILE = "Powerball Results/Powerball Results-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../three20/Build/Products/Release-iphoneos\"",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "82B1A604-74F0-42F2-A4C6-89ED8A7E9FA9";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "82B1A604-74F0-42F2-A4C6-89ED8A7E9FA9";
@@ -576,10 +572,6 @@
 				GCC_PREFIX_HEADER = "Powerball Results/Powerball Results-Prefix.pch";
 				INFOPLIST_FILE = "Powerball Results/Powerball Results-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../three20/Build/Products/Release-iphoneos\"",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "AB7F4F40-F2EC-4D94-B605-E58C99991E13";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AB7F4F40-F2EC-4D94-B605-E58C99991E13";
@@ -601,10 +593,6 @@
 				GCC_PREFIX_HEADER = "Powerball Results/Powerball Results-Prefix.pch";
 				INFOPLIST_FILE = "Powerball Results/Powerball Results-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../three20/Build/Products/Release-iphoneos\"",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "AB7F4F40-F2EC-4D94-B605-E58C99991E13";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AB7F4F40-F2EC-4D94-B605-E58C99991E13";

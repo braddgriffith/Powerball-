@@ -341,6 +341,8 @@ bool userEdited = NO;
     NSLog(@" localUser.location = %@", localUser.location);
     self.rowDataArray = [NSMutableArray arrayWithObjects:localUser.first_name, localUser.last_name, localUser.email, localUser.username, localUser.location, nil];
     NSLog(@"rowDataArray loaded data self.rowDataArray.count = %d", self.rowDataArray.count);
+    
+    self.tableViewForAccount.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]];
 }
 
 - (void)signUpViewControllerDidCancelLogIn:(PFSignUpViewController *)signUpController {
