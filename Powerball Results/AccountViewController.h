@@ -31,6 +31,9 @@
 
 // User Interface
 @property (nonatomic, strong) UIBarButtonItem *logoutButton;
+@property (nonatomic, strong) UIBarButtonItem *saveButton;
 @property (nonatomic, strong) IBOutlet UILabel *headerLabel;
+
+//@property (nonatomic, strong) UINavigationBar *navBar;
 
 @end

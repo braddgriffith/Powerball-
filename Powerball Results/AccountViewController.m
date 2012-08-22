@@ -25,12 +25,17 @@
 @synthesize permissions;
 
 @synthesize logoutButton;
+@synthesize saveButton;
 @synthesize headerLabel;
 @synthesize activeField;
+
+//@synthesize navBar;
 
 int introHeight = 39;
 int tableViewForAccountHeight = 400;
 int naviHeight;
+
+bool seenAccountIntro = NO;
 
 AppDelegate *localDelegate;
 
@@ -40,15 +45,19 @@ bool userEdited = NO;
 {
     [super viewDidLoad];
     
+    NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
+    seenAccountIntro = [[currentDefaults objectForKey:@"seenAccountIntro"] boolValue];
+    
     User *localUser = [AppDelegate user];
     
     self.permissions = [NSArray arrayWithObjects:@"email", @"user_location", @"user_about_me", nil]; 
-    
+
     UINavigationBar *navigationBar = [[UINavigationBar alloc] init];
     [navigationBar sizeToFit]; 
     naviHeight = navigationBar.frame.size.height;
     navigationBar.barStyle = UIBarStyleBlackTranslucent;
     UINavigationItem *titleItem = [[UINavigationItem alloc] initWithTitle:@"Account"];
+    //navBar = navigationBar;
     
     CGRect frame = CGRectMake(20, naviHeight+5, self.view.frame.size.width-40, introHeight);
     self.headerLabel = [[UILabel alloc] initWithFrame:frame];
@@ -74,11 +83,18 @@ bool userEdited = NO;
                     target:self 
                     action:@selector(logoutButtonTouchHandler:)];
     
+    saveButton = [[UIBarButtonItem alloc] 
+                    initWithTitle:@"Save" 
+                    style:UIBarButtonItemStyleBordered 
+                    target:self 
+                    action:@selector(saveButtonTouchHandler:)];
+    
     if (!([localUser.email isEqualToString:@""] || localUser.email == nil)) {
-        logoutButton.title = @"Login";
+        logoutButton.title = @"Signup/Login";
     }
     
     titleItem.leftBarButtonItem = logoutButton;
+    titleItem.rightBarButtonItem = saveButton;
     [navigationBar setItems:[NSArray arrayWithObject:titleItem]];
     
     [self.view addSubview:tableViewForAccount]; //add the tableView
@@ -96,6 +112,19 @@ bool userEdited = NO;
     [self registerForKeyboardNotifications];
     
     self.rowTitleArray = [NSMutableArray arrayWithObjects:@"First Name", @"Last Name", @"Email", @"Username", @"Location", nil];
+    
+    if (seenAccountIntro == NO) {
+        UIAlertView *alert = [[UIAlertView alloc] 
+                              initWithTitle:@"Welcome to Your Account!" 
+                              message:@"Start via the blue or green buttons! Accounts enable Smartpick and remind you when you win. Facebook is easiest (we'll never share without asking), or tap the bottom Sign Up button. :)" 
+                              delegate:nil 
+                              cancelButtonTitle:@"Hide" 
+                              otherButtonTitles:nil];
+        alert.alertViewStyle = UIAlertViewStyleDefault;
+        [alert show]; 
+        seenAccountIntro = YES;
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:seenAccountIntro] forKey:@"seenAccountIntro"];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated //Creates and instatiates ParseLoginViewController if appdelegate.user.email == ""
@@ -245,19 +274,11 @@ bool userEdited = NO;
             localUser.username = @"";
         }
         
-//        localUser.first_name = [result objectForKey:@"first_name"];
-//        localUser.last_name = [result objectForKey:@"last_name"];
-//        localUser.email = [result objectForKey:@"email"];
-//        localUser.location = [[result objectForKey:@"location"]objectForKey:@"name"];
-//        localUser.username = [result objectForKey:@"username"];
-        
         NSLog(@"didLoad localDelegate id = %@, first = %@, last = %@, email = %@, location = %@",[result objectForKey:@"id"], localUser.first_name, localUser.last_name, localUser.email, localUser.location);
         
         // https://parse.com/docs/ios_guide#users
         // other fields can be set just like with PFObject
         // [user setObject:@"415-392-0202" forKey:@"phone"];
-        
-        //[[PFUser currentUser] refresh];
         
         NSLog(@"didLoad currentUser = %@",[PFUser currentUser]);
         NSLog(@"didLoad localUser.parseUser = %@", localUser.parseUser);
@@ -327,13 +348,7 @@ bool userEdited = NO;
 - (void)rowDataArrayLoadData //Puts the latest appDelegate.user.X into the rowDataArray for display
 {
     User *localUser = [AppDelegate user];
-//    self.rowDataArray = [NSMutableArray arrayWithObjects:
-//                         [NSString stringWithString:appDelegate.user.first_name], 
-//                         [NSString stringWithString:appDelegate.user.last_name],//appDelegate.user.last_name, 
-//                         [NSString stringWithString:appDelegate.user.email],//appDelegate.user.email, 
-//                         [NSString stringWithString:appDelegate.user.username],//appDelegate.user.username, 
-//                         [NSString stringWithString:appDelegate.user.location],//appDelegate.user.location, 
-//                         nil]; 
+
     NSLog(@"localUser.first_name = %@", localUser.first_name);
     NSLog(@"localUser.last_name = %@", localUser.last_name);
     NSLog(@" localUser.email = %@", localUser.email);
@@ -373,6 +388,17 @@ bool userEdited = NO;
         [self displayParseLoginVC];
     }
     NSLog(@"logoutButton localUser.email = %@", localUser.email);
+}
+
+- (void)saveButtonTouchHandler:(id)sender 
+{
+    User *localUser = [AppDelegate user];
+    
+    if ([saveButton.title isEqualToString:@"Save"]) {
+        [localUser.parseUser saveInBackground];
+        [[self.tableViewForAccount superview] endEditing:YES];
+    } 
+    [HudView hudInView:self.view text:@"Account" lineTwo:@"Updated" animated:YES];
 }
 
 #pragma mark - Table view data source
@@ -421,9 +447,6 @@ bool userEdited = NO;
     if (self.rowDataArray.count != 0) {
         NSLog(@"Indexpath: we have: %@",[self.rowDataArray objectAtIndex:indexPath.row]); 
         [dataLabel setText:[self.rowDataArray objectAtIndex:indexPath.row]];
-//        if ([[self.rowTitleArray objectAtIndex:indexPath.row] isEqualToString:@"Username"]) {
-//            [dataLabel setUserInteractionEnabled:NO];
-//        }
     }
     return cell;
 }
@@ -435,7 +458,7 @@ bool userEdited = NO;
 
 // Called when the UIKeyboardDidShowNotification is sent.
 - (void)keyboardWasShown:(NSNotification*)aNotification
-{
+{    
     NSDictionary* info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
@@ -503,7 +526,7 @@ bool userEdited = NO;
         localUser.email = [NSString stringWithString:dataElement];
         [localUser.parseUser setObject:dataElement forKey:@"email"];
     } if (textField.tag - 10 == 3) {
-        PFQuery *query = [PFQuery queryForUser];
+        PFQuery *query = [PFUser query];
         [query whereKey:@"username" equalTo:dataElement]; // find all users
         [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             if (!error) {
@@ -517,11 +540,13 @@ bool userEdited = NO;
                     activeField = nil;
                     NSLog(@"appDelegate.user.username after dataElement: %@", localUser.username);
                     [localUser.parseUser saveInBackground];
-                    NSLog(@"Saving user");
-                    [HudView hudInView:self.view text:@"Username" lineTwo:@"Updated" animated:YES];
+                    NSLog(@"Saving user with an updated username");
+                    //[HudView hudInView:self.view text:@"Username" lineTwo:@"Updated" animated:YES];
                 } else {
-                    [HudView hudInView:self.view text:@"Username Taken" lineTwo:@"Choose Another" animated:YES];
-                    NSLog(@"Someone has that username");
+                    if (![dataElement isEqualToString:localUser.username]) {
+                        [HudView hudInView:self.view text:@"Username Taken" lineTwo:@"Choose Another" animated:YES];
+                        NSLog(@"Someone has that username");
+                    }
                     textField.text = localUser.username;
                 }
             } else {
@@ -540,6 +565,7 @@ bool userEdited = NO;
         [headerLabel setText:@"Welcome to Powerball+"];//@"Maximize winnings by selecting unique numbers. With Smartpick and accounts, no two Powerball+ users will choose the same numbers.";
     }
     [self rowDataArrayLoadData];
+    //AppDelegate.user = localUser;
 }
 
 - (void)registerForKeyboardNotifications

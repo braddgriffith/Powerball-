@@ -29,7 +29,7 @@ int frameHeight = 64;
     label.textColor = [UIColor whiteColor];
     label.lineBreakMode = UILineBreakModeWordWrap;
     label.numberOfLines = 0;
-    label.text = @"Join via Facebook in two clicks!";// enter your username/password or click sign-up. ";
+    label.text = @"Join via Facebook in two taps!";// enter your username/password or tap sign-up. ";
     [self.logInView addSubview:label]; //add the tableView
     
     self.logInView.logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Icon-Small@2x.png"]];

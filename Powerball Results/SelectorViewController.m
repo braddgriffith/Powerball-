@@ -174,13 +174,24 @@ AppDelegate *localDelegate;
     [self.pickButton setTitle:@"QuickPick" forState:(UIControlStateSelected)];
     
     if (triedPickTwo && [appDelegate.user.email isEqualToString:@""]) {
-        [self encourageAccount];
+        [IntroAnimation removeEncouragement];
+        if (!smartPickActivatedYet) {
+            [self encourageAccount];
+        }
     } else if (![appDelegate.user.email isEqualToString:@""]) {
         if (!smartPickActivatedYet) {
             smartPickActivatedYet = YES;
             [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:smartPickActivatedYet] forKey:@"smartPickActivatedYet"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-            [HudView hudInView:self.navigationController.view text:@"SmartPick!" lineTwo:@"Activated" animated:YES];
+            //[HudView hudInView:self.navigationController.view text:@"SmartPick!" lineTwo:@"Activated" animated:YES];
+            UIAlertView *alert = [[UIAlertView alloc] 
+                                   initWithTitle:@"SmartPick Activated!" 
+                                   message:@"Congrats. Smartpick maximizes your winnings by selecting numbers other players are unlikely to choose!" 
+                                   delegate:nil 
+                                   cancelButtonTitle:@"Hide" 
+                                   otherButtonTitles:nil];
+            alert.alertViewStyle = UIAlertViewStyleDefault;
+            [alert show]; 
         }
         [self.pickButton setTitle:@"SmartPick" forState:(UIControlStateNormal)];
         [self.pickButton setTitle:@"SmartPick" forState:(UIControlStateSelected)];
@@ -211,14 +222,17 @@ AppDelegate *localDelegate;
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:NO];
+    [IntroAnimation removeEncouragement];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     if (!triedPickOne) {
+        [IntroAnimation removeEncouragement];
         [self encourageQuickPick];
     } else if(!triedClear) {
+        [IntroAnimation removeEncouragement];
         [self encourageClear];
     }
 }
@@ -250,7 +264,11 @@ AppDelegate *localDelegate;
     int arrowPickStartY = pickButton.frame.origin.y-pickButton.frame.size.height-arrowBounce;
     int arrowPickStartX = self.view.frame.size.width/2 - arrowWidth/2;
     int labelStartX = arrowPickStartX - (pickButton.frame.size.width/4.5);
-    [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowPickStartY withText:@"Click to QuickPick numbers..." withYOffset:18 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+    if ([pickButton.titleLabel.text isEqualToString:@"SmartPick"]) {
+        [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowPickStartY withText:@"Tap to SmartPick numbers..." withYOffset:18 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+    } else {
+        [IntroAnimation encourageSomething:self.view withImage:@"06-arrow-south@2x.png" atStartY:arrowPickStartY withText:@"Tap to QuickPick numbers..." withYOffset:18 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+    }
 }
 
 -(void)encourageClear
@@ -258,7 +276,7 @@ AppDelegate *localDelegate;
     int arrowPickStartY = self.view.frame.origin.y;
     int arrowPickStartX = self.view.frame.origin.x+.5*arrowWidth;
     int labelStartX = arrowPickStartX+arrowWidth+2;
-    [IntroAnimation encourageSomething:self.view withImage:@"03-arrow-north@2x.png" atStartY:arrowPickStartY withText:@"Click to clear..." withYOffset:-6 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+    [IntroAnimation encourageSomething:self.view withImage:@"03-arrow-north@2x.png" atStartY:arrowPickStartY withText:@"Tap to clear..." withYOffset:-6 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
 }
 
 -(void)encourageSave
@@ -266,7 +284,7 @@ AppDelegate *localDelegate;
     int arrowPickStartY = self.view.frame.origin.y;
     int arrowPickStartX = self.view.frame.size.width-1.35*arrowWidth;
     int labelStartX = arrowPickStartX-4.8*arrowWidth;
-    [IntroAnimation encourageSomething:self.view withImage:@"03-arrow-north@2x.png" atStartY:arrowPickStartY withText:@"Now, click to save..." withYOffset:-6 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
+    [IntroAnimation encourageSomething:self.view withImage:@"03-arrow-north@2x.png" atStartY:arrowPickStartY withText:@"Now, tap to save..." withYOffset:-6 atStartX:arrowPickStartX atLabelStartX:labelStartX withDirection:@"vertical"];
 }
 
 -(void)encourageEditing

@@ -11,6 +11,7 @@
 #import "Selection.h"
 #import "Time.h"
 #import "Payout.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface ResultsViewController ()
 
