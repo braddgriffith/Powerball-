@@ -73,6 +73,7 @@ bool userEdited = NO;
     self.tableViewForAccount.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]];
     
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]];
+    [tableViewForAccount setBackgroundView:nil];
     [self.tableViewForAccount setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Stars02.png"]]];
     tableViewForAccount.dataSource = self;
     tableViewForAccount.delegate = self;
@@ -116,7 +117,7 @@ bool userEdited = NO;
     if (seenAccountIntro == NO) {
         UIAlertView *alert = [[UIAlertView alloc] 
                               initWithTitle:@"Welcome to Your Account!" 
-                              message:@"Start via the blue or green buttons! Accounts enable Smartpick and remind you when you win. Facebook is easiest (we'll never share without asking), or tap the bottom Sign Up button. :)" 
+                              message:@"Accounts enable Smartpick (intelligent selection). Facebook is easiest (we'll never share without asking). Tap the blue or the green button!" 
                               delegate:nil 
                               cancelButtonTitle:@"Hide" 
                               otherButtonTitles:nil];
@@ -135,9 +136,9 @@ bool userEdited = NO;
     [self rowDataArrayLoadData];
     
     if ([localUser.email isEqualToString:@""] || localUser.email == nil) {
-        logoutButton.title = @"Login";
+        logoutButton.title = @"Signup/Login";
         headerLabel.font = [UIFont boldSystemFontOfSize:14];
-        headerLabel.text = @"Press Login to get updates on winning tickets and enable Smartpick.";
+        headerLabel.text = @"Press Signup/Login to get updates on winning tickets and enable Smartpick.";
     } else { 
         if ([localUser.first_name isEqualToString:@""] || [localUser.last_name isEqualToString:@""] || [localUser.location isEqualToString:@""] 
             || [localUser.first_name isEqualToString:@"Tap to edit"] || [localUser.last_name isEqualToString:@"Tap to edit"]) {
@@ -200,11 +201,6 @@ bool userEdited = NO;
         [self rowDataArrayLoadData];
         [tableViewForAccount reloadData]; 
     } else {  //else, go ask FB for data
-//        [PFFacebookUtils linkUser:user permissions:nil block:^(BOOL succeeded, NSError *error) {
-//            if (succeeded) {
-//                NSLog(@"Woohoo, user logged in with Facebook!");
-//            }
-//        }];
         [[PFFacebookUtils facebook] requestWithGraphPath:@"me?fields=first_name,last_name,email,location,username" //REQUEST_WITH_GRAPH_PATH
                                              andDelegate:self];
         NSLog(@"Got to FB");
@@ -301,7 +297,7 @@ bool userEdited = NO;
 - (void)logInViewControllerDidCancelLogIn:(ParseLoginViewController *)logInController {
     NSLog(@"Cancelled log in!");
     [self dismissModalViewControllerAnimated:YES];
-    logoutButton.title = @"Login";
+    logoutButton.title = @"Signup/Login";
 }
 
 - (void)signUpViewController:(PFSignUpViewController *)signUpController didSignUpUser:(PFUser *)user {
@@ -394,7 +390,13 @@ bool userEdited = NO;
 {
     User *localUser = [AppDelegate user];
     
+    if (!localUser.parseUser) {
+        localUser.parseUser = [[PFUser alloc] init];
+    }
+    
     if ([saveButton.title isEqualToString:@"Save"]) {
+        NSLog(@"localUser.parseUser = %@",localUser.parseUser);
+        NSLog(@"localUser.first_name = %@",localUser.first_name);
         [localUser.parseUser saveInBackground];
         [[self.tableViewForAccount superview] endEditing:YES];
     } 
@@ -515,6 +517,10 @@ bool userEdited = NO;
     NSLog(@"textfield: %@", [textField text]);
     NSLog(@"textfield.tag: %i", textField.tag);
     
+    if (!localUser.parseUser) {
+        localUser.parseUser = [[PFUser alloc] init];
+    }
+    
     //self.rowDataArray = [NSMutableArray arrayWithObjects:appDelegate.user.first_name, appDelegate.user.last_name, appDelegate.user.email, appDelegate.user.username, appDelegate.user.location, nil]; 
     if (textField.tag - 10 == 0) {
         localUser.first_name = [NSString stringWithString:dataElement];
@@ -566,6 +572,12 @@ bool userEdited = NO;
     }
     [self rowDataArrayLoadData];
     //AppDelegate.user = localUser;
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
 }
 
 - (void)registerForKeyboardNotifications

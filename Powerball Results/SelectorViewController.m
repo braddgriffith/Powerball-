@@ -241,8 +241,8 @@ AppDelegate *localDelegate;
 {
     int arrowPickStartX = self.view.frame.size.width-arrowWidth-arrowStartXoffset;
     int arrowPickStartY = self.view.frame.origin.y+self.view.frame.size.height-arrowBounce-arrowHeight;
-    int iPad = self.view.frame.size.width;
-    if (iPad != 320) {
+    int screenWidth = self.view.frame.size.width;
+    if (screenWidth != 320) { // it's an iPad
         arrowPickStartX = self.view.frame.size.width-arrowWidth-arrowStartXoffset-180;
         arrowPickStartY = self.view.frame.origin.y+self.view.frame.size.height-arrowBounce-arrowHeight;
     }

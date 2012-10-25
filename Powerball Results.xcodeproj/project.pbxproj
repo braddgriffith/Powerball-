@@ -160,6 +160,7 @@
 		E6F5E268156C2BAF00BFE33B /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		E6F5E271156C963300BFE33B /* whiteball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteball.png; sourceTree = "<group>"; };
 		E6F5E273156C963A00BFE33B /* redball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redball.png; sourceTree = "<group>"; };
+		E6F6318D16388FB300311F96 /* Powerball Results.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Powerball Results.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -270,6 +271,7 @@
 		E6EFAC00152F53650031CCD3 /* Powerball Results */ = {
 			isa = PBXGroup;
 			children = (
+				E6F6318D16388FB300311F96 /* Powerball Results.entitlements */,
 				E6EFAC0C152F53660031CCD3 /* MainStoryboard_iPhone.storyboard */,
 				E6B1FC841538A53400F22E3F /* MainStoryboard.storyboard */,
 				E6EFAC09152F53660031CCD3 /* AppDelegate.h */,
@@ -476,7 +478,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "E083D180-2F98-4E64-BBDB-4027D6FE5B45";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -489,6 +491,7 @@
 		E6BE6C04155088A900D6A97A /* AppStore */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Powerball Results/Powerball Results.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Brad Grifffith";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Brad Grifffith";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -530,7 +533,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PROVISIONING_PROFILE = "E083D180-2F98-4E64-BBDB-4027D6FE5B45";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -551,7 +554,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -562,6 +565,7 @@
 		E6EFAC18152F53660031CCD3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Powerball Results/Powerball Results.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Brad Grifffith (35DT78TGW2)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Brad Grifffith (35DT78TGW2)";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -583,6 +587,7 @@
 		E6EFAC19152F53660031CCD3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Powerball Results/Powerball Results.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Brad Grifffith (35DT78TGW2)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Brad Grifffith (35DT78TGW2)";
 				FRAMEWORK_SEARCH_PATHS = (
