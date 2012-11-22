@@ -659,7 +659,8 @@ AppDelegate *localDelegate;
     NSLog(@"keyboardDidShowNotification");
     // create custom button
     doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    doneButton.frame = CGRectMake(0, 427, 106, 53);
+    int screenHeight = self.view.frame.size.height + self.navigationController.navigationBar.frame.size.height + self.tabBarController.tabBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+    doneButton.frame = CGRectMake(0, screenHeight-53, 106, 53);
     doneButton.adjustsImageWhenHighlighted = NO;
     [doneButton setBackgroundImage:[UIImage imageNamed:@"DONE.png"] forState:UIControlStateNormal];
     [doneButton setBackgroundImage:[UIImage imageNamed:@"DONEpressed.png"] forState:UIControlStateHighlighted];

@@ -167,7 +167,7 @@ bool userEdited = NO;
 {
     User *localUser = [AppDelegate user];
     NSLog(@"displayParseLoginVC localUser.email = %@", localUser.email);
-    [PFUser logOut]; //WATCH FOR THIS
+    //[PFUser logOut]; //WATCH FOR THIS
     ParseLoginViewController *logInController = [[ParseLoginViewController alloc] init];
     
     logInController.fields = PFLogInFieldsUsernameAndPassword

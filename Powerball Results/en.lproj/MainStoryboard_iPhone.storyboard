@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.1" toolsVersion="2182" systemVersion="11E53" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="Cxw-7o-yLL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2843" systemVersion="12C60" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="Cxw-7o-yLL">
     <dependencies>
-        <development defaultVersion="4200" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1179"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1929"/>
     </dependencies>
     <scenes>
         <!--Tab Bar Controller-->
         <scene sceneID="pYq-36-9Pe">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="BC6-i2-pKn" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tabBarController definesPresentationContext="YES" id="Cxw-7o-yLL" sceneMemberID="viewController">
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="bIx-4V-r3R">
@@ -23,17 +21,17 @@
                         <segue destination="BjE-6a-tbQ" kind="relationship" relationship="viewControllers" id="smn-HA-mQG"/>
                     </connections>
                 </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BC6-i2-pKn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-468" y="886"/>
         </scene>
         <!--Results View Controller - Results-->
         <scene sceneID="aal-As-hKo">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="fSJ-AX-Tut" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="xy7-Bg-VR3" customClass="ResultsViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bc-Bb-FLS">
                         <rect key="frame" x="0.0" y="20" width="320" height="411"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" animating="YES" style="whiteLarge" id="96n-dY-p61">
                                 <rect key="frame" x="141" y="187" width="37" height="37"/>
@@ -48,7 +46,7 @@
                             </navigationBar>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="rxV-Yr-o0V">
                                 <rect key="frame" x="0.0" y="44" width="320" height="372"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="nextDateLabel" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="PeU-ja-6Yt">
                                         <rect key="frame" x="95" y="8" width="161" height="21"/>
@@ -181,6 +179,7 @@
                         <outlet property="spinner" destination="96n-dY-p61" id="KL1-HI-ybP"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fSJ-AX-Tut" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <customObject id="xbd-eL-xI9" customClass="PayoutTableView">
                     <connections>
                         <outlet property="tableView" destination="EyO-WI-51L" id="V7B-ab-f3H"/>
@@ -192,7 +191,6 @@
         <!--Selector View Controller - Select-->
         <scene sceneID="FkQ-Pz-2AY">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="0Wd-oZ-Zp1" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="eJv-KH-lVD" customClass="SelectorViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="r8w-nD-xvb">
                         <rect key="frame" x="0.0" y="64" width="320" height="367"/>
@@ -328,13 +326,13 @@
                         <outlet property="powerball" destination="fHZ-sz-Aqw" id="xTI-pC-9Me"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0Wd-oZ-Zp1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="521" y="641"/>
         </scene>
         <!--History View Controller - MyPicks-->
         <scene sceneID="qcL-F4-uL6">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="seh-vj-1Uf" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="nzU-7C-TKX" customClass="HistoryViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="54" sectionHeaderHeight="22" sectionFooterHeight="22" id="Aj2-tO-E9m">
                         <rect key="frame" x="0.0" y="64" width="320" height="367"/>
@@ -396,13 +394,13 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="MyPicks" id="mgo-Ak-PNm"/>
                 </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="seh-vj-1Uf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="521" y="1223"/>
         </scene>
         <!--Feedback View Controller - Feedback-->
         <scene sceneID="Yyz-0T-OiE">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="uCw-TD-PKk" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="ab9-Fq-IcB" customClass="FeedbackViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="eFB-Ty-6NQ">
                         <rect key="frame" x="0.0" y="20" width="320" height="460"/>
@@ -474,13 +472,13 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Feedback" image="29-heart.png" id="cY0-OA-9FG"/>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uCw-TD-PKk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="73" y="1821"/>
         </scene>
         <!--Account View Controller - Account-->
         <scene sceneID="XhA-ZX-6xX">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="3jN-aE-cbz" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="BjE-6a-tbQ" customClass="AccountViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="U7N-gg-jBK">
                         <rect key="frame" x="0.0" y="20" width="320" height="411"/>
@@ -489,13 +487,13 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Account" image="112-group.png" id="vL7-P4-jOm"/>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3jN-aE-cbz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="526" y="1815"/>
         </scene>
         <!--Navigation Controller - MyPicks-->
         <scene sceneID="t7y-eW-mgB">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="xOG-xY-kfP" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController id="emH-UV-LoH" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="MyPicks" image="96-book.png" id="YkP-0P-5Ea"/>
                     <toolbarItems/>
@@ -508,13 +506,13 @@
                         <segue destination="nzU-7C-TKX" kind="relationship" relationship="rootViewController" id="xpi-r3-dbn"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xOG-xY-kfP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="71" y="1223"/>
         </scene>
         <!--Navigation Controller - Select-->
         <scene sceneID="kEv-iX-i1Y">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="hei-Sn-wEf" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController id="90g-B6-TxK" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Select" image="115-bow-and-arrow.png" id="Wfn-jN-kwk"/>
                     <toolbarItems/>
@@ -528,6 +526,7 @@
                         <segue destination="eJv-KH-lVD" kind="relationship" relationship="rootViewController" id="gZV-FF-2NT"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hei-Sn-wEf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="71" y="641"/>
         </scene>

@@ -111,7 +111,7 @@ NSMutableArray *matchingArray;
     int payoutsViewCenterX = self.scrollView.frame.size.width/2;// 160;
     int payoutsViewCenterY;
     if (payoutsViewCenterX == 160) { //if iPhone
-        payoutsViewCenterY = 494;
+        payoutsViewCenterY = 570;//494;
     } else {
         payoutsViewCenterY = 790;
         xindent = 250;

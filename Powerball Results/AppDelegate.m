@@ -69,13 +69,13 @@
 //    }
     if (!self.user) {
         self.user = [[User alloc] init];
+        NSLog(@"Created new user.");
     }
     [self setupViewControllers];
     return YES;
 }
 
-- (void)application:(UIApplication *)application 
-didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
     if ([error code] == 3010) {
         NSLog(@"Push notifications don't work in the simulator!");
@@ -127,14 +127,15 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 }
 
 // PUSH REGISTRATION
-- (void)application:(UIApplication *)application 
-didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
 {
     [PFPush storeDeviceToken:newDeviceToken]; // Send parse the device token
-    // Subscribe this user to the broadcast channel, "" 
+    // Subscribe this user to the broadcast channel, ""
+    
     [PFPush subscribeToChannelInBackground:@"" block:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
             NSLog(@"Successfully subscribed to the GROUP broadcast channel.");
+            NSLog(@"Device token is: %@", newDeviceToken);
         } else {
             NSLog(@"Failed to subscribe to the GROUP broadcast channel.");
         }
