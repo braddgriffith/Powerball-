@@ -153,7 +153,7 @@ bool userEdited = NO;
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-    User *localUser = [AppDelegate user]; 
+    User *localUser = [AppDelegate user];
     
     [super viewWillDisappear:NO];
     if(localUser.parseUser && userEdited) {
@@ -186,8 +186,15 @@ bool userEdited = NO;
 #pragma mark - PFLogInViewControllerDelegate
 
 - (void)logInViewController:(ParseLoginViewController *)controller didLogInUser:(PFUser *)user //If FB user, ask FB for details w requestWithGraphPath me?fields=id
-{ 
-    User *localUser = [AppDelegate user];
+{
+    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    
+    if (!appDelegate.user)
+    {
+        appDelegate.user = [[User alloc] init];
+    }
+    
+    User *localUser = appDelegate.user;
     NSLog(@"Logged in and User: %@",user);
     
     if (![PFFacebookUtils isLinkedWithUser:user]) { //if account not linked w FB, use PFuser
@@ -222,6 +229,9 @@ bool userEdited = NO;
             }
         }];
     }
+    
+    appDelegate.user = localUser;
+    //[self rowDataArrayLoadData];
 }
 
 -(void)request:(PF_FBRequest *)request didLoad:(id)result //IF WE GET DATA BACK FROM FB, SAVE TO NETWORK
@@ -344,7 +354,8 @@ bool userEdited = NO;
 - (void)rowDataArrayLoadData //Puts the latest appDelegate.user.X into the rowDataArray for display
 {
     User *localUser = [AppDelegate user];
-
+    
+    NSLog(@"rowDataArrayLoadData");
     NSLog(@"localUser.first_name = %@", localUser.first_name);
     NSLog(@"localUser.last_name = %@", localUser.last_name);
     NSLog(@" localUser.email = %@", localUser.email);
@@ -367,6 +378,9 @@ bool userEdited = NO;
     
     if ([logoutButton.title isEqualToString:@"Logout"]) {
         [PFUser logOut]; // Logout user, this automatically clears the cache
+        
+        AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+        appDelegate.user = nil;
         
         localUser.first_name = @"";
         localUser.last_name = @"";
